@@ -14,7 +14,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 24.1 (GC Safety)",
+          "label": "Definition referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\").1 (GC Safety)",
           "text": "A garbage collection operation gc : State → State is SAFE iff:"
         },
         {
@@ -37,7 +37,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 24.2 (Tombstone Stability)",
+          "label": "Definition referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\").2 (Tombstone Stability)",
           "text": "A tombstone t is STABLE at replica r iff:\n  ∀ replica r'. r'.clock ≥ clock_at_creation(t)\n\nInformally: All replicas have \"caught up\" past the tombstone creation."
         },
         {

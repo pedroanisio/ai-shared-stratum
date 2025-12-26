@@ -11,8 +11,7 @@
         {
           "type": "paragraph",
           "text": "**Definition reference:** referenceMap(\"sub-4vJaXL82mEBrXVULpKYBW\", {{sectionNumber}}.{{suffix}} ({{suffixName}}))"
-        }
-        ,
+        },
         {
           "type": "code",
           "language": "text",
@@ -37,7 +36,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 14.2 (State Transitions)",
+          "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").2 (State Transitions)",
           "text": "transition : VERIFICATION × EVENT → VERIFICATION"
         },
         {
@@ -63,12 +62,12 @@
       "content": [
         {
           "type": "definition",
-          "label": "Definition 14.3 (Evidence Record)",
+          "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").3 (Evidence Record)",
           "text": "evidence ::= ⟨\n  id: ID,\n  type: EVIDENCE_TYPE,\n  timestamp: TIME,\n  binding_id: ID,\n  result: 𝔹,\n  confidence: [0, 1],           -- Confidence score\n  details: VALUE,               -- Type-specific details\n  expires_at: TIME*             -- Optional expiration\n⟩\n\nEVIDENCE_TYPE = {\n  test_result,        -- Automated test execution\n  static_analysis,    -- Code analysis tool output\n  type_check,         -- Type system verification\n  manual_review,      -- Human review attestation\n  audit_log,          -- Audit trail entry\n  trace_verification, -- Traceability check\n  coverage_report     -- Test coverage data\n}"
         },
         {
           "type": "definition",
-          "label": "Definition 14.4 (Verification Decision)",
+          "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").4 (Verification Decision)",
           "text": "verify : Binding × List<Evidence> → VERIFICATION"
         },
         {
@@ -87,7 +86,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 14.5 (Staleness Detection)",
+          "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").5 (Staleness Detection)",
           "text": "isStale : Binding → 𝔹\n\nisStale(b) =\n  b.verification = verified ∧\n  (b.concrete.hash ≠ currentHash(b.concrete.uri) ∨\n   ∃ e ∈ evidence(b). expired(e))"
         }
       ],

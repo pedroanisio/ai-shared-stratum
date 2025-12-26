@@ -10,53 +10,100 @@
     {
       "type": "paragraph",
       "text": "This specification defines a comprehensive type system and formal semantics for safety-critical concurrent systems. The STRATUM framework provides:"
-    },
+    }
+  ],
+  "children": [
     {
-      "type": "heading",
-      "level": 3,
-      "text": "Core Contributions"
-    },
-    {
-      "type": "list",
-      "items": [
-        "**Formal Foundations (referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"))**: Type system, abstract syntax, well-formedness, and seven guarantees (G1-G7)",
-        "**Operations & Profiles (referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") – referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Query operations, domain profiles, and extension mechanisms",
-        "**Formal Theory (§10-27)**: Theorems, concurrency semantics, compositional properties, certification artifacts, and safety integration",
-        "**Implementation Support (referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\"), referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"))**: Reference implementation, proof templates, and language checklists",
-        "**Safety Standards (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"), referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dM0e66FHuNRBmoEaMjfxF\", \"§{{sectionNumber}}\"))**: DO-178C/DO-330 compliance, ISO 26262 coverage, STPA/FMEA integration, and cross-standard traceability"
+      "id": "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-1",
+      "title": "Core Contributions",
+      "suffix": "1",
+      "defs": [],
+      "content": [
+        {
+          "type": "list",
+          "items": [
+            "**Formal Foundations (referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"))**: Type system, abstract syntax, well-formedness, and seven guarantees (G1-G7)",
+            "**Operations & Profiles (referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") – referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Query operations, domain profiles, and extension mechanisms",
+            "**Formal Theory (referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Xu_Ovl71oIhLU1kaCurK_\", \"§{{sectionNumber}}\") – referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\") – referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") – referenceMap(\"sec-YFHOeAjN2dYDjDiTocSSI\", \"§{{sectionNumber}}\") – referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\") – referenceMap(\"sec-PAskKN4i1etyZhtOY5xtv\", \"§{{sectionNumber}}\") – referenceMap(\"sec-ojM0_ZLauOdjNuKK99Pg0\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\") – referenceMap(\"sec-LUj58UniUYiDJ-BI2QMU3\", \"§{{sectionNumber}}\") – referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\") – referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\"))**: Theorems, concurrency semantics, compositional properties, certification artifacts, and safety integration",
+            "**Implementation Support (referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\"), referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"))**: Reference implementation, proof templates, and language checklists",
+            "**Safety Standards (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"), referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dM0e66FHuNRBmoEaMjfxF\", \"§{{sectionNumber}}\"))**: DO-178C/DO-330 compliance, ISO 26262 coverage, STPA/FMEA integration, and cross-standard traceability"
+          ]
+        }
       ]
     },
     {
-      "type": "heading",
-      "level": 3,
-      "text": "Key Theorems"
-    },
-    {
-      "type": "list",
-      "items": [
-        "**Type Soundness (Theorem 10.1)**: Well-typed programs cannot reach undefined states",
-        "**Progress (Theorem 10.2)**: Non-stuck evaluation for all well-formed definitions",
-        "**Preservation (Theorem 10.3)**: Type safety maintained across reduction steps",
-        "**GC Correctness (Theorem 17.1-17.3)**: Garbage collection preserves observable semantics"
+      "id": "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-2",
+      "title": "Key Theorems",
+      "suffix": "2",
+      "defs": [],
+      "content": [
+        {
+          "type": "list",
+          "items": [
+            "**Type Soundness (Theorem 10.1)**: Well-typed programs cannot reach undefined states",
+            "**Progress (Theorem 10.2)**: Non-stuck evaluation for all well-formed definitions",
+            "**Preservation (Theorem 10.3)**: Type safety maintained across reduction steps",
+            "**GC Correctness (Theorem 17.1-17.3)**: Garbage collection preserves observable semantics"
+          ]
+        }
       ]
     },
     {
-      "type": "heading",
-      "level": 3,
-      "text": "Certification Path"
+      "id": "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-3",
+      "title": "Certification Path",
+      "suffix": "3",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "STRATUM provides formal evidence for:\n- Safety claim verification (ISO 26262 ASIL A-D)\n- Functional safety compliance (IEC 61508 SIL 1-4)\n- Assurance case support through mechanized proofs\n- Tool qualification evidence for language implementations"
+        }
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "STRATUM provides formal evidence for:\n- Safety claim verification (ISO 26262 ASIL A-D)\n- Functional safety compliance (IEC 61508 SIL 1-4)\n- Assurance case support through mechanized proofs\n- Tool qualification evidence for language implementations"
+      "id": "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4",
+      "title": "Structure Overview",
+      "suffix": "4",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "render(documentStats, \"partsSummaryText\")"
+        }
+      ]
     },
     {
-      "type": "heading",
-      "level": 3,
-      "text": "Structure Overview"
-    },
-    {
-      "type": "paragraph",
-      "text": "render(documentStats, \"partsSummaryText\")"
+      "id": "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-5",
+      "title": "How to Read This Document",
+      "suffix": "5",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "This specification is organized in six logical parts across render(documentStats,\"totals.sections\") sections. The recommended reading path depends on your role:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "**Formal Semanticists**",
+              "definition": "Read sequentially: referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") – referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Xu_Ovl71oIhLU1kaCurK_\", \"§{{sectionNumber}}\") (Foundations) → referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Xu_Ovl71oIhLU1kaCurK_\", \"§{{sectionNumber}}\") – referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\") – referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") – referenceMap(\"sec-YFHOeAjN2dYDjDiTocSSI\", \"§{{sectionNumber}}\") – referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\") – referenceMap(\"sec-PAskKN4i1etyZhtOY5xtv\", \"§{{sectionNumber}}\") – referenceMap(\"sec-ojM0_ZLauOdjNuKK99Pg0\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\") – referenceMap(\"sec-LUj58UniUYiDJ-BI2QMU3\", \"§{{sectionNumber}}\") (Formal Theory) → referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") (Attenuation Properties)"
+            },
+            {
+              "term": "**Language Implementers**",
+              "definition": "Read: referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\") (Type System) → referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") (Operations) → referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\") (Reference Implementation) → referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\") (Language Checklists)"
+            },
+            {
+              "term": "**Safety/Certification Engineers**",
+              "definition": "Read: referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") (Foundations, Guarantees) → referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") – referenceMap(\"sec-YFHOeAjN2dYDjDiTocSSI\", \"§{{sectionNumber}}\") (Certification) → referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\") – referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") (Coverage, STPA, Attenuation, Traceability)"
+            },
+            {
+              "term": "**Integration Engineers**",
+              "definition": "**Read:** referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", §{{sectionNumber}} ({{sectionName}})) → referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\") (Domain Profiles, Extensions) → referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\") – referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") (Concurrency, Binding, Schema Evolution)"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

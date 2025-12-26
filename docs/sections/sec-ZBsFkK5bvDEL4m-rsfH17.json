@@ -14,7 +14,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 23.1 (Constraint Priority)",
+          "label": "Definition referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\").1 (Constraint Priority)",
           "text": "Priority sources (highest to lowest):"
         },
         {
@@ -44,7 +44,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 23.2 (Conflict Detection)",
+          "label": "Definition referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\").2 (Conflict Detection)",
           "text": "Two constraints c₁ and c₂ conflict iff:\n  ∃ σ. sat(c₁, σ) ∧ sat(c₂, σ) ∧ ¬sat(c₁ ∧ c₂, σ)"
         },
         {

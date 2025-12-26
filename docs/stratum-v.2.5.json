@@ -226,11 +226,11 @@
             },
             {
               "term": "ACTOR",
-              "definition": "A countably infinite set of actor identifiers [v2.0]"
+              "definition": "A countably infinite set of actor identifiers"
             },
             {
               "term": "CLOCK",
-              "definition": "Vector clocks for causality tracking [v2.0]"
+              "definition": "Vector clocks for causality tracking"
             }
           ]
         },
@@ -272,7 +272,7 @@
             },
             {
               "term": "Multiset(X)",
-              "definition": "Multisets over X [v2.0]"
+              "definition": "Multisets over X"
             }
           ]
         },
@@ -326,11 +326,11 @@
             },
             {
               "term": "α, β",
-              "definition": "Actor identifiers [v2.0]"
+              "definition": "Actor identifiers"
             },
             {
               "term": "vc, vc₁, vc₂",
-              "definition": "Vector clocks [v2.0]"
+              "definition": "Vector clocks"
             }
           ]
         },
@@ -346,7 +346,7 @@
         {
           "type": "admonition",
           "level": "note",
-          "text": "**Conformance Level K0 (Kernel-Conformant)**: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per §0.4 [v2.5]."
+          "text": "**Conformance Level K0 (Kernel-Conformant)**: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per §0.4."
         },
         {
           "type": "heading",
@@ -899,7 +899,7 @@
             {
               "type": "admonition",
               "level": "critical",
-              "text": "CRITICAL INVARIANT [v2.0]: The layer component 'l' is IMMUTABLE after creation. This enables covariant subtyping in §5.3 while maintaining type soundness. To change an element's layer, delete and recreate with new layer assignment."
+              "text": "CRITICAL INVARIANT: The layer component 'l' is IMMUTABLE after creation. This enables covariant subtyping in §5.3 while maintaining type soundness. To change an element's layer, delete and recreate with new layer assignment."
             },
             {
               "type": "definition",
@@ -912,7 +912,7 @@
             },
             {
               "type": "definition",
-              "label": "Definition 2.3 (Version Vector) [v2.0]",
+              "label": "Definition 2.3 (Version Vector)",
               "text": "VersionVector = ACTOR → ℕ"
             },
             {
@@ -954,7 +954,7 @@
             },
             {
               "type": "definition",
-              "label": "Definition 2.5 (Tier Semantics) [v2.0]",
+              "label": "Definition 2.5 (Tier Semantics)",
               "text": "The tier ordering represents REFINEMENT direction:"
             },
             {
@@ -1122,7 +1122,7 @@
                 },
                 {
                   "term": "cascade_boundary ∈ 𝔹",
-                  "definition": "Whether cascade propagation stops here [v2.0]"
+                  "definition": "Whether cascade propagation stops here"
                 }
               ]
             },
@@ -1315,7 +1315,7 @@
                 },
                 {
                   "term": "priority ∈ ℕ",
-                  "definition": "For conflict resolution [v2.0]"
+                  "definition": "For conflict resolution"
                 }
               ]
             },
@@ -1326,7 +1326,7 @@
             },
             {
               "type": "definition",
-              "label": "Definition 2.18 (Constraint Conflict) [v2.0]",
+              "label": "Definition 2.18 (Constraint Conflict)",
               "text": "conflict(c₁, c₂) iff unsat(c₁.φ ∧ c₂.φ)"
             },
             {
@@ -1336,7 +1336,7 @@
             },
             {
               "type": "paragraph",
-              "text": "**Definition 2.19 (SMT-LIB 2.6 Constraint Encoding) [v2.5]**: The following SMT-LIB 2.6 preamble defines the normative encoding for STRATUM constraints. Implementations MUST use this exact logic declaration and sort/function signatures for K0 conformance."
+              "text": "**Definition 2.19 (SMT-LIB 2.6 Constraint Encoding)**: The following SMT-LIB 2.6 preamble defines the normative encoding for STRATUM constraints. Implementations MUST use this exact logic declaration and sort/function signatures for K0 conformance."
             },
             {
               "type": "code",
@@ -1446,7 +1446,7 @@
             },
             {
               "type": "definition",
-              "label": "Definition 2.20 (Verification State) [v2.0]",
+              "label": "Definition 2.20 (Verification State)",
               "text": "VERIFICATION = {unverified, pending, verified, failed, stale}"
             },
             {
@@ -1507,13 +1507,13 @@
                 },
                 {
                   "term": "evidence ∈ List<EVIDENCE>",
-                  "definition": "Verification evidence [v2.0]"
+                  "definition": "Verification evidence"
                 }
               ]
             },
             {
               "type": "definition",
-              "label": "Definition 2.23 (Evidence) [v2.0]",
+              "label": "Definition 2.23 (Evidence)",
               "text": "evidence ::= ⟨type: EVIDENCE_TYPE, timestamp: TIME, result: 𝔹, details: VALUE⟩"
             },
             {
@@ -1641,13 +1641,13 @@
                 },
                 {
                   "term": "H ∈ HISTORY",
-                  "definition": "Operation history for CRDT [v2.0]"
+                  "definition": "Operation history for CRDT"
                 }
               ]
             },
             {
               "type": "definition",
-              "label": "Definition 2.28 (History) [v2.0]",
+              "label": "Definition 2.28 (History)",
               "text": "H = List<Operation>; Operation = ⟨op_id: ID, actor: ACTOR, clock: CLOCK, type: OP_TYPE, payload⟩"
             },
             {
@@ -1661,7 +1661,7 @@
     {
       "id": "sec-02-policy",
       "number": "2.8",
-      "title": "Policy [v2.5]",
+      "title": "Policy",
       "defs": [],
       "content": [
         {
@@ -1844,7 +1844,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 2.31 (Policy Evaluation Semantics) [v2.5]",
+          "label": "Definition 2.31 (Policy Evaluation Semantics)",
           "text": "evaluatePolicies : Spec × P(Violation) → P(PolicyAction)"
         },
         {
@@ -1874,7 +1874,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 2.32 (Policy Conflict Resolution) [v2.5]",
+          "label": "Definition 2.32 (Policy Conflict Resolution)",
           "text": "When multiple policies trigger with conflicting blockingBehavior, resolve via priority:"
         },
         {
@@ -1900,7 +1900,7 @@
         },
         {
           "type": "theorem",
-          "label": "Theorem 2.2 (Policy Evaluation Determinism) [v2.5]",
+          "label": "Theorem 2.2 (Policy Evaluation Determinism)",
           "text": "For any specification S and violation set V, evaluatePolicies(S, V) is deterministic and terminates in O(|policies(S)| × |V|) time."
         },
         {
@@ -1910,7 +1910,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 2.33 (Policy Merge Semantics) [v2.5]",
+          "label": "Definition 2.33 (Policy Merge Semantics)",
           "text": "When composing specifications S₁ ⊕ S₂, policies merge with override semantics:"
         },
         {
@@ -2300,7 +2300,7 @@
         {
           "id": "sec-04-7",
           "number": "4.7",
-          "title": "Explainability [v2.5]",
+          "title": "Explainability",
           "defs": [],
           "content": [
             {
@@ -2375,7 +2375,7 @@
             {
               "type": "definition",
               "label": "Definition 4.13 (Valid Specification)",
-              "text": "Valid(S) ≡ WellFormed(S) ∧\n           Traceable(S) ∧       -- G1\n           Complete(S) ∧        -- G2\n           Consistent(S) ∧      -- G3\n           Grounded(S) ∧        -- G4\n           Deterministic(S) ∧   -- G5\n           Coherent(S) ∧        -- G6\n           Explainable(S)       -- G7 [v2.5]"
+              "text": "Valid(S) ≡ WellFormed(S) ∧\n           Traceable(S) ∧       -- G1\n           Complete(S) ∧        -- G2\n           Consistent(S) ∧      -- G3\n           Grounded(S) ∧        -- G4\n           Deterministic(S) ∧   -- G5\n           Coherent(S) ∧        -- G6\n           Explainable(S)       -- G7"
             },
             {
               "type": "paragraph",
@@ -3090,7 +3090,7 @@
           "content": [
             {
               "type": "paragraph",
-              "text": "Theorem 10.4 (Strong Eventual Consistency) [v2.0]:"
+              "text": "Theorem 10.4 (Strong Eventual Consistency):"
             },
             {
               "type": "code",
@@ -3105,7 +3105,7 @@
             },
             {
               "type": "paragraph",
-              "text": "Theorem 10.5 (Merge Commutativity) [v2.0]:"
+              "text": "Theorem 10.5 (Merge Commutativity):"
             },
             {
               "type": "code",
@@ -3755,7 +3755,7 @@
               "description": "Valid specifications remain valid after migration",
               "conclusion": "If Valid(S) under Schema_old and migration is sound, then Valid(migrate(S, migration)) under Schema_new",
               "category": "preservation",
-              "proof_sketch": "**Proof Sketch [v2.5]**: By structural induction on the migration transform list.\n\n**Base case**: Empty transform list. migrate(S, ⟨∅⟩) = S. Since Valid(S) under Schema_old and Schema_old = Schema_new (no changes), Valid(S) under Schema_new. ✓\n\n**Inductive case**: Transform list t₁::ts. Assume Valid(S) and migration is sound.\n\n1. **Well-formedness preservation**: Each transform type preserves WF-rules:\n   - `set_default`: Adds values to existing elements → preserves WF-ID, WF-LAYER, WF-ACYCLIC\n   - `rename_field`: Bijective renaming → preserves all structural properties\n   - `compute_field`: Pure function of existing data → preserves dependencies\n   - `drop_field`: Removal never violates WF-rules (may violate constraints)\n   - `copy_field`, `split_field`, `merge_fields`: Preserve element count and dependency graph\n\n2. **Guarantee preservation**: Migration soundness requires:\n   - G1 (Traceability): Transform cannot remove traces_to edges → preserved\n   - G2 (Completeness): New error constraints satisfied by construction (migration transforms ensure this)\n   - G3 (Consistency): Transforms compute consistent values (no contradictions introduced)\n   - G4 (Groundedness): Bindings preserved or migrated with evidence\n   - G5 (Determinism): Cascade rules updated consistently\n   - G6 (Coherence): Layer positions unchanged → dependency directions preserved\n   - G7 (Explainability): Unsat cores re-computed for new schema\n\n3. **Constraint compatibility**:\n   - Backward-compatible: Old constraints still valid (new fields optional or have defaults)\n   - Forward-compatible: New constraints don't reference removed fields\n   - Breaking changes: Migration MUST provide transforms that satisfy new required constraints\n\n**Migration soundness criterion**: A migration is sound iff:\n```\n∀ transform ∈ migration.transforms.\n  transform preserves WellFormed(S) ∧\n  transform preserves {G1, G2, G3, G4, G5, G6} ∧\n  (transform.type = add_field ⇒ ∃ default_value) ∧\n  (transform.type = remove_field ⇒ field not referenced in constraints)\n```\n\n**Termination**: Migration applies finite transform list sequentially in O(|transforms| × |E|) time.\n\nTherefore, Valid(S) ∧ Sound(migration) ⇒ Valid(migrate(S, migration)). ∎"
+              "proof_sketch": "**Proof Sketch**: By structural induction on the migration transform list.\n\n**Base case**: Empty transform list. migrate(S, ⟨∅⟩) = S. Since Valid(S) under Schema_old and Schema_old = Schema_new (no changes), Valid(S) under Schema_new. ✓\n\n**Inductive case**: Transform list t₁::ts. Assume Valid(S) and migration is sound.\n\n1. **Well-formedness preservation**: Each transform type preserves WF-rules:\n   - `set_default`: Adds values to existing elements → preserves WF-ID, WF-LAYER, WF-ACYCLIC\n   - `rename_field`: Bijective renaming → preserves all structural properties\n   - `compute_field`: Pure function of existing data → preserves dependencies\n   - `drop_field`: Removal never violates WF-rules (may violate constraints)\n   - `copy_field`, `split_field`, `merge_fields`: Preserve element count and dependency graph\n\n2. **Guarantee preservation**: Migration soundness requires:\n   - G1 (Traceability): Transform cannot remove traces_to edges → preserved\n   - G2 (Completeness): New error constraints satisfied by construction (migration transforms ensure this)\n   - G3 (Consistency): Transforms compute consistent values (no contradictions introduced)\n   - G4 (Groundedness): Bindings preserved or migrated with evidence\n   - G5 (Determinism): Cascade rules updated consistently\n   - G6 (Coherence): Layer positions unchanged → dependency directions preserved\n   - G7 (Explainability): Unsat cores re-computed for new schema\n\n3. **Constraint compatibility**:\n   - Backward-compatible: Old constraints still valid (new fields optional or have defaults)\n   - Forward-compatible: New constraints don't reference removed fields\n   - Breaking changes: Migration MUST provide transforms that satisfy new required constraints\n\n**Migration soundness criterion**: A migration is sound iff:\n```\n∀ transform ∈ migration.transforms.\n  transform preserves WellFormed(S) ∧\n  transform preserves {G1, G2, G3, G4, G5, G6} ∧\n  (transform.type = add_field ⇒ ∃ default_value) ∧\n  (transform.type = remove_field ⇒ field not referenced in constraints)\n```\n\n**Termination**: Migration applies finite transform list sequentially in O(|transforms| × |E|) time.\n\nTherefore, Valid(S) ∧ Sound(migration) ⇒ Valid(migrate(S, migration)). ∎"
             }
           ],
           "overview": "Data migration during evolution",
@@ -5343,12 +5343,12 @@
             },
             {
               "type": "definition",
-              "label": "Definition 28.5 (Default Tier Attenuation Factor) [v2.5]",
+              "label": "Definition 28.5 (Default Tier Attenuation Factor)",
               "text": "The DEFAULT attenuation function for K0 conformance is exponential decay:\n\nγ(tier_diff) = 2^(-tier_diff)  for tier_diff > 0\nγ(0) = 1                        for same-tier (no attenuation)\n\nExample:\n  Tier 3 → Tier 2: γ = 0.5 (halved)\n  Tier 3 → Tier 1: γ = 0.25 (quartered)\n  Tier 3 → Tier 0: γ = 0.125 (eighth)\n\n**Alternative Attenuation Functions**: Domain profiles MAY define custom attenuation functions iff they satisfy Definitions 28.2-28.4 (Monotonicity, Strict Reduction, BIBO Stability). K0 implementations MUST support the default exponential decay. K2+ implementations MAY support custom functions."
             },
             {
               "type": "definition",
-              "label": "Definition 28.6 (Attenuation Function Type) [v2.5]",
+              "label": "Definition 28.6 (Attenuation Function Type)",
               "text": "ATTENUATION_FUNCTION = { f : ℕ → [0,1] | satisfies(f, {Monotonic, StrictReduction, BIBOStable}) }\n\nwhere:\n  Monotonic(f) ≡ ∀ n₁, n₂. n₁ ≤ n₂ ⇒ f(n₁) ≥ f(n₂)\n  StrictReduction(f) ≡ ∀ n > 0. f(n) < 1\n  BIBOStable(f) ≡ ∀ n. f(n) ∈ [0, 1]\n\n**Example Alternative Functions**:\n  • Linear: γ(n) = max(0, 1 - 0.25×n)  [satisfies all properties for n ≤ 4]\n  • Logarithmic: γ(n) = 1 / (1 + log₂(1+n))  [satisfies all properties]\n  • Step: γ(0)=1, γ(1)=0.5, γ(n≥2)=0.1  [satisfies all properties]"
             },
             {

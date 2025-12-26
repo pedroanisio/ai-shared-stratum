@@ -44,7 +44,7 @@
     },
     "suffix": "7"
   },
-  "sec-A6gecSxlJYGPIDKvgzjsG": "Policy [v2.5]",
+  "sec-A6gecSxlJYGPIDKvgzjsG": "Policy",
   "sec-pYrht_aqaJ5gENPPS98r-": "Well-Formedness Conditions",
   "sub-u18tB1pKQdXgyWtzMKNt9": {
     "title": {
@@ -103,7 +103,7 @@
   },
   "sub-KiCYjiFp6iFIhq6fcelIP": {
     "title": {
-      "title": "Explainability [v2.5]"
+      "title": "Explainability"
     },
     "suffix": "7"
   },
@@ -564,5 +564,149 @@
       "title": "CRDT Convergence & Composition [v2.4]"
     },
     "suffix": "3"
+  },
+  "sub-sec-XYQxS3DjhGgZ24R6PyyfR-1": {
+    "title": {
+      "title": "PRIMITIVE SETS"
+    },
+    "suffix": "1"
+  },
+  "sub-sec-XYQxS3DjhGgZ24R6PyyfR-2": {
+    "title": {
+      "title": "DERIVED SETS"
+    },
+    "suffix": "2"
+  },
+  "sub-sec-XYQxS3DjhGgZ24R6PyyfR-3": {
+    "title": {
+      "title": "NOTATION CONVENTIONS"
+    },
+    "suffix": "3"
+  },
+  "sub-sec-XYQxS3DjhGgZ24R6PyyfR-4": {
+    "title": {
+      "title": "THE STRATUM KERNEL (K0)"
+    },
+    "suffix": "4"
+  },
+  "sub-sec-A6gecSxlJYGPIDKvgzjsG-1": {
+    "title": {
+      "title": "Standard Policies"
+    },
+    "suffix": "1"
+  },
+  "sub-sec-A6gecSxlJYGPIDKvgzjsG-2": {
+    "title": {
+      "title": "Formal Policy Semantics"
+    },
+    "suffix": "2"
+  },
+  "sub-sec-PAskKN4i1etyZhtOY5xtv-1": {
+    "title": {
+      "title": "TLA+ Cascade Termination Template"
+    },
+    "suffix": "1"
+  },
+  "sub-sec-PAskKN4i1etyZhtOY5xtv-2": {
+    "title": {
+      "title": "Coq Type Soundness Template"
+    },
+    "suffix": "2"
+  },
+  "sub-sec-PAskKN4i1etyZhtOY5xtv-3": {
+    "title": {
+      "title": "Lean 4 CRDT Convergence Template"
+    },
+    "suffix": "3"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-1": {
+    "title": {
+      "title": "1. TRIGGER: Requirement Modification"
+    },
+    "suffix": "1"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-2": {
+    "title": {
+      "title": "2. IMPACT ANALYSIS (<1 second)"
+    },
+    "suffix": "2"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-3": {
+    "title": {
+      "title": "3. ATTENUATION CALCULATION"
+    },
+    "suffix": "3"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-4": {
+    "title": {
+      "title": "4. VALIDATION WITH G7 EXPLAINABILITY"
+    },
+    "suffix": "4"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-5": {
+    "title": {
+      "title": "5. POLICY EVALUATION"
+    },
+    "suffix": "5"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-6": {
+    "title": {
+      "title": "6. GENERATED ARTIFACTS"
+    },
+    "suffix": "6"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-7": {
+    "title": {
+      "title": "7. RESOLUTION WORKFLOW"
+    },
+    "suffix": "7"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-8": {
+    "title": {
+      "title": "8. CERTIFICATION PACKAGE EXPORT"
+    },
+    "suffix": "8"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-9": {
+    "title": {
+      "title": "WORKFLOW SUMMARY"
+    },
+    "suffix": "9"
+  },
+  "sub-sec-ggoNjElo79ZXKuYjlF7mW-10": {
+    "title": {
+      "title": "Key Capabilities Demonstrated"
+    },
+    "suffix": "10"
+  },
+  "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-1": {
+    "title": {
+      "title": "Core Contributions"
+    },
+    "suffix": "1"
+  },
+  "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-2": {
+    "title": {
+      "title": "Key Theorems"
+    },
+    "suffix": "2"
+  },
+  "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-3": {
+    "title": {
+      "title": "Certification Path"
+    },
+    "suffix": "3"
+  },
+  "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4": {
+    "title": {
+      "title": "Structure Overview"
+    },
+    "suffix": "4"
+  },
+  "sub-sec-FKg-HIOFmN1Oiyr_KJhnT-5": {
+    "title": {
+      "title": "How to Read This Document"
+    },
+    "suffix": "5"
   }
 }

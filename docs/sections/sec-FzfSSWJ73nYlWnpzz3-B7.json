@@ -10,7 +10,7 @@
       "content": [
         {
           "type": "definition",
-          "label": "Definition 8.1 (Domain Profile)",
+          "label": "Definition referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\").1 (Domain Profile)",
           "text": "A Domain Profile P is a tuple:\n\nP ::= ⟨id, name, layers, depTypes, constraintCats, bindingTypes, cascades⟩"
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition 8.2 (Profile Satisfaction)",
+          "label": "Definition referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\").2 (Profile Satisfaction)",
           "text": "S satisfies P (written S : P) iff:\n• S.domain = P.id\n• ∀ l ∈ S.L. l conforms to some layer definition in P.layers\n• ∀ d ∈ S.D. d.δ ∈ P.depTypes\n• ∀ c ∈ S.C. c.cat ∈ P.constraintCats\n• ∀ b ∈ S.B. b.concrete.type ∈ P.bindingTypes"
         }
       ],

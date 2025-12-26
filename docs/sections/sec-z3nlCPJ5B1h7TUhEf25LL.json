@@ -10,7 +10,7 @@
       "content": [
         {
           "type": "definition",
-          "label": "Definition 17.1 (RTM Export)",
+          "label": "Definition referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\").1 (RTM Export)",
           "text": "generateRTM : Specification → RTMDocument"
         },
         {
@@ -84,7 +84,7 @@
       "content": [
         {
           "type": "definition",
-          "label": "Definition 17.2 (Checklist Generation)",
+          "label": "Definition referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\").2 (Checklist Generation)",
           "text": "generateChecklist : Element × Standard × IntegrityLevel → Checklist"
         },
         {
@@ -150,7 +150,7 @@
       "content": [
         {
           "type": "definition",
-          "label": "Definition 17.3 (Change Impact Analysis Report)",
+          "label": "Definition referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\").3 (Change Impact Analysis Report)",
           "text": "analyzeChangeImpact : Specification × Change → ImpactReport"
         },
         {

@@ -201,7 +201,7 @@
     {
       "type": "heading",
       "level": 3,
-      "text": "Advanced Semantics (§12-19)"
+      "text": "Advanced Semantics (referenceMap(\"sec-Xu_Ovl71oIhLU1kaCurK_\", \"§{{sectionNumber}}\") – referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\") – referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") – referenceMap(\"sec-YFHOeAjN2dYDjDiTocSSI\", \"§{{sectionNumber}}\") – referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\") – referenceMap(\"sec-PAskKN4i1etyZhtOY5xtv\", \"§{{sectionNumber}}\"))"
     },
     {
       "type": "definition-list",
@@ -277,7 +277,7 @@
     {
       "type": "heading",
       "level": 3,
-      "text": "Safety & Certification (§23-27)"
+      "text": "Safety & Certification (referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\") – referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\"))"
     },
     {
       "type": "definition-list",
@@ -296,11 +296,11 @@
         },
         {
           "term": "FMEA (Failure Mode & Effects Analysis)",
-          "definition": "Bottom-up hazard analysis: element → failure modes → effects → mitigations. Integrated with STRATUM §26.3"
+          "definition": "Bottom-up hazard analysis: element → failure modes → effects → mitigations. Integrated with STRATUM referenceMap(\"sub-U84ZnWVaCvrh4Ir1xroli\", \"§{{sectionNumber}}.3 FMEA/FTA Integration\")"
         },
         {
           "term": "FTA (Fault Tree Analysis)",
-          "definition": "Top-down hazard analysis: system hazard → causes → gate logic → basic events. Integrated via STRATUM elements §26.3"
+          "definition": "Top-down hazard analysis: system hazard → causes → gate logic → basic events. Integrated via STRATUM elements referenceMap(\"sub-U84ZnWVaCvrh4Ir1xroli\", \"§{{sectionNumber}}.3 FMEA/FTA Integration\")"
         },
         {
           "term": "IEC 61508",

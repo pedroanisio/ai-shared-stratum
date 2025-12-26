@@ -190,7 +190,7 @@ export function renderContent(items: ContentItem[] | undefined): string {
         case "paragraph":
           return renderTextBlocks(item.text);
         case "definition-list":
-          return `<dl>${item.items
+          return `<dl class="definition-list">${item.items
             .map(
               (entry) =>
                 `<dt>${renderInlineWithRefs(entry.term)}</dt><dd>${renderTextBlocks(
@@ -419,6 +419,7 @@ export function renderCover(index: IndexFile): string {
             ${description ? `<p class="cover-description">${description}</p>` : ""}
             <div class="cover-links">
               <a class="cover-link" href="document-graph.html">View Document Graph</a>
+              <a class="cover-link" href="document-graph-3d.html">View 3D Graph</a>
             </div>
           </div>
           <div class="cover-body">
@@ -489,13 +490,19 @@ export function formatPartLabelWithRange(
   return range ? `${label} (${range})` : label;
 }
 
-export function renderSection(node: SectionNode, number: string | undefined, level: number): string {
+export function renderSection(
+  node: SectionNode,
+  number: string | undefined,
+  level: number,
+  rootSectionId: string
+): string {
   const headingLevel = Math.min(6, Math.max(2, level));
   const label = number ? `${number} ${node.title ?? ""}`.trim() : node.title ?? "";
+  const rootAttr = rootSectionId ? ` data-root-section="${escapeHtml(rootSectionId)}"` : "";
   const heading = label
-    ? `<h${headingLevel} id="${escapeHtml(node.id)}">${renderInline(
+    ? `<h${headingLevel} id="${escapeHtml(node.id)}"${rootAttr}>${renderInline(
         label
-      )}<a class="anchor" href="#${escapeHtml(node.id)}">#</a></h${headingLevel}>`
+      )}<a class="anchor" href="#${escapeHtml(node.id)}">#</a><button class="copy-link" data-id="${escapeHtml(node.id)}" type="button" title="Copy link" aria-label="Copy link"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button></h${headingLevel}>`
     : "";
   const overview = node.overview ? `<p>${renderInlineWithRefs(node.overview)}</p>` : "";
   const defs = renderDefinitionEntries(node.defs);
@@ -503,7 +510,7 @@ export function renderSection(node: SectionNode, number: string | undefined, lev
   const children = (node.children || [])
     .map((child) => {
       const childNumber = number && child.suffix ? `${number}.${child.suffix}` : undefined;
-      return renderSection(child, childNumber, headingLevel + 1);
+      return renderSection(child, childNumber, headingLevel + 1, rootSectionId);
     })
     .join("\n");
 
@@ -555,7 +562,7 @@ export function renderTOC(index: IndexFile): string {
       .join("");
   }
 
-  return `<nav class="toc"><div class="toc-header"><h2>Contents</h2><button class="toc-toggle" type="button">Switch side</button></div><ul>${items}</ul></nav>`;
+  return `<nav class="toc"><div class="toc-header"><div class="toc-title"><h2>Contents</h2><input class="toc-search" type="search" placeholder="Filter sections" aria-label="Filter table of contents" /></div><button class="toc-toggle" type="button">Switch side</button></div><ul>${items}</ul></nav>`;
 }
 
 export function renderPartsContent(
@@ -574,12 +581,12 @@ export function renderPartsContent(
           if (!entry || !section) {
             return "";
           }
-          return renderSection(section, entry.number, 3);
+      return renderSection(section, entry.number, 3, entry.id);
         })
         .join("\n");
       const partHeading = `<h2 id="${escapeHtml(part.id)}">${renderInline(label)}<a class="anchor" href="#${escapeHtml(
         part.id
-      )}">#</a></h2>`;
+      )}">#</a><button class="copy-link" data-id="${escapeHtml(part.id)}" type="button" title="Copy link" aria-label="Copy link"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button></h2>`;
       return `<section class="part">${partHeading}\n${partSections}</section>`;
     })
     .join("\n");
@@ -594,7 +601,7 @@ export function renderPartsContent(
       const entry = sectionMap.get(id)?.entry;
       const section = sectionMap.get(id)?.section;
       if (!entry || !section) return "";
-      return renderSection(section, entry.number, 2);
+      return renderSection(section, entry.number, 2, entry.id);
     })
     .join("\n");
   return `${partsHtml}\n<section class="part"><h2>Other Sections</h2>\n${extraSections}</section>`;
@@ -772,11 +779,20 @@ async function main(): Promise<void> {
       ? renderPartsContent(index.parts, sectionMap)
       : sections
           .map(({ entry, section }) => {
-            return renderSection(section, entry.number, 2);
+            return renderSection(section, entry.number, 2, entry.id);
           })
           .join("\n");
 
   const coverHtml = renderCover(index);
+  const sectionInfo = index.sections.reduce((acc, entry) => {
+    acc[entry.id] = {
+      id: entry.id,
+      number: entry.number,
+      title: entry.title,
+      contentRef: entry.contentRef,
+    };
+    return acc;
+  }, {} as Record<string, { id: string; number?: number; title?: string; contentRef: string }>);
 
   const html = `<!doctype html>
 <html lang="en">
@@ -788,39 +804,89 @@ async function main(): Promise<void> {
       :root {
         color-scheme: light;
         font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-        line-height: 1.5;
-        color: #1c1c1c;
-        background: #f7f5f2;
+        line-height: 1.55;
+        color: #1f1b16;
+        background: #f5f2ec;
+        --bg: #f5f2ec;
+        --surface: #fffdf9;
+        --surface-strong: #ffffff;
+        --ink: #1f1b16;
+        --muted: #6b6257;
+        --accent: #1f6b5a;
+        --accent-2: #c1552c;
+        --border: #e1ddd6;
+        --shadow: rgba(19, 16, 12, 0.12);
+        --code-bg: #f1ede6;
+        --soft: #fbfaf8;
+        --highlight: rgba(31, 107, 90, 0.12);
       }
       body {
         margin: 0;
-        padding: 48px 24px 80px;
+        padding: 56px 24px 96px;
+        color: var(--ink);
+        background: var(--bg);
+        position: relative;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(circle at 12% 8%, rgba(31, 107, 90, 0.14), transparent 55%),
+          radial-gradient(circle at 85% 15%, rgba(193, 85, 44, 0.14), transparent 50%),
+          linear-gradient(180deg, #fff7ec 0%, #f5f2ec 55%, #f2eee6 100%);
+        z-index: -2;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(transparent 94%, rgba(0, 0, 0, 0.03) 95%),
+          linear-gradient(90deg, transparent 94%, rgba(0, 0, 0, 0.03) 95%);
+        background-size: 48px 48px;
+        opacity: 0.35;
+        z-index: -1;
+        pointer-events: none;
+      }
+      @keyframes riseIn {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
       main {
-        max-width: 920px;
+        max-width: 980px;
         margin: 0 auto;
-        background: #ffffff;
-        padding: 32px;
-        border-radius: 16px;
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+        background: var(--surface-strong);
+        padding: 36px;
+        border-radius: 20px;
+        box-shadow: 0 32px 90px rgba(19, 16, 12, 0.12);
+        position: relative;
+        animation: riseIn 0.6s ease-out;
       }
       .cover {
         margin: 0 0 3rem;
-        padding: 24px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, #fef7e8 0%, #e8f0ff 55%, #f4ecff 100%);
+        padding: 28px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fdf6ea 0%, #e6f3ee 55%, #faefe7 100%);
+        animation: riseIn 0.7s ease-out;
       }
       .cover-surface {
-        background: rgba(255, 255, 255, 0.88);
-        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 16px;
         padding: 32px;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 14px 36px rgba(19, 16, 12, 0.12);
       }
       .cover-eyebrow {
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.75rem;
-        color: #6a6258;
+        letter-spacing: 0.16em;
+        font-size: 0.72rem;
+        color: var(--muted);
         margin: 0 0 0.6rem;
       }
       .cover-title {
@@ -829,13 +895,14 @@ async function main(): Promise<void> {
       }
       .cover-subtitle {
         font-size: 1.2rem;
-        color: #4a453f;
+        color: var(--muted);
         margin: 0 0 0.8rem;
       }
       .cover-description {
         font-size: 1rem;
         margin: 0 0 1.4rem;
         max-width: 60ch;
+        color: #4a453f;
       }
       .cover-links {
         display: flex;
@@ -848,15 +915,18 @@ async function main(): Promise<void> {
         align-items: center;
         gap: 0.4rem;
         text-decoration: none;
-        color: #2c2a27;
+        color: var(--ink);
         font-weight: 600;
-        border: 1px solid #d1ccc4;
+        border: 1px solid var(--border);
         border-radius: 999px;
         padding: 0.4rem 0.9rem;
-        background: #ffffff;
+        background: var(--surface-strong);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
       .cover-link:hover {
         background: #f1ede6;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(31, 27, 22, 0.12);
       }
       .cover-body {
         display: grid;
@@ -892,20 +962,46 @@ async function main(): Promise<void> {
       h4 { font-size: 1.2rem; }
       p { margin: 0.6em 0; }
       section { margin-bottom: 2rem; }
+      section.part > section + section {
+        border-top: 1px solid transparent;
+        border-image: linear-gradient(90deg, transparent 10%, #e1ddd6 30%, #e1ddd6 70%, transparent 90%) 1;
+        padding-top: 3rem;
+        margin-top: 2.5rem;
+        position: relative;
+      }
+      section.part > section + section::before {
+        content: "§";
+        position: absolute;
+        top: -0.7em;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface-strong);
+        padding: 0 0.8rem;
+        color: #c1bbb3;
+        font-size: 1.1rem;
+      }
+      section.part > section > h3 {
+        border-left: 4px solid var(--accent);
+        padding-left: 1rem;
+        margin-left: -1rem;
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+      }
       dl { margin: 1rem 0; }
       dt { font-weight: 600; margin-top: 0.6rem; }
       dd { margin-left: 1rem; margin-bottom: 0.4rem; }
       code {
         font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
-        background: #f2efea;
+        background: var(--code-bg);
         padding: 0 0.2em;
         border-radius: 4px;
       }
       pre {
-        background: #f2efea;
+        background: var(--code-bg);
         padding: 0.9rem 1rem;
-        border-radius: 8px;
+        border-radius: 10px;
         overflow-x: auto;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
       }
       pre code {
         background: transparent;
@@ -914,8 +1010,8 @@ async function main(): Promise<void> {
         white-space: pre;
       }
       .diagram {
-        background: #eef4ff;
-        border-left: 4px solid #3f6fd3;
+        background: #e7f2ef;
+        border-left: 4px solid var(--accent);
         padding: 0.9rem 1rem;
         border-radius: 8px;
         font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
@@ -923,16 +1019,16 @@ async function main(): Promise<void> {
       }
       ul { padding-left: 1.4rem; }
       .admonition {
-        border-left: 4px solid #d67f00;
-        background: #fff7eb;
+        border-left: 4px solid #c77a1c;
+        background: #fff4e1;
         padding: 0.8rem 1rem;
         margin: 1rem 0;
       }
-      .admonition-note { border-left-color: #3f6fd3; background: #eef4ff; }
-      .admonition-important { border-left-color: #b92d2d; background: #ffecec; }
+      .admonition-note { border-left-color: var(--accent); background: #e7f2ef; }
+      .admonition-important { border-left-color: #b24729; background: #ffebe6; }
       .reference {
-        border: 1px solid #e1ddd6;
-        background: #fbfaf8;
+        border: 1px solid var(--border);
+        background: var(--soft);
         padding: 0.8rem 1rem;
         margin: 0.8rem 0;
       }
@@ -944,11 +1040,11 @@ async function main(): Promise<void> {
       .profile,
       .checklist,
       .table {
-        border: 1px solid #e1ddd6;
-        background: #fbfaf8;
+        border: 1px solid var(--border);
+        background: var(--soft);
         padding: 0.8rem 1rem;
         margin: 0.8rem 0;
-        border-radius: 10px;
+        border-radius: 12px;
       }
       .profile-layer + .profile-layer {
         margin-top: 0.8rem;
@@ -968,7 +1064,7 @@ async function main(): Promise<void> {
       }
       th,
       td {
-        border: 1px solid #e1ddd6;
+        border: 1px solid var(--border);
         padding: 0.4rem 0.6rem;
         text-align: left;
       }
@@ -976,27 +1072,45 @@ async function main(): Promise<void> {
         background: #f1ede6;
       }
       .toc {
-        background: #fbfaf8;
-        border: 1px solid #e1ddd6;
+        background: var(--soft);
+        border: 1px solid var(--border);
         padding: 1rem 1.2rem;
-        border-radius: 12px;
+        border-radius: 16px;
         margin: 1.5rem 0 2rem;
-        max-width: 360px;
+        max-width: 380px;
+        box-shadow: 0 16px 40px rgba(19, 16, 12, 0.08);
       }
       .toc-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         gap: 1rem;
       }
+      .toc-title {
+        flex: 1;
+      }
       .toc-toggle {
-        border: 1px solid #d1ccc4;
-        background: #fff;
-        color: #2c2a27;
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        color: var(--ink);
         border-radius: 999px;
         padding: 0.3rem 0.8rem;
         cursor: pointer;
         font-size: 0.85rem;
+      }
+      .toc-search {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        border-radius: 999px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        color: var(--ink);
+        margin-top: 0.4rem;
+      }
+      .toc-search:focus {
+        outline: 2px solid rgba(31, 107, 90, 0.2);
+        border-color: var(--accent);
       }
       .toc h2 {
         margin-top: 0;
@@ -1022,14 +1136,17 @@ async function main(): Promise<void> {
         font-weight: 600;
         margin-top: 0.6rem;
       }
+      .toc-hidden {
+        display: none;
+      }
       .def-stack {
         display: grid;
         gap: 1rem;
         margin: 1.4rem 0;
       }
       .def-block {
-        border: 1px solid #e1ddd6;
-        background: #fbfaf8;
+        border: 1px solid var(--border);
+        background: var(--soft);
         padding: 1rem 1.2rem;
         border-radius: 12px;
       }
@@ -1039,7 +1156,7 @@ async function main(): Promise<void> {
         text-transform: uppercase;
         letter-spacing: 0.08em;
         font-size: 0.75rem;
-        color: #6a6258;
+        color: var(--muted);
         margin-bottom: 0.4rem;
       }
       .def-block h4 {
@@ -1051,23 +1168,269 @@ async function main(): Promise<void> {
       .def-proof h5 {
         margin: 1rem 0 0.4rem;
       }
-      .toc a {
+      .definition-list {
+        display: grid;
+        grid-template-columns: minmax(180px, 240px) 1fr;
+        gap: 0;
+        margin: 1.4rem 0;
+        background: var(--soft);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .definition-list dt,
+      .definition-list dd {
+        padding: 0.8rem 1rem;
+        margin: 0;
+        border-bottom: 1px solid #e9e5df;
+      }
+      .definition-list dt {
+        font-weight: 600;
+        color: #3c3731;
+        background: rgba(241, 237, 230, 0.5);
+        border-right: 1px solid #e9e5df;
+      }
+      .definition-list dd {
+        color: #4a453f;
+      }
+      .definition-list dt:last-of-type,
+      .definition-list dd:last-of-type {
+        border-bottom: none;
+      }
+      @media (max-width: 720px) {
+        .definition-list {
+          grid-template-columns: 1fr;
+        }
+        .definition-list dt {
+          border-right: none;
+          border-bottom: none;
+          padding-bottom: 0.4rem;
+        }
+        .definition-list dd {
+          padding-top: 0;
+        }
+      }
+      .breadcrumb-links {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .breadcrumb-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 0.4rem;
+      }
+      .breadcrumb-btn {
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 0.25rem 0.7rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .breadcrumb-btn:hover {
+        background: #f1ede6;
+      }
+      .inspect-modal {
+        position: fixed;
+        right: 24px;
+        top: 180px;
+        width: min(360px, calc(100vw - 48px));
+        background: var(--surface-strong);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 18px 50px rgba(19, 16, 12, 0.18);
+        padding: 1rem 1.2rem;
+        display: none;
+        z-index: 41;
+      }
+      .inspect-modal.active {
+        display: block;
+      }
+      .inspect-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.6rem;
+      }
+      .inspect-modal h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+      .inspect-close {
+        border: none;
+        background: transparent;
+        font-size: 1.4rem;
+        line-height: 1;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+      }
+      .inspect-close:hover {
+        background: #f1ede6;
         color: #2c2a27;
+      }
+      .inspect-modal p {
+        margin: 0.4rem 0;
+        font-size: 0.95rem;
+      }
+      .inspect-meta {
+        font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+        font-size: 0.85rem;
+        color: #4a453f;
+        background: #f7f5f2;
+        border-radius: 8px;
+        padding: 0.6rem 0.7rem;
+        margin-top: 0.6rem;
+        white-space: pre-wrap;
+      }
+      .inspect-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+      }
+      .inspect-copy {
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .inspect-copy:hover {
+        background: #f1ede6;
+      }
+      .toc a {
+        color: var(--ink);
         text-decoration: none;
       }
       .toc a:hover {
         text-decoration: underline;
       }
       .ref-link {
-        color: #2c2a27;
+        color: var(--ink);
         text-decoration: underline dotted;
+      }
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid rgba(31, 107, 90, 0.5);
+        outline-offset: 2px;
+      }
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        width: 0%;
+        z-index: 200;
+        transition: width 0.1s ease-out;
+      }
+      .back-to-top {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        color: var(--ink);
+        font-size: 1.4rem;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(19, 16, 12, 0.12);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease;
+        z-index: 90;
+      }
+      .back-to-top:hover {
+        background: #f1ede6;
+        transform: translateY(-2px);
+      }
+      .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .toc a.active {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .progress-bar {
+          transition: none;
+        }
+        main,
+        .cover {
+          animation: none;
+        }
+      }
+      .breadcrumb {
+        position: fixed;
+        top: 3px;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        z-index: 100;
+        transform: translateY(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 0 2px 8px rgba(19, 16, 12, 0.08);
+      }
+      .breadcrumb.visible {
+        transform: translateY(0);
+      }
+      .breadcrumb-inner {
+        max-width: 980px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .breadcrumb-item {
+        color: var(--muted);
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+      .breadcrumb-item:hover {
+        color: #2c2a27;
+        text-decoration: underline;
+      }
+      .breadcrumb-item.current {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .breadcrumb-sep {
+        color: #c1bbb3;
+        flex-shrink: 0;
+      }
+      .breadcrumb-item.truncated {
+        flex-shrink: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .toc ul {
         max-height: none;
         overflow: visible;
-      }
-      body.toc-floating main {
-        padding-right: 360px;
       }
       body.toc-floating .toc {
         position: fixed;
@@ -1075,7 +1438,8 @@ async function main(): Promise<void> {
         width: 320px;
         max-height: calc(100vh - 48px);
         overflow: auto;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 12px 40px rgba(19, 16, 12, 0.18);
+        transition: opacity 0.2s ease, transform 0.2s ease;
       }
       body.toc-right.toc-floating .toc {
         right: 24px;
@@ -1084,13 +1448,6 @@ async function main(): Promise<void> {
       body.toc-left.toc-floating .toc {
         left: 24px;
         right: auto;
-      }
-      body.toc-left.toc-floating main {
-        padding-left: 360px;
-        padding-right: 32px;
-      }
-      body.toc-floating {
-        padding-left: 0;
       }
       h2 .anchor,
       h3 .anchor,
@@ -1111,12 +1468,77 @@ async function main(): Promise<void> {
       h6:hover .anchor {
         opacity: 1;
       }
+      .copy-link {
+        margin-left: 0.3rem;
+        color: #9c9488;
+        background: none;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease, color 0.2s ease;
+        padding: 0.2rem;
+        border-radius: 4px;
+        vertical-align: middle;
+        width: 1.2em;
+        height: 1.2em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .copy-link svg {
+        width: 0.85em;
+        height: 0.85em;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+      }
+      .copy-link:hover {
+        color: var(--accent);
+        background: var(--highlight);
+      }
+      .copy-link.copied {
+        color: #2d8a4e;
+      }
+      h2[id],
+      h3[id],
+      h4[id],
+      h5[id],
+      h6[id] {
+        scroll-margin-top: 120px;
+      }
+      h2[id]:target,
+      h3[id]:target,
+      h4[id]:target,
+      h5[id]:target,
+      h6[id]:target {
+        background: var(--highlight);
+        border-radius: 12px;
+        padding: 0.2rem 0.4rem;
+      }
+      h2:hover .copy-link,
+      h3:hover .copy-link,
+      h4:hover .copy-link,
+      h5:hover .copy-link,
+      h6:hover .copy-link {
+        opacity: 1;
+      }
       @media (max-width: 900px) {
         .cover-body {
           grid-template-columns: 1fr;
         }
         .cover-title {
           font-size: 2.2rem;
+        }
+        .toc ul {
+          columns: 1;
+        }
+        body.toc-floating .toc {
+          left: 16px;
+          right: 16px;
+          width: auto;
         }
       }
       @media print {
@@ -1127,17 +1549,41 @@ async function main(): Promise<void> {
     </style>
   </head>
   <body>
+    <div class="progress-bar" id="progress-bar"></div>
+    <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">↑</button>
+    <nav class="breadcrumb" aria-label="Current section">
+      <div class="breadcrumb-inner">
+        <div class="breadcrumb-links"></div>
+        <div class="breadcrumb-actions">
+          <button class="breadcrumb-btn" id="inspect-toggle" type="button">Inspect</button>
+        </div>
+      </div>
+    </nav>
+    <div class="inspect-modal" id="inspect-modal">
+      <div class="inspect-header">
+        <h3>Context Inspector</h3>
+        <button class="inspect-close" id="inspect-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <p id="inspect-title">No section detected</p>
+      <p id="inspect-root"></p>
+      <div class="inspect-meta" id="inspect-meta"></div>
+      <div class="inspect-actions">
+        <button class="inspect-copy" id="inspect-copy" type="button">Copy</button>
+      </div>
+    </div>
     <main>
       ${coverHtml}
       ${renderTOC(index)}
       ${sectionsHtml}
     </main>
     <script>
+      var SECTION_INFO = ${JSON.stringify(sectionInfo)};
       (function () {
         var threshold = 360;
         var positionKey = "toc-position";
         var toc = document.querySelector(".toc");
         var toggle = toc ? toc.querySelector(".toc-toggle") : null;
+        var search = toc ? toc.querySelector(".toc-search") : null;
 
         function applyPosition(position) {
           document.body.classList.remove("toc-left", "toc-right");
@@ -1155,6 +1601,38 @@ async function main(): Promise<void> {
           });
         }
 
+        if (toc && search) {
+          var tocItems = Array.prototype.slice.call(toc.querySelectorAll("li"));
+          tocItems.forEach(function (item) {
+            var text = item.textContent ? item.textContent.toLowerCase() : "";
+            item.setAttribute("data-toc-text", text);
+          });
+
+          function filterToc(query) {
+            var q = query.trim().toLowerCase();
+            tocItems.forEach(function (item) {
+              item.classList.remove("toc-hidden");
+            });
+            if (!q) return;
+            tocItems.forEach(function (item) {
+              var text = item.getAttribute("data-toc-text") || "";
+              if (text.indexOf(q) === -1) {
+                item.classList.add("toc-hidden");
+              }
+            });
+          }
+
+          search.addEventListener("input", function () {
+            filterToc(search.value || "");
+          });
+          search.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+              search.value = "";
+              filterToc("");
+            }
+          });
+        }
+
         function toggleToc() {
           if (window.scrollY > threshold) {
             document.body.classList.add("toc-floating");
@@ -1164,10 +1642,296 @@ async function main(): Promise<void> {
         }
         window.addEventListener("scroll", toggleToc, { passive: true });
         toggleToc();
+
+        // Breadcrumb logic
+        var breadcrumb = document.querySelector(".breadcrumb");
+        var breadcrumbInner = document.querySelector(".breadcrumb-inner");
+        var breadcrumbLinks = document.querySelector(".breadcrumb-links");
+        var sections = [];
+        var headings = document.querySelectorAll("h2[id], h3[id], h4[id], h5[id], h6[id]");
+
+        headings.forEach(function (heading) {
+          var level = parseInt(heading.tagName.substring(1), 10);
+          var id = heading.id;
+          var text = heading.textContent.replace(/#$/, "").trim();
+          sections.push({ el: heading, id: id, text: text, level: level });
+        });
+
+        function buildBreadcrumbTrail(currentIndex) {
+          if (currentIndex < 0) return [];
+          var trail = [];
+          var current = sections[currentIndex];
+          trail.unshift(current);
+          var targetLevel = current.level;
+          for (var i = currentIndex - 1; i >= 0; i--) {
+            if (sections[i].level < targetLevel) {
+              trail.unshift(sections[i]);
+              targetLevel = sections[i].level;
+            }
+            if (targetLevel <= 2) break;
+          }
+          return trail;
+        }
+
+        function renderBreadcrumb(trail) {
+          if (!breadcrumbInner || !breadcrumbLinks) return;
+          if (trail.length === 0) {
+            breadcrumbLinks.innerHTML = "";
+            return;
+          }
+          var html = trail.map(function (item, idx) {
+            var isLast = idx === trail.length - 1;
+            var classes = "breadcrumb-item" + (isLast ? " current truncated" : "");
+            var link = '<a class="' + classes + '" href="#' + item.id + '">' + item.text + "</a>";
+            return idx > 0 ? '<span class="breadcrumb-sep">›</span>' + link : link;
+          }).join("");
+          breadcrumbLinks.innerHTML = html;
+        }
+
+        var lastIndex = -1;
+        function updateBreadcrumb() {
+          var scrollY = window.scrollY;
+          var viewportTop = scrollY + 60;
+          var currentIndex = -1;
+
+          for (var i = sections.length - 1; i >= 0; i--) {
+            var rect = sections[i].el.getBoundingClientRect();
+            var top = rect.top + scrollY;
+            if (top <= viewportTop) {
+              currentIndex = i;
+              break;
+            }
+          }
+
+          if (scrollY > threshold) {
+            breadcrumb.classList.add("visible");
+          } else {
+            breadcrumb.classList.remove("visible");
+          }
+
+          if (currentIndex !== lastIndex) {
+            lastIndex = currentIndex;
+            var trail = buildBreadcrumbTrail(currentIndex);
+            renderBreadcrumb(trail);
+          }
+        }
+
+        window.addEventListener("scroll", updateBreadcrumb, { passive: true });
+        updateBreadcrumb();
       })();
+
+      // Progress bar
+      (function () {
+        var progressBar = document.getElementById("progress-bar");
+        function updateProgress() {
+          var scrollTop = window.scrollY || document.documentElement.scrollTop;
+          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          if (progressBar) {
+            progressBar.style.width = progress + "%";
+          }
+        }
+        window.addEventListener("scroll", updateProgress, { passive: true });
+        updateProgress();
+      })();
+
+      // Back to top button
+      (function () {
+        var backToTop = document.getElementById("back-to-top");
+        var showThreshold = 400;
+        function toggleBackToTop() {
+          if (window.scrollY > showThreshold) {
+            backToTop.classList.add("visible");
+          } else {
+            backToTop.classList.remove("visible");
+          }
+        }
+        if (backToTop) {
+          backToTop.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+          window.addEventListener("scroll", toggleBackToTop, { passive: true });
+          toggleBackToTop();
+        }
+      })();
+
+      // TOC current section highlighting
+      (function () {
+        var toc = document.querySelector(".toc");
+        if (!toc) return;
+        var tocLinks = toc.querySelectorAll("a[href^=\\"#\\"]");
+        var tocMap = {};
+        tocLinks.forEach(function (link) {
+          var href = link.getAttribute("href");
+          if (href && href.startsWith("#")) {
+            tocMap[href.substring(1)] = link;
+          }
+        });
+
+        var headings = document.querySelectorAll("h2[id], h3[id]");
+        var sectionIds = [];
+        headings.forEach(function (heading) {
+          var rootSection = heading.getAttribute("data-root-section");
+          if (rootSection && sectionIds.indexOf(rootSection) === -1) {
+            sectionIds.push(rootSection);
+          }
+        });
+
+        function updateTocHighlight() {
+          var scrollY = window.scrollY;
+          var viewportTop = scrollY + 100;
+          var activeId = null;
+
+          headings.forEach(function (heading) {
+            var rect = heading.getBoundingClientRect();
+            var top = rect.top + scrollY;
+            if (top <= viewportTop) {
+              var rootSection = heading.getAttribute("data-root-section");
+              if (rootSection) {
+                activeId = rootSection;
+              }
+            }
+          });
+
+          tocLinks.forEach(function (link) {
+            link.classList.remove("active");
+          });
+
+          if (activeId && tocMap[activeId]) {
+            tocMap[activeId].classList.add("active");
+          }
+        }
+
+        window.addEventListener("scroll", updateTocHighlight, { passive: true });
+        updateTocHighlight();
+      })();
+
       if (window.mermaid && window.mermaid.initialize) {
         window.mermaid.initialize({ startOnLoad: true });
       }
+
+      // Copy section content buttons
+      (function () {
+        var copyIcon = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+        var checkIcon = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+        function getSectionContent(id) {
+          var heading = document.getElementById(id);
+          if (!heading) return "";
+          var section = heading.closest("section");
+          if (!section) return heading.textContent || "";
+          var clone = section.cloneNode(true);
+          var buttons = clone.querySelectorAll(".copy-link, .anchor");
+          buttons.forEach(function (btn) { btn.remove(); });
+          return clone.textContent || "";
+        }
+
+        document.addEventListener("click", function (e) {
+          var btn = e.target.closest(".copy-link");
+          if (!btn) return;
+          var id = btn.getAttribute("data-id");
+          if (!id) return;
+          var content = getSectionContent(id).trim().replace(/\\s+/g, " ").replace(/^ | $/gm, "");
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(content).then(function () {
+              btn.classList.add("copied");
+              btn.innerHTML = checkIcon;
+              setTimeout(function () {
+                btn.classList.remove("copied");
+                btn.innerHTML = copyIcon;
+              }, 1500);
+            });
+          }
+        });
+      })();
+    </script>
+    <script>
+      (function () {
+        var inspectToggle = document.getElementById("inspect-toggle");
+        var inspectModal = document.getElementById("inspect-modal");
+        var inspectClose = document.getElementById("inspect-close");
+        var inspectTitle = document.getElementById("inspect-title");
+        var inspectRoot = document.getElementById("inspect-root");
+        var inspectMeta = document.getElementById("inspect-meta");
+        var inspectCopy = document.getElementById("inspect-copy");
+
+        function getActiveHeading() {
+          var headings = document.querySelectorAll("h2[id], h3[id], h4[id], h5[id], h6[id]");
+          var active = null;
+          var minOffset = Infinity;
+          headings.forEach(function (heading) {
+            var rect = heading.getBoundingClientRect();
+            if (rect.top <= 140 && Math.abs(rect.top) < minOffset) {
+              minOffset = Math.abs(rect.top);
+              active = heading;
+            }
+          });
+          return active;
+        }
+
+        function updateInspect() {
+          var active = getActiveHeading();
+          if (!active) {
+            inspectTitle.textContent = "No section detected";
+            inspectRoot.textContent = "";
+            inspectMeta.textContent = "";
+            return;
+          }
+          var rootId = active.getAttribute("data-root-section") || active.id;
+          var section = SECTION_INFO[rootId];
+          var headingText = active.textContent ? active.textContent.replace(/#$/, "").trim() : active.id;
+          var scrollTop = window.scrollY || document.documentElement.scrollTop;
+          var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          var percent = maxScroll > 0 ? Math.round((scrollTop / maxScroll) * 100) : 0;
+
+          inspectTitle.textContent = headingText;
+          inspectRoot.textContent = section
+            ? "Section: " + (section.number ? section.number + " " : "") + (section.title || section.id)
+            : "Section: " + rootId;
+          inspectMeta.textContent =
+            "Heading ID: " + active.id + "\\n" +
+            "Root section ID: " + rootId + "\\n" +
+            (section ? "Content file: docs/sections/" + section.contentRef + "\\n" : "") +
+            "Anchor: " + window.location.pathname.split("/").pop() + "#" + active.id + "\\n" +
+            "Scroll: " + percent + "%";
+        }
+
+        if (inspectToggle) {
+          inspectToggle.addEventListener("click", function () {
+            inspectModal.classList.toggle("active");
+            updateInspect();
+          });
+        }
+
+        if (inspectClose) {
+          inspectClose.addEventListener("click", function () {
+            inspectModal.classList.remove("active");
+          });
+        }
+
+        if (inspectCopy) {
+          inspectCopy.addEventListener("click", function () {
+            var text = [inspectTitle.textContent, inspectRoot.textContent, inspectMeta.textContent]
+              .filter(Boolean)
+              .join("\\n");
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text);
+            }
+          });
+        }
+
+        window.addEventListener("scroll", function () {
+          if (inspectModal.classList.contains("active")) {
+            updateInspect();
+          }
+        }, { passive: true });
+
+        window.addEventListener("resize", function () {
+          if (inspectModal.classList.contains("active")) {
+            updateInspect();
+          }
+        });
+      })();
     </script>
   </body>
 </html>`;

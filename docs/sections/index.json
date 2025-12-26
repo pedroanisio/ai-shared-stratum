@@ -6,90 +6,92 @@
   "description": "A layered specification framework for describing complex artifacts with formal guarantees",
   "sections": [
     {
-      "id": "sec-XYQxS3DjhGgZ24R6PyyfR",
+      "id": "sec-FKg-HIOFmN1Oiyr_KJhnT",
       "number": 1,
+      "title": "Summary",
+      "contentRef": "sec-FKg-HIOFmN1Oiyr_KJhnT.json"
+    },
+    {
+      "id": "sec-XYQxS3DjhGgZ24R6PyyfR",
+      "number": 2,
       "title": "Foundations",
       "contentRef": "sec-XYQxS3DjhGgZ24R6PyyfR.json"
     },
     {
-      "id": "sec-ggoNjElo79ZXKuYjlF7mW",
-      "title": "STRATUM in Action: Requirement Change Impact",
-      "contentRef": "sec-ggoNjElo79ZXKuYjlF7mW.json"
-    },
-    {
       "id": "sec-8qxwzRxMeEWqbne8C5K8l",
-      "number": 2,
+      "number": 3,
       "title": "Abstract Syntax",
       "contentRef": "sec-8qxwzRxMeEWqbne8C5K8l.json"
     },
     {
       "id": "sec-A6gecSxlJYGPIDKvgzjsG",
-      "title": "Policy [v2.5]",
-      "contentRef": "sec-A6gecSxlJYGPIDKvgzjsG.json"
+      "title": "Policy",
+      "contentRef": "sec-A6gecSxlJYGPIDKvgzjsG.json",
+      "number": 4
     },
     {
       "id": "sec-pYrht_aqaJ5gENPPS98r-",
-      "number": 3,
+      "number": 5,
       "title": "Well-Formedness Conditions",
       "contentRef": "sec-pYrht_aqaJ5gENPPS98r-.json"
     },
     {
       "id": "sec-taGb2W-Ks5lKWB8hcj3UY",
-      "number": 4,
+      "number": 6,
       "title": "Semantic Properties (The Seven Guarantees)",
       "contentRef": "sec-taGb2W-Ks5lKWB8hcj3UY.json"
     },
     {
       "id": "sec-Jcn-W5ZXGpackkeeq-isa",
-      "number": 5,
+      "number": 7,
       "title": "Type System",
       "contentRef": "sec-Jcn-W5ZXGpackkeeq-isa.json"
     },
     {
       "id": "sec-CwnDzo78GYBw57r1EI_R5",
-      "number": 6,
+      "number": 8,
       "title": "Inference Rules",
       "contentRef": "sec-CwnDzo78GYBw57r1EI_R5.json"
     },
     {
       "id": "sec-aBNKnM08R3W5pfjELaQas",
-      "number": 7,
+      "number": 9,
       "title": "Operations",
       "contentRef": "sec-aBNKnM08R3W5pfjELaQas.json"
     },
     {
       "id": "sec-FzfSSWJ73nYlWnpzz3-B7",
-      "number": 8,
+      "number": 10,
       "title": "Domain Profiles",
       "contentRef": "sec-FzfSSWJ73nYlWnpzz3-B7.json"
     },
     {
       "id": "sec-xEbsOCjQmAy1Uj_H6qRLr",
-      "number": 9,
+      "number": 11,
       "title": "Extension Mechanism",
       "contentRef": "sec-xEbsOCjQmAy1Uj_H6qRLr.json"
     },
     {
       "id": "sec-Xu_Ovl71oIhLU1kaCurK_",
-      "number": 10,
+      "number": 12,
       "title": "Formal Properties and Theorems",
       "contentRef": "sec-Xu_Ovl71oIhLU1kaCurK_.json"
     },
     {
       "id": "sec-TmlplXlhpu2gAP4_iKrgd",
-      "number": 11,
+      "number": 13,
       "title": "Reference Implementation",
       "contentRef": "sec-TmlplXlhpu2gAP4_iKrgd.json"
     },
     {
       "id": "sec-aAgCXhEN9t0xxoeTpf0Qc",
-      "number": 13,
+      "number": 14,
       "title": "Concurrency Semantics",
       "contentRef": "sec-aAgCXhEN9t0xxoeTpf0Qc.json"
     },
     {
       "id": "sec-5jP_ZWlaA8SfDbhVxrG99",
-      "number": 14,
+      "number": 15,
       "title": "Binding Verification Lifecycle",
       "contentRef": "sec-5jP_ZWlaA8SfDbhVxrG99.json"
     },
@@ -149,51 +151,51 @@
     },
     {
       "id": "sec-rRDDwm1LZy_CFk7nC2L0k",
-      "number": 26,
+      "number": 25,
       "title": "Certification Objective Coverage Matrix",
       "contentRef": "sec-rRDDwm1LZy_CFk7nC2L0k.json"
     },
     {
       "id": "sec-Nei3FTlw11oOPZVBq920l",
-      "number": 27,
+      "number": 26,
       "title": "STPA/FMEA Integration Framework",
       "contentRef": "sec-Nei3FTlw11oOPZVBq920l.json"
     },
     {
       "id": "sec-x6eVbGvoVfS9GNeqNkLUG",
-      "number": 28,
+      "number": 27,
       "title": "Formal Attenuation Properties",
       "contentRef": "sec-x6eVbGvoVfS9GNeqNkLUG.json"
     },
     {
       "id": "sec-dM0e66FHuNRBmoEaMjfxF",
-      "number": 29,
+      "number": 28,
       "title": "Cross-Standard Traceability Matrix",
       "contentRef": "sec-dM0e66FHuNRBmoEaMjfxF.json"
     },
     {
       "id": "sec-F4EMqD3954zBnfEDnmQGj",
-      "number": 30,
+      "number": 29,
       "title": "Tier Boundary Formal Semantics",
       "contentRef": "sec-F4EMqD3954zBnfEDnmQGj.json"
     },
     {
-      "id": "sec-FKg-HIOFmN1Oiyr_KJhnT",
-      "number": 12,
-      "title": "Summary",
-      "contentRef": "sec-FKg-HIOFmN1Oiyr_KJhnT.json"
-    },
-    {
       "id": "sec-Ksy2-gPkkxdYKBYNqe76U",
-      "number": 31,
+      "number": 30,
       "title": "Glossary of Key Terms",
       "contentRef": "sec-Ksy2-gPkkxdYKBYNqe76U.json"
     },
     {
       "id": "sec-syYS1lzON5CBCL1ZdsBul",
-      "number": 32,
+      "number": 31,
       "title": "Comprehensive Bibliography",
       "contentRef": "sec-syYS1lzON5CBCL1ZdsBul.json"
+    },
+    {
+      "id": "sec-ggoNjElo79ZXKuYjlF7mW",
+      "title": "STRATUM in Action: Requirement Change Impact",
+      "contentRef": "sec-ggoNjElo79ZXKuYjlF7mW.json",
+      "number": 32
     }
   ],
   "meta": {
@@ -237,8 +239,8 @@
       "title": "Foundations",
       "summary": "Core type system, abstract syntax, well-formedness, guarantees, and inference rules.",
       "sections": [
+        "sec-FKg-HIOFmN1Oiyr_KJhnT",
         "sec-XYQxS3DjhGgZ24R6PyyfR",
-        "sec-ggoNjElo79ZXKuYjlF7mW",
         "sec-8qxwzRxMeEWqbne8C5K8l",
         "sec-A6gecSxlJYGPIDKvgzjsG",
         "sec-pYrht_aqaJ5gENPPS98r-",
@@ -306,9 +308,9 @@
       "title": "Appendices",
       "summary": "Summary, glossary, and bibliography.",
       "sections": [
-        "sec-FKg-HIOFmN1Oiyr_KJhnT",
         "sec-Ksy2-gPkkxdYKBYNqe76U",
-        "sec-syYS1lzON5CBCL1ZdsBul"
+        "sec-syYS1lzON5CBCL1ZdsBul",
+        "sec-ggoNjElo79ZXKuYjlF7mW"
       ]
     }
   ]
