@@ -1,0 +1,209 @@
+{
+  "id": "sec-dM0e66FHuNRBmoEaMjfxF",
+  "title": "Cross-Standard Traceability Matrix",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-QmJI7hwONtDkMOsLuJtQQ",
+      "title": "DO-178C ↔ ISO 26262 Equivalence",
+      "defs": [],
+      "content": [
+        {
+          "type": "table",
+          "columns": [
+            "DO-178C (Avionics)",
+            "ISO 26262 (Automotive)",
+            "STRATUM Section"
+          ],
+          "rows": [
+            [
+              "DAL-A (Catastrophic)",
+              "ASIL-D (Life-threatening)",
+              "Tier 0, Mechanized proof"
+            ],
+            [
+              "DAL-B (Hazardous)",
+              "ASIL-C (Severe injury)",
+              "Tier 1, TLA+/Type-system"
+            ],
+            [
+              "DAL-C (Major)",
+              "ASIL-B (Injury)",
+              "Tier 2, PBT+BMC"
+            ],
+            [
+              "DAL-D (Minor)",
+              "ASIL-A (Light injury)",
+              "Tier 3, Unit tests"
+            ],
+            [
+              "DAL-E (No effect)",
+              "QM (No safety impact)",
+              "Tier 3+, Minimal"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Important Caveat**: This DAL ↔ ASIL mapping represents commonly used industry practice for cross-domain analysis but is **NOT formally standardized**. ISO 26262 explicitly does not provide normative mappings to aviation DALs. Critical differences include:\n\n- **Scope**: DAL-A encompasses hazards of fully loaded aircraft (potentially hundreds of fatalities), while ASIL-D at most covers passenger van hazards (~8 occupants)\n- **Derivation**: DAL uses probabilistic hazard analysis (14 CFR 25.1309), ASIL uses HARA risk assessment (Severity × Exposure × Controllability)\n- **Standards**: DO-178C focuses on software development rigor, ISO 26262 addresses full system lifecycle\n\nThis mapping should be interpreted as \"commonly used for conceptual alignment\" rather than implying normative equivalence."
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-OT6enWqAnGLLvulbUnnSi",
+      "title": "Process Mapping",
+      "defs": [],
+      "content": [
+        {
+          "type": "table",
+          "columns": [
+            "Activity",
+            "DO-178C Reference",
+            "ISO 26262 Reference"
+          ],
+          "rows": [
+            [
+              "Requirements tracing",
+              "Table A-3, Obj 6",
+              "Part 6, 6.6.2"
+            ],
+            [
+              "Architecture design",
+              "Table A-4, Obj 8-9",
+              "Part 6, 6.7"
+            ],
+            [
+              "Code verification",
+              "Table A-5",
+              "Part 6, 6.8-6.9"
+            ],
+            [
+              "Tool qualification",
+              "DO-330",
+              "Part 8, Clause 11"
+            ],
+            [
+              "Configuration mgmt",
+              "Table A-8",
+              "Part 8, Clause 8"
+            ],
+            [
+              "Safety analysis",
+              "(via ARP4761)",
+              "Part 9, Clause 8-9"
+            ],
+            [
+              "Hazard analysis",
+              "(via ARP4761)",
+              "Part 3 (HARA)"
+            ]
+          ]
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-hDaZXqxPvYSNfVdlv0-oK",
+      "title": "Tool Qualification Mapping",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "**DO-330 TQL ↔ ISO 26262 TCL Conceptual Mapping** (not formally standardized):\n\nImportant: No official cross-standard mapping exists. DO-330 defines 5 TQL levels (TQL-1 most rigorous), ISO 26262 Part 8 defines 3 TCL levels (TCL3 highest confidence). Both frameworks assess tool risk through impact and error detection capability, but differ structurally. DO-330 is noted as applicable cross-domain, but the mapping below represents conceptual parallels, not normative correspondence."
+        },
+        {
+          "type": "paragraph",
+          "text": "Suggested TQL ↔ TCL alignment:"
+        },
+        {
+          "type": "table",
+          "columns": [
+            "DO-330 (TQL)",
+            "ISO 26262 (TCL)",
+            "Qualification Effort"
+          ],
+          "rows": [
+            [
+              "TQL-1",
+              "TCL3 + TI1",
+              "Full development lifecycle evidence"
+            ],
+            [
+              "TQL-2",
+              "TCL3 + TI2",
+              "Development + extensive validation"
+            ],
+            [
+              "TQL-3",
+              "TCL2",
+              "Use history + validation"
+            ],
+            [
+              "TQL-4",
+              "TCL2",
+              "Use history or validation"
+            ],
+            [
+              "TQL-5",
+              "TCL1",
+              "Minimal or none"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "STRATUM tool classification (from §18):"
+        },
+        {
+          "type": "table",
+          "columns": [
+            "STRATUM Component",
+            "DO-330 TQL",
+            "ISO 26262 TCL",
+            "Criteria"
+          ],
+          "rows": [
+            [
+              "Specification Store",
+              "TQL-1",
+              "TCL3 + TI1",
+              "Output insertion"
+            ],
+            [
+              "RTM Generator",
+              "TQL-4",
+              "TCL2",
+              "Verification"
+            ],
+            [
+              "Constraint Validator",
+              "TQL-4",
+              "TCL2",
+              "Verification"
+            ],
+            [
+              "Impact Analyzer",
+              "TQL-4",
+              "TCL2",
+              "Verification"
+            ],
+            [
+              "Checklist Generator",
+              "TQL-5",
+              "TCL1",
+              "Output not trusted"
+            ],
+            [
+              "Visualization",
+              "TQL-5",
+              "TCL1",
+              "No safety impact"
+            ]
+          ]
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

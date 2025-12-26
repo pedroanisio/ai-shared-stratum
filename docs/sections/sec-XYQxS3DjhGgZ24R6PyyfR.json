@@ -1,0 +1,359 @@
+{
+  "id": "sec-XYQxS3DjhGgZ24R6PyyfR",
+  "title": "Foundations",
+  "defs": [],
+  "content": [
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "How to Read This Document"
+    },
+    {
+      "type": "paragraph",
+      "text": "This specification is organized in six logical parts across 30 sections. The recommended reading path depends on your role:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "**Formal Semanticists**",
+          "definition": "Read sequentially: §1–10 (Foundations) → §10–22 (Formal Theory) → §25 (Attenuation Properties)"
+        },
+        {
+          "term": "**Language Implementers**",
+          "definition": "Read: §1–6 (Type System) → §7 (Operations) → §11 (Reference Implementation) → §18 (Language Checklists)"
+        },
+        {
+          "term": "**Safety/Certification Engineers**",
+          "definition": "Read: §1–4 (Foundations, Guarantees) → §15–16 (Certification) → §23–26 (Coverage, STPA, Attenuation, Traceability)"
+        },
+        {
+          "term": "**Integration Engineers**",
+          "definition": "Read: §2 (Abstract Syntax) → §8–9 (Domain Profiles, Extensions) → §12–14 (Concurrency, Binding, Schema Evolution)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Document Structure at a Glance"
+    },
+    {
+      "type": "paragraph",
+      "text": "**PART I: Foundations (§1–6)**\nCore type system, abstract syntax, well-formedness, guarantees, and inference rules.\n\n**PART II: Operations (§7–9)**\nQuery, modification, domain profiles, and extensibility.\n\n**PART III: Formal Theory (§10–27)**\nTheorems, proofs, concurrency semantics, certification, and advanced properties.\n\n**APPENDICES (§28–30)**\nSummary, glossary, and bibliography."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Key Dependencies**\nSections 1–2 must be read before any others. Section 5 (Type System) is required for §6–7. Section 10 (Formal Properties) provides theoretical grounding for all subsequent sections."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§1.1 PRIMITIVE SETS"
+    },
+    {
+      "type": "paragraph",
+      "text": "Let the following primitive sets be given:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "ID",
+          "definition": "A countably infinite set of identifiers"
+        },
+        {
+          "term": "NAME",
+          "definition": "A countably infinite set of names (strings)"
+        },
+        {
+          "term": "VALUE",
+          "definition": "The universal value domain (JSON-compatible)"
+        },
+        {
+          "term": "TIME",
+          "definition": "The set of timestamps (ISO 8601)"
+        },
+        {
+          "term": "ℕ",
+          "definition": "Natural numbers"
+        },
+        {
+          "term": "ℤ",
+          "definition": "Integers"
+        },
+        {
+          "term": "ℝ",
+          "definition": "Real numbers"
+        },
+        {
+          "term": "𝔹",
+          "definition": "Booleans {⊤, ⊥}"
+        },
+        {
+          "term": "ACTOR",
+          "definition": "A countably infinite set of actor identifiers [v2.0]"
+        },
+        {
+          "term": "CLOCK",
+          "definition": "Vector clocks for causality tracking [v2.0]"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§1.2 DERIVED SETS"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "ID*",
+          "definition": "ID ∪ {ε} - Identifiers with null"
+        },
+        {
+          "term": "P(X)",
+          "definition": "Power set of X"
+        },
+        {
+          "term": "X × Y",
+          "definition": "Cartesian product"
+        },
+        {
+          "term": "X → Y",
+          "definition": "Total functions from X to Y"
+        },
+        {
+          "term": "X ⇀ Y",
+          "definition": "Partial functions from X to Y"
+        },
+        {
+          "term": "X*",
+          "definition": "Finite sequences over X"
+        },
+        {
+          "term": "X⁺",
+          "definition": "Non-empty finite sequences over X"
+        },
+        {
+          "term": "Multiset(X)",
+          "definition": "Multisets over X [v2.0]"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§1.3 NOTATION CONVENTIONS"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "e, e₁, e₂, ...",
+          "definition": "Elements"
+        },
+        {
+          "term": "l, l₁, l₂, ...",
+          "definition": "Layers"
+        },
+        {
+          "term": "d, d₁, d₂, ...",
+          "definition": "Dependencies"
+        },
+        {
+          "term": "c, c₁, c₂, ...",
+          "definition": "Constraints"
+        },
+        {
+          "term": "b, b₁, b₂, ...",
+          "definition": "Bindings"
+        },
+        {
+          "term": "r, r₁, r₂, ...",
+          "definition": "Cascade rules"
+        },
+        {
+          "term": "S, S₁, S₂, ...",
+          "definition": "Specifications"
+        },
+        {
+          "term": "Γ, Δ, Θ",
+          "definition": "Contexts (sets of judgments)"
+        },
+        {
+          "term": "τ, σ, ρ",
+          "definition": "Types"
+        },
+        {
+          "term": "π, φ, ψ",
+          "definition": "Predicates"
+        },
+        {
+          "term": "α, β",
+          "definition": "Actor identifiers [v2.0]"
+        },
+        {
+          "term": "vc, vc₁, vc₂",
+          "definition": "Vector clocks [v2.0]"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§1.4 THE STRATUM KERNEL (K0)"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Purpose**: The STRATUM Kernel is the irreducible core of the specification—the minimum set of definitions required for K0 conformance. This section provides a self-contained reading guide for implementers who need only the essential framework without certification, concurrency, or advanced features."
+    },
+    {
+      "type": "admonition",
+      "level": "note",
+      "text": "**Conformance Level K0 (Kernel-Conformant)**: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per §0.4 [v2.5]."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Kernel Components"
+    },
+    {
+      "type": "paragraph",
+      "text": "The Kernel consists of six essential subsystems:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "**1. Data Structures** (§2.1-2.3)",
+          "definition": "Element, Layer, Dependency — the core abstract syntax tree. Read: Definition 2.1 (Element), Definition 2.6 (Layer), Definition 2.11 (Dependency), Definition 2.8 (DEPTYPE enumeration)."
+        },
+        {
+          "term": "**2. Constraints** (§2.4)",
+          "definition": "QF_LIA + QF_LRA + QF_UF constraint language per v2.4.4. Read: Definition 2.12 (Predicate Language), Definition 2.16 (Constraint), Theorem 2.1 (Decidability). Note: SMT-LIB 2.6 standard required for conformance."
+        },
+        {
+          "term": "**3. Well-Formedness** (§3)",
+          "definition": "Structural invariants that all specifications must satisfy. Read: All WF-rules including WF-ID, WF-LAYER, WF-ACYCLIC-HARD, WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION (added v2.4.4)."
+        },
+        {
+          "term": "**4. Six Guarantees** (§4.1-4.6)",
+          "definition": "G1 (Traceability), G2 (Completeness), G3 (Consistency), G4 (Groundedness), G5 (Determinism), G6 (Coherence). These are the semantic properties that define a Valid specification. G7 (Explainability) is K1, not K0."
+        },
+        {
+          "term": "**5. Inference Rules** (§6)",
+          "definition": "Cascade computation (CASCADE-1, CASCADE-N, CASCADE-ATT), constraint satisfaction (CONSTR-SAT), trace computation (TRACE-ROOT, TRACE-STEP). These define the operational semantics."
+        },
+        {
+          "term": "**6. Core Operations** (§7.1-7.3)",
+          "definition": "validate(S) → violations, trace(e) → path, impact(S, δ) → affected elements. These are the three required Kernel operations. Note: validateIncremental (§7.1.1) is K3, not K0."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Kernel Properties"
+    },
+    {
+      "type": "paragraph",
+      "text": "All Kernel operations share three essential properties:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "**Pure**",
+          "definition": "All Kernel functions are deterministic total functions with no side effects. No I/O, no randomness, no wall-clock time dependencies. Given the same input, always produce the same output."
+        },
+        {
+          "term": "**Decidable**",
+          "definition": "All Kernel judgments terminate with definite yes/no answers. No \"unknown\" or \"timeout\" results. Well-formedness checking is O(|E| + |D| + |L|²). Constraint validation is decidable via SMT solving (NP-complete, but terminates)."
+        },
+        {
+          "term": "**Compositional**",
+          "definition": "Kernel(S₁ ⊕ S₂) = Kernel(S₁) ⊕ Kernel(S₂). Merging two specifications preserves all Kernel properties. This follows from the CRDT-based merge semantics (§12) but does not require understanding CRDTs for K0 conformance."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "What is NOT in the Kernel"
+    },
+    {
+      "type": "paragraph",
+      "text": "The following features are EXTENSIONS, not Kernel requirements:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Concurrency (§12-13)**: CRDTs, vector clocks, conflict resolution. Optional for single-user tools.",
+        "**Certification (§15-18, §23-29)**: RTM, DO-178C/ISO 26262 mappings, STPA/FMEA. Only required for K2+ conformance.",
+        "**Advanced Operations (§7.4, §8-9)**: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential.",
+        "**Mechanized Proofs (§17, §19-22)**: TLA+, Coq, Lean templates. Helpful for verification but not required for implementation.",
+        "**G7 Explainability (§4.8)**: Unsat core generation. This is K1 (Certified-Aware), not K0."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Kernel-Only Reading Path"
+    },
+    {
+      "type": "paragraph",
+      "text": "For K0 conformance, read in this order:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "§1.1-1.3: Primitive sets, notation (5 minutes)",
+        "§1.4: This section (10 minutes)",
+        "§2.1-2.4: Element, Layer, Dependency, Constraint (30 minutes)",
+        "§3: Well-formedness conditions (15 minutes)",
+        "§4.1-4.6: The Six Guarantees G1-G6 (25 minutes)",
+        "§6: Inference rules for cascade, trace, constraints (20 minutes)",
+        "§7.1-7.3: validate(), trace(), impact() operations (15 minutes)",
+        "§10.1-10.3: Soundness, decidability, cascade termination theorems (10 minutes)"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Total: ~2 hours** to understand the complete Kernel. Compare this to 30 sections (8-10 hours for full specification)."
+    },
+    {
+      "type": "admonition",
+      "level": "important",
+      "text": "**Kernel Boundary Enforcement**: Some sections are explicitly marked **non-Kernel**. Artifact Adapters (§7.4) introduce `effectful: true` to mark I/O-performing components that violate Kernel purity. These adapters emit Operation lists that the Kernel consumes deterministically, maintaining the pure/effectful boundary."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Reference Implementation Checklist"
+    },
+    {
+      "type": "paragraph",
+      "text": "To claim K0 conformance, your implementation must:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "✓ Implement data structures: Specification, Element, Layer, Dependency, Constraint, Binding, CascadeRule",
+        "✓ Implement constraint language: QF_LIA + QF_LRA + QF_UF (via SMT solver like Z3, CVC5, or Yices)",
+        "✓ Implement all WF-rules from §3 (including v2.4.4 additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)",
+        "✓ Implement guarantee checkers for G1-G6 (§4.1-4.6)",
+        "✓ Implement cascade computation per CASCADE-1, CASCADE-N rules (§6.3)",
+        "✓ Implement validate(S), trace(e), impact(S, δ) operations (§7.1-7.3)",
+        "✓ Pass Kernel test suite (if available from reference implementation)",
+        "✓ Demonstrate purity: All operations return same output for same input",
+        "✓ Demonstrate decidability: All operations terminate (no infinite loops)"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Optional but Recommended**: Implement Zod schemas (§11) for runtime validation, though note the schema drift warning from v2.4.4 (Zod schemas are v1.0 and lack v2.0+ fields like cascade_boundary, priority, actor, clock)."
+    }
+  ]
+}

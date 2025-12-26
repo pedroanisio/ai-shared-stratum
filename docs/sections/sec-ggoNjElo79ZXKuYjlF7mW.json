@@ -1,0 +1,354 @@
+{
+  "id": "sec-ggoNjElo79ZXKuYjlF7mW",
+  "title": "STRATUM in Action: Requirement Change Impact",
+  "defs": [],
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "**Purpose**: This scenario demonstrates the complete STRATUM workflow from requirement change through impact analysis, validation, policy evaluation, and certification artifact generation. It showcases v2.4.4 dependency direction clarification and v2.5 additions (G7 Explainability, Policy System)."
+    },
+    {
+      "type": "admonition",
+      "level": "note",
+      "text": "**Context**: Automotive brake-by-wire system (ASIL-D per ISO 26262), in production for 2 years. Safety engineer modifies a timing requirement. Total workflow time: **4 minutes** from trigger to signed certification package."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1. TRIGGER: Requirement Modification"
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "// Safety engineer alice@example.com modifies REQ-042",
+        "const change: Change = {",
+        "  element: 'REQ-042',",
+        "  changeType: 'update',",
+        "  actor: 'alice@example.com',",
+        "  timestamp: '2025-01-12T14:32:07Z',",
+        "  description: 'Tighten braking response time',",
+        "  diff: {",
+        "    properties: {",
+        "      maxResponseTime: { old: '150ms', new: '100ms' }",
+        "    }",
+        "  }",
+        "};"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Element Context**: REQ-042 is in the **motivation tier** (layer=safety-requirements, type=TimingRequirement, integrityLevel=ASIL_D)."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2. IMPACT ANALYSIS (<1 second)"
+    },
+    {
+      "type": "paragraph",
+      "text": "STRATUM's `impact(S, change)` operation traverses dependencies using the polarity table (v2.5 §2.3). Dependency direction per v2.4.4 §2.3: structural arrows point concrete → abstract, but CASCADE walks from changed element along dep arrows."
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "// Impact computation uses polarity-aware cascade",
+        "const impacted = impact(specification, change);",
+        "",
+        "// Results (by dependency type per v2.5 policy table):",
+        "// realizes (backward, attenuate): 3 design elements in logical tier",
+        "// traces_to (backward, block): 7 code modules identified (no cascade)",
+        "// validates (both, block): 12 test cases flagged (bidirectional awareness)",
+        "// constrains (backward, attenuate): 2 safety constraints re-evaluated"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Dependency Traversal** (v2.4.4 semantics):"
+    },
+    {
+      "type": "list",
+      "items": [
+        "`realizes`: Design-001 → REQ-042 (concrete depends on abstract). If REQ-042 changes, CASCADE finds deps where `d.src=REQ-042` (none of type realizes), so no auto-cascade. But `realizes` has **backward** impact per v2.5: when requirement changes, designs depending on it need review (attenuated).",
+        "`traces_to`: Module-017 → REQ-042 (impl traces to req). This is upward structural dep (G6 exception). CASCADE behavior: **block** (no propagation, just flagging).",
+        "`validates`: Test-089 validates REQ-042 (bidirectional). Both elements flagged for review.",
+        "`constrains`: SafetyConstraint-005 constrains REQ-042. Constraint needs re-checking."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "3. ATTENUATION CALCULATION"
+    },
+    {
+      "type": "paragraph",
+      "text": "Per §6.3 CASCADE-ATT and v2.5 policy table, impact severity attenuates across tier boundaries:"
+    },
+    {
+      "type": "code",
+      "lines": [
+        "// Attenuation function: γ = 2^(-tier_diff)",
+        "motivation tier:  100% impact (source tier)",
+        "logical tier:      50% impact (γ = 2^-1 = 0.5)",
+        "realization tier:  25% impact (γ = 2^-2 = 0.25)",
+        "grounding tier:    12.5% impact (γ = 2^-3 = 0.125)",
+        "",
+        "// Severity mapping:",
+        "attenuate(breaking) = degraded",
+        "attenuate(degraded) = cosmetic",
+        "attenuate(cosmetic) = none"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "4. VALIDATION WITH G7 EXPLAINABILITY"
+    },
+    {
+      "type": "paragraph",
+      "text": "STRATUM v2.5 adds **G7 (Explainability)** with irreducible unsat cores per [Z3-Cores]. Each violation includes a subset-minimal explanation."
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "const violations = validate(specification);",
+        "",
+        "// G2 (Completeness) VIOLATED",
+        "{",
+        "  violatedGuarantee: 'G2',",
+        "  unsatCore: ['C-TIMING-COVERAGE', 'C-TEST-BOUNDS'],  // Irreducible!",
+        "  unsatCoreProperty: 'irreducible',  // Per Theorem 10.12",
+        "  blameChain: [",
+        "    { operationId: 'OP-4521', actor: 'alice@example.com',",
+        "      clock: {alice: 1523}, description: 'Updated REQ-042 maxResponseTime' }",
+        "  ],",
+        "  humanReadable: 'Test case TC-089 asserts ≤150ms, insufficient for new ≤100ms requirement. Constraint C-TEST-BOUNDS requires all timing tests to match requirements.',",
+        "  suggestedFix: 'Update TC-089 assertion to assert(responseTime <= 100ms)'",
+        "}",
+        "",
+        "// G3 (Consistency) VIOLATED",
+        "{",
+        "  violatedGuarantee: 'G3',",
+        "  unsatCore: ['C-MODULE-TIMING'],  // Single-constraint core",
+        "  blameChain: [{ operationId: 'OP-4521', ... }],",
+        "  humanReadable: 'Module M-017 specifies 120ms processing time, conflicts with REQ-042 (100ms). Constraint C-MODULE-TIMING requires module timing ≤ requirement timing.',",
+        "  suggestedFix: 'Reduce M-017 processing time to ≤95ms (allowing 5ms margin)'",
+        "}",
+        "",
+        "// G4 (Groundedness) ✓ OK (all grounding-tier elements have bindings)"
+      ]
+    },
+    {
+      "type": "admonition",
+      "level": "important",
+      "text": "**G7 Guarantee** (v2.5 §4.8): Every unsat core is **irreducible** (subset-minimal). This means: ∀c ∈ core: SAT(core \\ {c}). Deleting any single constraint makes the core satisfiable, proving minimality. This is NOT the same as minimum-size (cardinality-minimal), which is NP-hard. Z3's deletion-based MUS extraction provides irreducibility in O(n × SMT) where n = |core|."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "5. POLICY EVALUATION"
+    },
+    {
+      "type": "paragraph",
+      "text": "STRATUM v2.5 adds **Policy System** (§2.8, §7.5) for automated remediation workflows. Policies trigger based on violation characteristics."
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "const triggeredPolicies = evaluatePolicies(specification, violations);",
+        "",
+        "// POL-ASIL-D-REVIEW triggered (integrityLevel = ASIL_D)",
+        "{",
+        "  policyId: 'POL-ASIL-D-REVIEW',",
+        "  appliesTo: { integrityLevels: ['ASIL_D'] },",
+        "  actions: {",
+        "    requiredReviewers: { role: 'safety-engineer', count: 2,",
+        "                         escalationTimeout: '48h' },",
+        "    requiredEvidenceTypes: ['static_analysis', 'manual_review'],",
+        "    minimumEvidenceCount: 2,",
+        "    blockingBehavior: 'block_merge'",
+        "  },",
+        "  status: 'BLOCKING'  // Merge to main branch blocked until satisfied",
+        "}",
+        "",
+        "// POL-G7-EXPLAIN triggered (any violation with G7 enabled)",
+        "{",
+        "  policyId: 'POL-G7-EXPLAIN',",
+        "  appliesTo: { guarantees: ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7'] },",
+        "  actions: {",
+        "    suggestedFixes: [...],  // From G7 explanations",
+        "    blockingBehavior: 'warn_only'",
+        "  }",
+        "}"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "6. GENERATED ARTIFACTS"
+    },
+    {
+      "type": "paragraph",
+      "text": "STRATUM automatically generates certification artifacts per §15-18:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**RTM Delta** (§15.1): 3 rows updated (REQ-042 → Design-001, Module-017, Test-089), 2 rows flagged as incomplete",
+        "**GSN Delta** (v2.5 §15.6): G-TIMING argument node needs update (new sub-goal for 100ms verification)",
+        "**Checklist** (§18): DAL-B checklist (12 DO-178C objectives apply to this change)",
+        "**CI Trigger**: Run test suite subset: TC-089, TC-091, TC-103 (timing-related tests)"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "7. RESOLUTION WORKFLOW"
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "// Developer applies suggested fixes from G7",
+        "1. Update M-017: processingTime = '95ms'  // Was 120ms",
+        "2. Update TC-089: assert(responseTime <= 100)  // Was <= 150",
+        "",
+        "// Re-validate",
+        "const violations2 = validate(specification);",
+        "// Result: All guarantees ✓ (G1-G7 satisfied)",
+        "",
+        "// Complete reviews (per POL-ASIL-D-REVIEW)",
+        "addEvidence({",
+        "  type: 'manual_review',",
+        "  reviewer: 'bob@example.com',",
+        "  timestamp: '2025-01-12T14:35:12Z',",
+        "  verdict: 'approved',",
+        "  comments: 'Timing analysis confirms 95ms + 5ms margin is sufficient'",
+        "});",
+        "addEvidence({",
+        "  type: 'manual_review',",
+        "  reviewer: 'carol@example.com',",
+        "  timestamp: '2025-01-12T14:36:07Z',",
+        "  verdict: 'approved'",
+        "});"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "8. CERTIFICATION PACKAGE EXPORT"
+    },
+    {
+      "type": "paragraph",
+      "text": "Final step: Export tamper-evident certification package per v2.5 §13.4 (Cryptographic Evidence Attestation) and §11.2 (SEF - STRATUM Exchange Format)."
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "const certPackage = exportCertificationPackage(specification);",
+        "",
+        "// Package contents (SEF + crypto attestation)",
+        "{",
+        "  format: 'application/vnd.stratum+json',",
+        "  specification: { ...spec },  // Canonical per RFC-8785",
+        "  evidenceChain: [",
+        "    // 47 evidence records with hash chain",
+        "    { id: 'E-001', contentHash: 'sha256:a3f2c8...',",
+        "      previousHash: null },",
+        "    { id: 'E-002', contentHash: 'sha256:7d4e1b...',",
+        "      previousHash: 'sha256:a3f2c8...' },",
+        "    // ... 45 more ...",
+        "    { id: 'E-047', contentHash: 'sha256:9c1fa2...',",
+        "      previousHash: 'sha256:2b8d3e...' }",
+        "  ],",
+        "  verification: {",
+        "    chainIntegrity: 'verified',  // All hashes match",
+        "    temporalOrdering: 'verified',  // Vector clocks consistent",
+        "    relevanceBinding: 'verified',  // All ops in spec.history",
+        "    signatures: 'verified'  // All JWS signatures valid",
+        "  },",
+        "  contentHash: 'sha256:f8a9b3c7e2d1...',  // Semantic hash",
+        "  signature: {",
+        "    alg: 'ES256',  // ECDSA with P-256 and SHA-256",
+        "    kid: 'release-authority@example.com',",
+        "    sig: '...'  // JWS signature per RFC-7515",
+        "  }",
+        "}"
+      ]
+    },
+    {
+      "type": "admonition",
+      "level": "note",
+      "text": "**Threat Model** (v2.5 §13.4.1): The hash chain defends against post-hoc tampering, evidence replay, and out-of-order insertion. It does NOT defend against compromised signing keys (requires external PKI) or collusion of all actors (requires Byzantine fault tolerance). These are explicitly out-of-scope per v2.5 design."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "WORKFLOW SUMMARY"
+    },
+    {
+      "type": "code",
+      "lines": [
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "TOTAL TIME: 4 minutes (trigger → certified package)",
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "",
+        "00:00  Requirement change triggered (alice@example.com)",
+        "00:01  Impact analysis complete (22 elements affected)",
+        "00:01  Validation complete (2 violations: G2, G3)",
+        "00:01  G7 explanations generated (2 irreducible cores)",
+        "00:01  Policies evaluated (POL-ASIL-D-REVIEW blocking)",
+        "00:02  Suggested fixes applied (M-017, TC-089 updated)",
+        "00:02  Re-validation complete (all guarantees ✓)",
+        "02:00  Review 1 complete (bob@example.com approved)",
+        "03:00  Review 2 complete (carol@example.com approved)",
+        "03:30  Certification artifacts generated (RTM, GSN, checklist)",
+        "04:00  Package signed and exported (47 evidence records)",
+        "",
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Key Capabilities Demonstrated"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "**Dependency Direction Semantics** (v2.4.4 §2.3)",
+          "definition": "Structural direction (concrete → abstract) vs impact flow (CASCADE walks from changed element). realizes has backward impact despite forward structural arrow."
+        },
+        {
+          "term": "**Polarity-Aware Cascade** (v2.5 §2.3)",
+          "definition": "Normative policy table determines cascadeBehavior: realizes=attenuate, traces_to=block, validates=block, constrains=attenuate."
+        },
+        {
+          "term": "**G7 Explainability** (v2.5 §4.8)",
+          "definition": "Irreducible unsat cores (subset-minimal, not cardinality-minimal). Every constraint in core is essential. Deletion-based MUS extraction per [Z3-Cores]."
+        },
+        {
+          "term": "**Policy System** (v2.5 §2.8, §7.5)",
+          "definition": "Declarative remediation workflows. Policies trigger on integrityLevel, guarantee violations, severity. Actions include required reviewers, evidence types, blocking behavior."
+        },
+        {
+          "term": "**Cryptographic Attestation** (v2.5 §13.4)",
+          "definition": "Tamper-evident evidence chains with SHA-256 hash linking, JWS signatures per RFC-7515, vector clock temporal ordering. Threat model explicitly documented."
+        },
+        {
+          "term": "**SEF Interchange** (v2.5 §11.2)",
+          "definition": "STRATUM Exchange Format with canonical ordering per RFC-8785, semantic hashing, media types (JSON, CBOR, Gzip)."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Conclusion**: This 4-minute workflow demonstrates how STRATUM v2.5 integrates v2.4.4's foundational fixes (dependency direction, WF-rules, SMT-LIB precision) with v2.5's operational capabilities (G7, policies, crypto attestation) to deliver end-to-end traceability from requirement change to certified release package."
+    }
+  ]
+}

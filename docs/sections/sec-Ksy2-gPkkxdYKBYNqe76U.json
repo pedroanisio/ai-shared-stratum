@@ -1,0 +1,370 @@
+{
+  "id": "sec-Ksy2-gPkkxdYKBYNqe76U",
+  "title": "Glossary of Key Terms",
+  "defs": [],
+  "overview": "Consolidated index of 100+ definitions used throughout the specification",
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "This glossary provides quick reference to key terms and definitions appearing across all 30 sections of the STRATUM specification. Terms are organized alphabetically with cross-references to defining sections."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Core Concepts (§1-6)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "Binding (b)",
+          "definition": "Connection between abstract element and concrete realization. Defined: Definition 2.22 (§2.5). See also: Groundedness (G4, §4.4)"
+        },
+        {
+          "term": "Cascade",
+          "definition": "Propagation of element changes across dependencies. Defined: Definition 2.26 (§2.6). Rules: CASCADE-1, CASCADE-N (§6)"
+        },
+        {
+          "term": "Constraint (c)",
+          "definition": "Assertion about specification elements with priority levels. Defined: Definition 2.16 (§2.4). Categories: Traceability, Completeness, Consistency"
+        },
+        {
+          "term": "Dependency (d)",
+          "definition": "Link between elements with delta semantics. Defined: Definition 2.11 (§2.3). Types: traces_to, implements, depends_on, satisfies"
+        },
+        {
+          "term": "Element (e)",
+          "definition": "Atomic unit of specification with identity, type, layer, properties, metadata. Defined: Definition 2.1 (§2.1)"
+        },
+        {
+          "term": "Layer (l)",
+          "definition": "Level of abstraction containing elements. Defined: Definition 2.4 (§2.2). Tiers: motivation → logical → realization → grounding"
+        },
+        {
+          "term": "Specification (S)",
+          "definition": "Formal document with elements, layers, dependencies, constraints, bindings, cascades, reasoning. Defined: Definition 2.9 (§2.5)"
+        },
+        {
+          "term": "Type (τ)",
+          "definition": "Element classification with variance rules. Defined: Definition 5.1 (§5). Variance: strict, covariant, contravariant"
+        },
+        {
+          "term": "Well-Formedness",
+          "definition": "Conditions ensuring specification validity. Rules: WF-ID through WF-ACYCLIC-HARD (§3)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "The Six Guarantees (§4)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "G1: Traceability",
+          "definition": "Every element traces back to root in motivation tier. Formula: ∀ e ∈ E. ∃ e' ∈ E. root(e') ∧ reachable(e, e', traces_to)"
+        },
+        {
+          "term": "G2: Completeness",
+          "definition": "All error-level constraints satisfied. Formula: ∀ c ∈ ErrorConstraints(S). S ⊨ c"
+        },
+        {
+          "term": "G3: Consistency",
+          "definition": "No contradictory properties between elements. Formula: ∀ e₁, e₂ ∈ E. ¬contradiction(e₁, e₂)"
+        },
+        {
+          "term": "G4: Groundedness",
+          "definition": "Every leaf element has binding to physical reality. Formula: ∀ e ∈ E. leaf(e) → bound(e)"
+        },
+        {
+          "term": "G5: Determinism",
+          "definition": "Impact of changes is computable. Formula: ∀ δ. impact(S, δ) is decidable"
+        },
+        {
+          "term": "G6: Coherence",
+          "definition": "Dependencies flow from concrete to abstract (except traces_to). Formula: ∀ d ∈ D. pos(layer(d.src)) ≥ pos(layer(d.tgt)) ∨ d.δ = traces_to"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Type System (§5)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "Covariance",
+          "definition": "Type relation where τ₁ <: τ₂ implies Container(τ₁) <: Container(τ₂). Used for outputs/return types. Rule: COV-SUBTYPE (§5)"
+        },
+        {
+          "term": "Contravariance",
+          "definition": "Type relation where τ₁ <: τ₂ implies Container(τ₂) <: Container(τ₁). Used for inputs/parameters. Rule: CONTRA-SUBTYPE (§5)"
+        },
+        {
+          "term": "Strict Subtyping",
+          "definition": "No variance applied; types must match exactly. Used for invariant contexts. Rule: STRICT-SUBTYPE (§5)"
+        },
+        {
+          "term": "Subtyping Relation (<:)",
+          "definition": "Partial order on types enabling substitution. Reflexive, transitive, respects layer tier boundaries. Rules: REFL, TRANS (§5)"
+        },
+        {
+          "term": "QF-LIRA + EUF",
+          "definition": "Quantifier-Free Linear Integer/Real Arithmetic with Equality and Uninterpreted Functions. Decidable constraint language used for predicates. SMT-LIB standard fragment. Definition 2.12 (§2)"
+        },
+        {
+          "term": "Type Judgment",
+          "definition": "Assertion that element e has type τ in context Γ. Notation: Γ ⊢ e : τ. Rules: ELEM-TYPE, LAYER-TYPE (§6)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Operations & Semantics (§7, §10-11)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "bind(e, conc, ev, proof)",
+          "definition": "Establish binding from abstract element to concrete realization with evidence and proof. Operation 7.5 (§7)"
+        },
+        {
+          "term": "coverage(S, concern)",
+          "definition": "Measure of specification completeness w.r.t. concern. Returns [0, 1]. Operation 7.4 (§7)"
+        },
+        {
+          "term": "diff(S₁, S₂)",
+          "definition": "Compute structural differences between specifications. Returns added, removed, modified elements. Operation 7.6 (§7)"
+        },
+        {
+          "term": "impact(S, δ)",
+          "definition": "Compute cascade propagation of change δ. Returns affected elements. Operation 7.7 (§7)"
+        },
+        {
+          "term": "merge(S₁, S₂)",
+          "definition": "Combine specifications, resolving conflicts via constraint priorities. Returns merged specification. Operation 7.8 (§7)"
+        },
+        {
+          "term": "trace(e)",
+          "definition": "Find all elements reachable from e via traces_to dependencies. Operation 7.2 (§7)"
+        },
+        {
+          "term": "validate(S)",
+          "definition": "Check all well-formedness conditions and constraint satisfactions. Operation 7.1 (§7). Returns Result with violations"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Inference Rules & Judgments (§6)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "CASCADE-1",
+          "definition": "Single-step cascade computation: δ triggers immediate dependent changes"
+        },
+        {
+          "term": "CASCADE-N",
+          "definition": "Multi-step cascade: transitive closure of CASCADE-1"
+        },
+        {
+          "term": "CONSTR-SAT",
+          "definition": "Constraint satisfaction check: c.φ(elements, deps) evaluates to ⊤"
+        },
+        {
+          "term": "SPEC-VALID",
+          "definition": "Specification validation: All WF-* rules hold AND all constraints satisfied"
+        },
+        {
+          "term": "SPEC-WF",
+          "definition": "Well-formedness judgment for specification. Prerequisite for SPEC-VALID"
+        },
+        {
+          "term": "TRACE-ROOT",
+          "definition": "Base case: root element (motivation tier, no incoming traces_to)"
+        },
+        {
+          "term": "TRACE-STEP",
+          "definition": "Inductive step: follow traces_to dependencies backward to root"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Advanced Semantics (§12-19)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "Attenuation Function",
+          "definition": "Maps elements to monotonically-decreasing impact magnitude. Limits cascade propagation. Defined: §18 (Formal Attenuation Properties)"
+        },
+        {
+          "term": "Binding Verification",
+          "definition": "Lifecycle: unverified → verified → trusted with evidence trail. State machine: §14 (Binding Verification)"
+        },
+        {
+          "term": "CRDT (Conflict-free Replicated Data Type)",
+          "definition": "Concurrent data structure enabling merge without coordination. Used for concurrency semantics §13. Papers: Shapiro et al. 2011"
+        },
+        {
+          "term": "LWW-Element-Set",
+          "definition": "Last-Writer-Wins Element Set CRDT. Resolves concurrent add/remove conflicts by timestamp. Definition 21.3 (§21). Used for element merging in specification synchronization"
+        },
+        {
+          "term": "Schema Evolution",
+          "definition": "Controlled changes to specification structure. Categories: backward_compatible, forward_compatible, breaking. §16"
+        },
+        {
+          "term": "Temporal Properties",
+          "definition": "Assertions about specification behavior over time using LTL/TLA+. Properties: □ (always), ◇ (eventually), U (until). §22"
+        },
+        {
+          "term": "Tier Boundaries",
+          "definition": "Architectural boundaries between motivation-logical-realization-grounding. Enforced by coherence (G6). §2.2, §30"
+        },
+        {
+          "term": "Tombstone",
+          "definition": "CRDT deletion marker preserving causal history. Prevents resurrection of deleted elements in concurrent environments. Used in CRDT garbage collection (Theorem 17.1-17.3) with logical timestamps for semantic preservation"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Formal Properties & Proofs (§10, §17-21)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "Completeness (Theorem 10.4-10.6)",
+          "definition": "Formal spec decidable w.r.t. all constraints. If valid manually, algorithm accepts. Proof by SMT solver (Z3/Dafny)"
+        },
+        {
+          "term": "Decidability (Theorem 10.7-10.10)",
+          "definition": "Well-formedness and constraint satisfaction are decidable problems. Proof: reduction to first-order logic with QE"
+        },
+        {
+          "term": "GC Correctness (Theorem 17.1-17.3)",
+          "definition": "CRDT garbage collection preserves observable semantics. Proof using logical time stamps and tombstone analysis"
+        },
+        {
+          "term": "Preservation (Theorem 10.11-10.13)",
+          "definition": "Type safety maintained across reduction steps. If Γ ⊢ e : τ and e →β e' then Γ ⊢ e' : τ. Standard proof technique"
+        },
+        {
+          "term": "Progress (Theorem 10.2)",
+          "definition": "Non-stuck evaluation: Well-formed specifications don't reach undefined states. Proof by contradiction using reduction semantics"
+        },
+        {
+          "term": "Soundness (Theorem 10.1-10.3)",
+          "definition": "Type soundness: If ⊢ S then S satisfies all well-formedness conditions. Proof by structural induction on type derivations"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Safety & Certification (§23-27)"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "ASIL (Automotive Safety Integrity Level)",
+          "definition": "ISO 26262 levels A-D for safety-critical automotive systems. ASIL-D highest. Maps to SIL 3-4 (IEC 61508)"
+        },
+        {
+          "term": "DO-178C",
+          "definition": "FAA guidance for software in airborne systems. Covers planning, development, testing, certification. 71 objectives with STRATUM mapping"
+        },
+        {
+          "term": "DO-330",
+          "definition": "Tool qualification for avionics software tools. Guidance for qualifying compilers, analyzers, generators. §18"
+        },
+        {
+          "term": "FMEA (Failure Mode & Effects Analysis)",
+          "definition": "Bottom-up hazard analysis: element → failure modes → effects → mitigations. Integrated with STRATUM §26.3"
+        },
+        {
+          "term": "FTA (Fault Tree Analysis)",
+          "definition": "Top-down hazard analysis: system hazard → causes → gate logic → basic events. Integrated via STRATUM elements §26.3"
+        },
+        {
+          "term": "IEC 61508",
+          "definition": "Functional Safety standard for E/E/PE systems. SIL 1-4 levels. Generic framework; STRATUM harmonizes via attenuation §18"
+        },
+        {
+          "term": "RTM (Requirements Traceability Matrix)",
+          "definition": "Maps hazards → UCAs → safety constraints → STRATUM constraints → formal properties. Artifact: §17"
+        },
+        {
+          "term": "STPA (System-Theoretic Process Analysis)",
+          "definition": "Control-theoretic hazard analysis by Leveson. Models control structures, UCAs, scenarios. Integrated §26.2"
+        },
+        {
+          "term": "UCA (Unsafe Control Action)",
+          "definition": "Control action that, in a given context, can lead to hazard. Types: not provided, provided incorrectly, wrong timing, stopped too soon, wrong direction. §26.2"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Mathematical & Implementation Terms"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "Coq",
+          "definition": "Interactive theorem prover for mechanized proofs. STRATUM proof templates in §19 for soundness/preservation"
+        },
+        {
+          "term": "Domain Profile",
+          "definition": "Configuration of constraint vocabulary and semantic properties for specific domain. Examples: Software Systems, Manufacturing, Healthcare. §8"
+        },
+        {
+          "term": "Extension Mechanism",
+          "definition": "Method to add custom constraint packs and semantic rules. Composition via union with priority resolution. §9"
+        },
+        {
+          "term": "Lean",
+          "definition": "Functional programming language with dependent types for mechanized proofs. Alternative to Coq/TLA+. §19"
+        },
+        {
+          "term": "Metadata (μ)",
+          "definition": "Record: ⟨created, updated, version, status, actor, clock⟩. Enables audit trail and CRDT causality. Definition 2.2 (§2.1)"
+        },
+        {
+          "term": "Property (π)",
+          "definition": "Element attribute: partial function NAME → VALUE. Type constraints per layer TYPE. Definition 2.1 (§2.1)"
+        },
+        {
+          "term": "TLA+ (Temporal Logic of Actions)",
+          "definition": "Formal specification language by Lamport for distributed systems. Used for temporal properties (§22) and proof templates (§19)"
+        },
+        {
+          "term": "Vector Clock",
+          "definition": "ACTOR → ℕ mapping for causality tracking in concurrent systems. Enables version vectors and CRDT commutativity. Definition 2.3 (§2.1)"
+        },
+        {
+          "term": "Zod",
+          "definition": "TypeScript-first schema validation library. STRATUM reference implementation schemas. §11"
+        }
+      ]
+    }
+  ]
+}

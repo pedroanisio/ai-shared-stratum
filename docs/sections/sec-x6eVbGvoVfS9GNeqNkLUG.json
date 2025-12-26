@@ -1,0 +1,110 @@
+{
+  "id": "sec-x6eVbGvoVfS9GNeqNkLUG",
+  "title": "Formal Attenuation Properties",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-pCGFvFCO4L8j4h3PKCeei",
+      "title": "Attenuation Function Specification",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "The attenuation function controls cascade propagation across layer boundaries. v2.4 adds formal properties required for safety analysis."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 28.1 (Attenuation Function - Formal)",
+          "text": "attenuate : Impact × Layer × Layer → Impact\n\nSignature:\n  attenuate(impact: Impact, source: Layer, target: Layer): Impact\n\nWhere Impact = { severity: ℕ, scope: Set<ElementID>, energy: ℕ }"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 28.2 (Monotonicity - Required)",
+          "text": "∀ impact₁, impact₂, source, target:\n  impact₁.energy ≤ impact₂.energy\n  ⇒ attenuate(impact₁, source, target).energy\n     ≤ attenuate(impact₂, source, target).energy\n\n(Larger inputs produce at-most-larger outputs; no amplification inversions)"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 28.3 (Strict Reduction - Required)",
+          "text": "∀ impact, source, target where source ≠ target:\n  attenuate(impact, source, target).energy < impact.energy\n\n(Crossing a layer boundary ALWAYS reduces energy; required for termination)"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 28.4 (BIBO Stability - Required)",
+          "text": "BIBO = Bounded Input, Bounded Output\n\n∀ impact, source, target:\n  impact.energy ≤ MAX_ENERGY\n  ⇒ attenuate(impact, source, target).energy ≤ MAX_ENERGY\n\n(Bounded inputs produce bounded outputs; required for safety analysis)"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 28.5 (Default Tier Attenuation Factor) [v2.5]",
+          "text": "The DEFAULT attenuation function for K0 conformance is exponential decay:\n\nγ(tier_diff) = 2^(-tier_diff)  for tier_diff > 0\nγ(0) = 1                        for same-tier (no attenuation)\n\nExample:\n  Tier 3 → Tier 2: γ = 0.5 (halved)\n  Tier 3 → Tier 1: γ = 0.25 (quartered)\n  Tier 3 → Tier 0: γ = 0.125 (eighth)\n\n**Alternative Attenuation Functions**: Domain profiles MAY define custom attenuation functions iff they satisfy Definitions 28.2-28.4 (Monotonicity, Strict Reduction, BIBO Stability). K0 implementations MUST support the default exponential decay. K2+ implementations MAY support custom functions."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 28.6 (Attenuation Function Type) [v2.5]",
+          "text": "ATTENUATION_FUNCTION = { f : ℕ → [0,1] | satisfies(f, {Monotonic, StrictReduction, BIBOStable}) }\n\nwhere:\n  Monotonic(f) ≡ ∀ n₁, n₂. n₁ ≤ n₂ ⇒ f(n₁) ≥ f(n₂)\n  StrictReduction(f) ≡ ∀ n > 0. f(n) < 1\n  BIBOStable(f) ≡ ∀ n. f(n) ∈ [0, 1]\n\n**Example Alternative Functions**:\n  • Linear: γ(n) = max(0, 1 - 0.25×n)  [satisfies all properties for n ≤ 4]\n  • Logarithmic: γ(n) = 1 / (1 + log₂(1+n))  [satisfies all properties]\n  • Step: γ(0)=1, γ(1)=0.5, γ(n≥2)=0.1  [satisfies all properties]"
+        },
+        {
+          "type": "admonition",
+          "level": "important",
+          "text": "**Composition of Attenuation Functions**: When multiple cascade rules apply to the same dependency path, attenuation factors MULTIPLY: final_impact = initial_impact × γ₁ × γ₂ × ... × γₙ. Since each γᵢ ∈ (0,1], the product γ₁×γ₂×...×γₙ ∈ (0,1], preserving Monotonicity and Strict Reduction. This follows from the closure property of (0,1] under multiplication."
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 28.1 (Cascade Bound)",
+          "formula": "Given:\n  • Initial impact energy E₀\n  • n tiers in specification\n  • Minimum attenuation factor γ_min = 2^(-1) = 0.5\n  • Energy threshold ε = 1 (minimum detectable impact)\n\nThen:\n  Total cascade energy ≤ E₀ × Σᵢ₌₀ⁿ⁻¹ γ_min^i = E₀ × (1 - γ_min^n)/(1 - γ_min)\n\nFor n = 4 tiers: Total ≤ E₀ × (1 - 0.5⁴)/(1 - 0.5) = E₀ × 1.875\n\nCorollary (Path Termination): Any single cross-tier propagation path terminates in at most ⌈log₂(E₀/ε)⌉ steps.\nProof: After k steps, energy ≤ E₀ × (0.5)^k. Set E₀ × (0.5)^k ≤ ε and solve: k ≥ log₂(E₀/ε).\n\nNote: Graph-wide cascade may have O(|E| + |D|) propagations, but each individual path is logarithmic."
+        },
+        {
+          "type": "diagram",
+          "format": "ascii",
+          "content": "Impact Energy\n    │\n100%│━━━━━━━┓\n    │       ┃\n 50%│╶╶╶╶╶╶╶┺━━━━━━━┓\n    │               ┃\n 25%│╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┺━━━━━━━┓\n    │                       ┃\n12.5│╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┺━━━━━━━┓\n    │                               ┃\n 6.3│╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┺━━━━━━━┓\n    │                                       ┃\n 0% │───────────────────────────────────────┺━━━━━→\n    └───────┬───────┬───────┬───────┬───────┬─────\n          Tier 0  Tier 1  Tier 2  Tier 3  Tier 4\n        (motiv) (logical)(realiz)(ground) (impl)\n    \n    Impact at tier n: γⁿ = (0.5)ⁿ\n    \n    ┌──────────────────────────────────────┐\n    │ THEOREM 28.1: Total cascade energy   │\n    │ ≤ 2×E₀ (geometric series converges)  │\n    └──────────────────────────────────────┘\n    \n    ATTENUATION GUARANTEES:\n    • Monotonicity: γⁿ⁺¹ < γⁿ  (strictly decreasing)\n    • Strict Reduction: Each tier crossing reduces energy\n    • BIBO Stability: Bounded input → bounded output\n    • Termination: Series converges in finite steps",
+          "caption": "Figure 28.1: Attenuation decay curve showing exponential energy reduction γ(n) = 2^(-n) across tier boundaries. The geometric series Σγⁿ converges to 2×E₀, guaranteeing cascade termination.",
+          "alt": "Graph showing impact energy decay from 100% to near 0% across 5 tiers with exponential attenuation. Each tier crossing halves the impact energy, demonstrating the γ = 2^(-tier_diff) attenuation function."
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub--lh0ubFdGgOWL0AP8LRDJ",
+      "title": "Attenuation Verification",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Runtime verification implementation:"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "export function verifyAttenuationProperties(): boolean {",
+            "  const MAX_ENERGY = 1000;",
+            "",
+            "  // Test monotonicity",
+            "  const impact1 = { severity: 5, scope: new Set(['a']), energy: 50 };",
+            "  const impact2 = { severity: 5, scope: new Set(['a']), energy: 100 };",
+            "  const result1 = attenuate(impact1, 3, 1);",
+            "  const result2 = attenuate(impact2, 3, 1);",
+            "  const monotonic = result1.energy <= result2.energy;",
+            "",
+            "  // Test strict reduction (cross-tier)",
+            "  const impactOrig = { severity: 5, scope: new Set(['a']), energy: 100 };",
+            "  const resultCross = attenuate(impactOrig, 3, 2);",
+            "  const strictReduction = resultCross.energy < impactOrig.energy;",
+            "",
+            "  // Test BIBO stability",
+            "  const maxImpact = { severity: 10, scope: new Set(['a']), energy: MAX_ENERGY };",
+            "  const resultMax = attenuate(maxImpact, 3, 0);",
+            "  const biboStable = resultMax.energy <= MAX_ENERGY;",
+            "",
+            "  return monotonic && strictReduction && biboStable;",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "For certification, provide:\n  • Formal proof of monotonicity (Coq/Lean)\n  • Formal proof of strict reduction\n  • Formal proof of BIBO stability\n  • Property-based tests (QuickCheck) for implementation"
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

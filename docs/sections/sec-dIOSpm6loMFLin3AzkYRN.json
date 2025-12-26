@@ -1,0 +1,165 @@
+{
+  "id": "sec-dIOSpm6loMFLin3AzkYRN",
+  "title": "Compositional Semantics",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-sWbAAwqPgQaPyfEJXh_d6",
+      "title": "Specification Combination (S₁ + S₂)",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 21.1 (Specification Composition)",
+          "text": "Given specifications S₁ and S₂, their composition S₁ + S₂ is defined as:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "S₁ + S₂ = ⟨",
+            "  id:          fresh_id(),",
+            "  name:        S₁.name ++ \" + \" ++ S₂.name,",
+            "  domain:      S₁.domain ∪ S₂.domain,",
+            "  version:     S₁.version ⊔ S₂.version,        -- Vector clock join",
+            "  layers:      mergeLayers(S₁.layers, S₂.layers),",
+            "  elements:    mergeElements(S₁.elements, S₂.elements),",
+            "  dependencies: mergeDeps(S₁.dependencies, S₂.dependencies),",
+            "  constraints: mergeConstraints(S₁.constraints, S₂.constraints),",
+            "  bindings:    mergeBindings(S₁.bindings, S₂.bindings),",
+            "  cascadeRules: mergeCascades(S₁.cascadeRules, S₂.cascadeRules),",
+            "  metadata:    mergeMetadata(S₁.metadata, S₂.metadata)",
+            "⟩"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 21.2 (Layer Merge)**"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "mergeLayers(L₁, L₂) =",
+            "  let shared = L₁ ∩ L₂  -- Layers with same ID",
+            "  let only1 = L₁ \\ L₂",
+            "  let only2 = L₂ \\ L₁",
+            "  in only1 ∪ only2 ∪ {mergeLayer(l₁, l₂) | l₁ ∈ L₁, l₂ ∈ L₂, l₁.id = l₂.id}",
+            "",
+            "mergeLayer(l₁, l₂) =",
+            "  require l₁.tier = l₂.tier      -- Must be same tier",
+            "  require l₁.order = l₂.order    -- Must be same position",
+            "  ⟨",
+            "    id:       l₁.id,",
+            "    name:     l₁.name,           -- Keep first (arbitrary but deterministic)",
+            "    tier:     l₁.tier,",
+            "    order:    l₁.order,",
+            "    Q:        l₁.Q ++ \" / \" ++ l₂.Q,",
+            "    T:        l₁.T ∪ l₂.T,       -- Union of element types",
+            "    deps:     l₁.deps ∪ l₂.deps  -- Union of layer dependencies",
+            "  ⟩"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 21.3 (Element Merge - LWW-Element-Set)**"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "mergeElements(E₁, E₂) =",
+            "  let ids = {e.id | e ∈ E₁} ∪ {e.id | e ∈ E₂}",
+            "  in {mergeElement(e₁, e₂) | id ∈ ids, e₁ = lookup(E₁, id), e₂ = lookup(E₂, id)}",
+            "",
+            "mergeElement(e₁, e₂) =",
+            "  case (e₁, e₂) of",
+            "    (Some(e₁), None)      → e₁",
+            "    (None, Some(e₂))      → e₂",
+            "    (Some(e₁), Some(e₂))  →",
+            "      require e₁.layer = e₂.layer  -- Layer mismatch = semantic conflict",
+            "      require e₁.type = e₂.type    -- Type mismatch = semantic conflict",
+            "      ⟨",
+            "        id:         e₁.id,",
+            "        type:       e₁.type,",
+            "        layer:      e₁.layer,",
+            "        properties: mergeProps(e₁.properties, e₂.properties, e₁.metadata.version, e₂.metadata.version),",
+            "        metadata:   mergeMetadata(e₁.metadata, e₂.metadata),",
+            "        integrity:  maxIntegrity(e₁.integrity, e₂.integrity)",
+            "      ⟩",
+            "",
+            "lww(val₁, val₂, v₁, v₂, actor₁, actor₂) =",
+            "  if v₁ > v₂ then val₁",
+            "  else if v₂ > v₁ then val₂",
+            "  else if actor₁ < actor₂ then val₁  -- Tie-break by actor ID (lexicographic)",
+            "  else val₂  -- actor₂ ≤ actor₁"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-a7udhKFOU3-h2LYpBkie_",
+      "title": "Composition Properties",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 21.4 (Compatible Specifications)",
+          "text": "Two specifications S₁ and S₂ are compatible (Compatible(S₁, S₂)) if and only if:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "Compatible(S₁, S₂) ≡",
+            "  -- 1. No semantic conflicts in shared layers",
+            "  (∀l₁ ∈ S₁.layers, l₂ ∈ S₂.layers ·",
+            "    l₁.id = l₂.id →",
+            "      (l₁.tier = l₂.tier ∧ l₁.order = l₂.order)) ∧",
+            "",
+            "  -- 2. No semantic conflicts in shared elements",
+            "  (∀e₁ ∈ S₁.elements, e₂ ∈ S₂.elements ·",
+            "    e₁.id = e₂.id →",
+            "      (e₁.layer = e₂.layer ∧ e₁.type = e₂.type)) ∧",
+            "",
+            "  -- 3. No constraint conflicts (priority-based resolution)",
+            "  (∀c₁ ∈ S₁.constraints, c₂ ∈ S₂.constraints ·",
+            "    (c₁.scope ∩ c₂.scope ≠ ∅ ∧ c₁.kind = c₂.kind) →",
+            "      (c₁.priority ≠ c₂.priority ∨ c₁.predicate = c₂.predicate)) ∧",
+            "",
+            "  -- 4. No circular cross-specification dependencies",
+            "  let D = S₁.dependencies ∪ S₂.dependencies in",
+            "  ¬hasCycle(D) ∧",
+            "",
+            "  -- 5. Domain compatibility",
+            "  (S₁.domain ∩ S₂.domain ≠ ∅ ∨",
+            "   S₁.domain = \"universal\" ∨",
+            "   S₂.domain = \"universal\")"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Rationale**: Compatibility ensures that merging two specifications does not introduce semantic conflicts that would violate well-formedness. Condition (1) prevents layer tier/order mismatches. Condition (2) prevents element type mismatches. Condition (3) ensures constraint conflicts can be resolved by priority ordering (per §23). Condition (4) prevents dependency cycles. Condition (5) ensures specifications have overlapping domains or are universal."
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 21.1 (Composition Commutativity)",
+          "formula": "S₁ + S₂ = S₂ + S₁ (modulo id/name)"
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 21.2 (Composition Associativity)",
+          "formula": "(S₁ + S₂) + S₃ = S₁ + (S₂ + S₃) (modulo id/name)"
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 21.3 (Composition Idempotency)",
+          "formula": "S + S = S (modulo metadata)"
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 21.4 (Validity Preservation)",
+          "formula": "Valid(S₁) ∧ Valid(S₂) ∧ Compatible(S₁, S₂) → Valid(S₁ + S₂)"
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

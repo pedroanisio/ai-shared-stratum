@@ -1,0 +1,144 @@
+{
+  "id": "sec-LUj58UniUYiDJ-BI2QMU3",
+  "title": "Temporal Properties",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-xwdB7EQ-8VWutgYfeGmUP",
+      "title": "Temporal Logic for Specifications",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "STRATUM specifications evolve over time. Temporal properties express requirements about this evolution."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 22.1 (Temporal Operators - TLA+ Style)",
+          "text": "Given state predicate P and action predicate A:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "□P",
+              "definition": "\"Always P\" - P holds in all states"
+            },
+            {
+              "term": "◇P",
+              "definition": "\"Eventually P\" - P holds in some future state"
+            },
+            {
+              "term": "P ⟶ Q",
+              "definition": "\"P leads to Q\" - Whenever P, eventually Q"
+            },
+            {
+              "term": "□[A]_v",
+              "definition": "\"A or stuttering\" - Either A occurs or v unchanged"
+            },
+            {
+              "term": "WF_v(A)",
+              "definition": "\"Weak fairness\" - If A enabled continuously, A eventually occurs"
+            },
+            {
+              "term": "SF_v(A)",
+              "definition": "\"Strong fairness\" - If A enabled infinitely often, A occurs"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 22.2 (STRATUM Temporal Vocabulary)**"
+        },
+        {
+          "type": "paragraph",
+          "text": "State predicates:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "element_exists(id) - Element with id is in specification",
+            "element_verified(id) - Element's binding is in verified state",
+            "constraint_satisfied(c) - Constraint c is satisfied",
+            "dependency_valid(d) - Dependency d has valid endpoints",
+            "cascade_complete - No pending cascade propagation"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Action predicates:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "AddElement(e) - Element e is added",
+            "RemoveElement(id) - Element with id is removed",
+            "UpdateProperty(id, p, v) - Property p of element id set to v",
+            "AddDependency(d) - Dependency d is added",
+            "Verify(b) - Binding b verification initiated",
+            "Cascade(e, ch) - Cascade triggered for element e, change ch"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-7Oc_E72D_BbOMR7aePOPg",
+      "title": "Standard Temporal Properties",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "SAFETY PROPERTIES (nothing bad ever happens):"
+        },
+        {
+          "type": "rule",
+          "label": "TP-1 (Constraint Preservation)",
+          "formula": "□(∀c ∈ C. constraint_satisfied(c))",
+          "description": "Constraints are always satisfied"
+        },
+        {
+          "type": "rule",
+          "label": "TP-2 (Referential Integrity)",
+          "formula": "□(∀d ∈ D. dependency_valid(d))",
+          "description": "Dependencies always have valid endpoints"
+        },
+        {
+          "type": "rule",
+          "label": "TP-3 (Type Stability)",
+          "formula": "□(∀e ∈ E. e.layer = e.layer' ∧ e.type = e.type')",
+          "description": "Element layer and type never change (INV-1)"
+        },
+        {
+          "type": "rule",
+          "label": "TP-4 (Integrity Monotonicity)",
+          "formula": "□(∀e ∈ E. e.integrity ≤ e'.integrity)",
+          "description": "Integrity level can only increase"
+        },
+        {
+          "type": "paragraph",
+          "text": "LIVENESS PROPERTIES (something good eventually happens):"
+        },
+        {
+          "type": "rule",
+          "label": "TP-5 (Verification Progress)",
+          "formula": "(binding.state = pending) ⟶ ◇(binding.state ∈ {verified, failed})",
+          "description": "Pending verifications eventually complete"
+        },
+        {
+          "type": "rule",
+          "label": "TP-6 (Cascade Completion)",
+          "formula": "Cascade(e, ch) ⟶ ◇cascade_complete",
+          "description": "Cascades eventually terminate"
+        },
+        {
+          "type": "rule",
+          "label": "TP-7 (Sync Convergence)",
+          "formula": "◇(∀r₁, r₂. state(r₁) = state(r₂))",
+          "description": "All replicas eventually converge"
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

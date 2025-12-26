@@ -1,0 +1,146 @@
+{
+  "id": "sec-Xu_Ovl71oIhLU1kaCurK_",
+  "title": "Formal Properties and Theorems",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-OBU4duRRllB7_9IhbL-1N",
+      "title": "Soundness",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.1 (Type Soundness - PROVEN):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "If Γ ⊢ e : τ and e →* e' (e evaluates to e'), then Γ ⊢ e' : τ"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Proof: By progress and preservation. The immutability of e.l (§2.1) ensures that the covariant subtyping rule S-ELEMENT cannot be exploited to violate type safety. This follows the approach of Wright & Felleisen (1994)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.2 (Constraint Decidability - PROVEN):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "For any constraint c with predicate φ in QF_LIA + QF_LRA + QF_UF:",
+            "  sat(φ) is decidable"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Proof: QF_LIA, QF_LRA, and QF_UF are decidable fragments of first-order logic per SMT-LIB 2.6 standard. Decidability of the combination follows from the Nelson-Oppen procedure (1979), as these theories are stably infinite and have disjoint signatures (integer/real arithmetic operators vs uninterpreted functions)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.3 (Cascade Termination - PROVEN):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "For any well-formed S and any cascade rule r:",
+            "  cascade(S, e, ch, r) terminates"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Proof: By WF-ACYCLIC-HARD, hard dependency paths are finite. By WF-SOFT-CYCLE-BOUNDED, soft cycles have boundaries. By WF-CASCADE-TERMINATION, unbounded cascades have finite depth. The attenuation function eventually returns ⊥, ensuring propagation stops."
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-OB_3VjaM4yzhjgIYWx1_k",
+      "title": "Convergence",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.4 (Strong Eventual Consistency) [v2.0]:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "For any replicas R₁, R₂ with seen(R₁) = seen(R₂):",
+            "  state(R₁) = state(R₂)"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Proof [Enhanced v2.5]**: The specification lattice (§7.3) forms a join-semilattice (L, ⊔, ⊑) with:\n\n**1. Join-semilattice properties**:\n- **Associativity**: (S₁ ⊔ S₂) ⊔ S₃ = S₁ ⊔ (S₂ ⊔ S₃)\n  - Elements: Add-wins set union is associative\n  - Dependencies: LWW with vector clocks is associative\n  - Constraints: Priority-based merge is associative (max is associative)\n\n- **Commutativity**: S₁ ⊔ S₂ = S₂ ⊔ S₁\n  - Elements: Set union is commutative\n  - Dependencies: LWW breaks ties deterministically via vector clock total order\n  - Constraints: max(priority₁, priority₂) = max(priority₂, priority₁)\n\n- **Idempotence**: S ⊔ S = S\n  - All component CRDTs (OR-Set for elements, LWW-Register for metadata) are idempotent\n\n**2. CRDT merge equivalence**: merge(S₁, S₂) computes S₁ ⊔ S₂ by:\n```\nelements(S₁ ⊔ S₂) = elements(S₁) ∪ elements(S₂)  -- OR-Set merge\ndeps(S₁ ⊔ S₂) = lww(deps(S₁), deps(S₂))          -- LWW-Map merge\nconstraints(S₁ ⊔ S₂) = priority_max(...)          -- Priority merge\n```\n\n**3. Convergence**: For replicas R₁, R₂:\n- Let ops₁ = operations seen by R₁\n- Let ops₂ = operations seen by R₂\n- If ops₁ = ops₂, then both replicas apply same set of operations\n- Since ⊔ is associative and commutative, any ordering of ops yields same state\n- Therefore state(R₁) = ⊔(ops₁) = ⊔(ops₂) = state(R₂)\n\n**4. Strong Eventual Consistency (SEC)**: By Shapiro et al. (2011) CMA theorem:\n- Eventual Delivery: All operations eventually delivered to all replicas\n- Convergence: Replicas with same operations have same state (proven above)\n- Strong Convergence: No coordination needed (merge is deterministic)\n\nTherefore, STRATUM specifications satisfy SEC. ∎"
+        },
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.5 (Merge Commutativity) [v2.0]:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "merge(merge(S₁, S₂), S₃) = merge(S₁, merge(S₂, S₃))"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Proof: Follows from associativity of the join operation (Theorem 7.1)."
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-kbjoG8RVDTc33BlKjcHtq",
+      "title": "Decidability",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.6 (Well-Formedness Decidability):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "WellFormed(S) is decidable in O(|E| + |D| + |L|²)"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.7 (Validation Decidability):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "For constraints in QF_LIA + QF_LRA + QF_UF:",
+            "  validate(S) is decidable in O(|C| × SMT_complexity)",
+            "where SMT_complexity is NP for satisfiability checking."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.8 (Cascade Decidability):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "impact(S, δ) is decidable in O(|E| + |D|) using BFS/DFS"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Theorem 10.9 (Trace Decidability):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "trace(S, e) is decidable in O(|D|) where |D| is dependency count"
+          ]
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

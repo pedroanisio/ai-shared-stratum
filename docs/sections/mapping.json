@@ -1,0 +1,568 @@
+{
+  "sec-XYQxS3DjhGgZ24R6PyyfR": "Foundations",
+  "sec-ggoNjElo79ZXKuYjlF7mW": "STRATUM in Action: Requirement Change Impact",
+  "sec-8qxwzRxMeEWqbne8C5K8l": "Abstract Syntax",
+  "sub-xYOy8xUJpcssgjNVmANNW": {
+    "title": {
+      "title": "Element"
+    },
+    "suffix": "1"
+  },
+  "sub-1PQdtQJCcUP4hsmjE7iJL": {
+    "title": {
+      "title": "Layer"
+    },
+    "suffix": "2"
+  },
+  "sub-przG8f9oPcQ5oNMXdlyHX": {
+    "title": {
+      "title": "Dependency"
+    },
+    "suffix": "3"
+  },
+  "sub-CyAf_GsK2z3HhpvlCgKlD": {
+    "title": {
+      "title": "Constraint"
+    },
+    "suffix": "4"
+  },
+  "sub-hokiwCzrIfE6qFGSucWVf": {
+    "title": {
+      "title": "Binding"
+    },
+    "suffix": "5"
+  },
+  "sub-4p4RHhG9shx4eEYEWo2Uh": {
+    "title": {
+      "title": "Cascade Rule"
+    },
+    "suffix": "6"
+  },
+  "sub-G3_ARB8KVMkMvSpCFg6_y": {
+    "title": {
+      "title": "Specification"
+    },
+    "suffix": "7"
+  },
+  "sec-A6gecSxlJYGPIDKvgzjsG": "Policy [v2.5]",
+  "sec-pYrht_aqaJ5gENPPS98r-": "Well-Formedness Conditions",
+  "sub-u18tB1pKQdXgyWtzMKNt9": {
+    "title": {
+      "title": "Structural Well-Formedness"
+    },
+    "suffix": "1"
+  },
+  "sub-ZjGSTSjqSxpTW7FUneFbV": {
+    "title": {
+      "title": "Tier Completeness"
+    },
+    "suffix": "2"
+  },
+  "sub-N4IBDNbvYLcD_8c4BC2NX": {
+    "title": {
+      "title": "Acyclicity"
+    },
+    "suffix": "3"
+  },
+  "sec-taGb2W-Ks5lKWB8hcj3UY": "Semantic Properties (The Seven Guarantees)",
+  "sub-2rVTmZOx_FfwEKLswk1-j": {
+    "title": {
+      "title": "Traceability"
+    },
+    "suffix": "1"
+  },
+  "sub-K1-qOmCVrnDqLrLgOd_aa": {
+    "title": {
+      "title": "Completeness"
+    },
+    "suffix": "2"
+  },
+  "sub-sbASI3HUkg21rQji8CA3y": {
+    "title": {
+      "title": "Consistency"
+    },
+    "suffix": "3"
+  },
+  "sub-PNmArYZo6xNqQZsWMEHGT": {
+    "title": {
+      "title": "Groundedness"
+    },
+    "suffix": "4"
+  },
+  "sub-XWHt4rvXeJPsjryeyJk-f": {
+    "title": {
+      "title": "Determinism"
+    },
+    "suffix": "5"
+  },
+  "sub-BY56RlNT5fC29dbs7WShu": {
+    "title": {
+      "title": "Coherence"
+    },
+    "suffix": "6"
+  },
+  "sub-KiCYjiFp6iFIhq6fcelIP": {
+    "title": {
+      "title": "Explainability [v2.5]"
+    },
+    "suffix": "7"
+  },
+  "sub-Q_FIkGVXUuZIl6JAWPVwl": {
+    "title": {
+      "title": "Valid Specification"
+    },
+    "suffix": "8"
+  },
+  "sec-Jcn-W5ZXGpackkeeq-isa": "Type System",
+  "sub-3wnjydGHE6NMdVzwCTKTu": {
+    "title": {
+      "title": "Type Syntax"
+    },
+    "suffix": "1"
+  },
+  "sub-q0EEAv8YqBOqWHWG1EbmY": {
+    "title": {
+      "title": "Typing Judgments"
+    },
+    "suffix": "2"
+  },
+  "sub-AE4RbWXOtuZuBmjZlLUcT": {
+    "title": {
+      "title": "Subtyping"
+    },
+    "suffix": "3"
+  },
+  "sec-CwnDzo78GYBw57r1EI_R5": "Inference Rules",
+  "sub-WtpM3I2MOujIM5u6SCjC5": {
+    "title": {
+      "title": "Specification Validation"
+    },
+    "suffix": "1"
+  },
+  "sub-BtTpQ81gRcV38qnt6uRnL": {
+    "title": {
+      "title": "Constraint Satisfaction"
+    },
+    "suffix": "2"
+  },
+  "sub-5Xu8Vv_BHhTdzfCjtqDRo": {
+    "title": {
+      "title": "Cascade Computation"
+    },
+    "suffix": "3"
+  },
+  "sub-KSKls8IkRl28ALimhUa0J": {
+    "title": {
+      "title": "Trace Computation"
+    },
+    "suffix": "4"
+  },
+  "sec-aBNKnM08R3W5pfjELaQas": "Operations",
+  "sub-amKfbMudBf4a5EIxM14St": {
+    "title": {
+      "title": "Query Operations"
+    },
+    "suffix": "1"
+  },
+  "sub-9q6VwEYOZyqBvxep8Dw5x": {
+    "title": {
+      "title": "Modification Operations"
+    },
+    "suffix": "2"
+  },
+  "sub-doChtsVucb4PgzoofGPjB": {
+    "title": {
+      "title": "Comparison Operations"
+    },
+    "suffix": "3"
+  },
+  "sec-FzfSSWJ73nYlWnpzz3-B7": "Domain Profiles",
+  "sub-J0kyTrjtY23aK-igt7xv4": {
+    "title": {
+      "title": "Domain Profile Definition"
+    },
+    "suffix": "1"
+  },
+  "sub-sHxf-VES1s5tfu5TfCaK_": {
+    "title": {
+      "title": "Canonical Domain Profiles"
+    },
+    "suffix": "2"
+  },
+  "sec-xEbsOCjQmAy1Uj_H6qRLr": "Extension Mechanism",
+  "sub-yif8bUmIT6rhAIIzhypni": {
+    "title": {
+      "title": "Extension Types"
+    },
+    "suffix": "1"
+  },
+  "sub-v_2QxsK7RqQj0amHynWzj": {
+    "title": {
+      "title": "Extension Composition"
+    },
+    "suffix": "2"
+  },
+  "sec-Xu_Ovl71oIhLU1kaCurK_": "Formal Properties and Theorems",
+  "sub-OBU4duRRllB7_9IhbL-1N": {
+    "title": {
+      "title": "Soundness"
+    },
+    "suffix": "1"
+  },
+  "sub-OB_3VjaM4yzhjgIYWx1_k": {
+    "title": {
+      "title": "Convergence"
+    },
+    "suffix": "2"
+  },
+  "sub-kbjoG8RVDTc33BlKjcHtq": {
+    "title": {
+      "title": "Decidability"
+    },
+    "suffix": "3"
+  },
+  "sec-TmlplXlhpu2gAP4_iKrgd": "Reference Implementation",
+  "sec-aAgCXhEN9t0xxoeTpf0Qc": "Concurrency Semantics",
+  "sub-aCpuFB0g_AW1E2KHOm2S4": {
+    "title": {
+      "title": "Concurrent Modification Model"
+    },
+    "suffix": "1"
+  },
+  "sub-ncM8XSD0TtcAXMwb3LvpB": {
+    "title": {
+      "title": "Replica Synchronization"
+    },
+    "suffix": "2"
+  },
+  "sub-5ZzTuUr-yJlnKDwIXmYhu": {
+    "title": {
+      "title": "Conflict Resolution Policies"
+    },
+    "suffix": "3"
+  },
+  "sub-rpCOBO3mGT4XORPhF2Soz": {
+    "title": {
+      "title": "CRDT Verification"
+    },
+    "suffix": "4"
+  },
+  "sec-5jP_ZWlaA8SfDbhVxrG99": "Binding Verification Lifecycle",
+  "sub-4vJaXL82mEBrXVULpKYBW": {
+    "title": {
+      "title": "Verification State Machine"
+    },
+    "suffix": "1"
+  },
+  "sub-vcz6foaOiAx1iuHklHTyd": {
+    "title": {
+      "title": "Verification Evidence"
+    },
+    "suffix": "2"
+  },
+  "sub-3NlKMZupL4yEDrO1ZHZOa": {
+    "title": {
+      "title": "Verification Constraints"
+    },
+    "suffix": "3"
+  },
+  "sec-YFHOeAjN2dYDjDiTocSSI": "Schema Evolution",
+  "sub-3QOCGH8SrcI0jJ6WEmRxB": {
+    "title": {
+      "title": "Evolution Types"
+    },
+    "suffix": "1"
+  },
+  "def-evolution-type": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "def-schema-change": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "sub-cgPvQ6yFyVCwCgmrCthMD": {
+    "title": {
+      "title": "Compatibility Rules"
+    },
+    "suffix": "2"
+  },
+  "rule-backward-compat": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "rule-forward-compat": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "rule-breaking-change": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "sub-f0nZDNKKljK_EWuTRFdhe": {
+    "title": {
+      "title": "Migration Operations"
+    },
+    "suffix": "3"
+  },
+  "def-migration": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "def-transform": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "op-migrate": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "thm-migration-validity": {
+    "title": {
+      "title": ""
+    },
+    "suffix": null
+  },
+  "sec-z3nlCPJ5B1h7TUhEf25LL": "Certification Artifacts",
+  "sub-B7-uHxNnfdyA71feDUufV": {
+    "title": {
+      "title": "Requirements Traceability Matrix (RTM)"
+    },
+    "suffix": "1"
+  },
+  "sub-g6bO7r2UJBcJichagjzjq": {
+    "title": {
+      "title": "Review Checklists"
+    },
+    "suffix": "2"
+  },
+  "sub-nGzEjE1opI3BWOMo1wcnq": {
+    "title": {
+      "title": "Change Impact Analysis"
+    },
+    "suffix": "3"
+  },
+  "sub-gzoPfB0Mf5HhIbZkA3wOS": {
+    "title": {
+      "title": "Formal Proof Artifacts"
+    },
+    "suffix": "4"
+  },
+  "sec-S3Z17-kDEc2A9A92Y0bqi": "Tool Qualification Guidance (DO-330)",
+  "sub-05g32laS1cijWsUXDSXDF": {
+    "title": {
+      "title": "Tool Qualification Levels (TQL)"
+    },
+    "suffix": "1"
+  },
+  "sub-OPqimZTNjywqzQRltEcrn": {
+    "title": {
+      "title": "STRATUM Tool Classification"
+    },
+    "suffix": "2"
+  },
+  "sub-3ouo4JoVoRarVNYKcH0cC": {
+    "title": {
+      "title": "Qualification Evidence Templates"
+    },
+    "suffix": "3"
+  },
+  "sec-PAskKN4i1etyZhtOY5xtv": "Mechanized Proof Templates",
+  "sec-ojM0_ZLauOdjNuKK99Pg0": "Per-Language INV-1..5 Implementation Checklists",
+  "sub-w6k6pjr7la60aaosG06sw": {
+    "title": {
+      "title": "Rust Checklist (Tier 1 - Provably Sound)"
+    },
+    "suffix": "1"
+  },
+  "sub-5KzPtMaZ-kAinxpu43M8t": {
+    "title": {
+      "title": "Kotlin Checklist (Tier 2 - Compile-Time Contracts + Assertions)"
+    },
+    "suffix": "2"
+  },
+  "sub-23u7B2-zf3erJIUlspjn4": {
+    "title": {
+      "title": "TypeScript Checklist (Tier 3 - Convention Enforced)"
+    },
+    "suffix": "3"
+  },
+  "sec-dIOSpm6loMFLin3AzkYRN": "Compositional Semantics",
+  "sub-sWbAAwqPgQaPyfEJXh_d6": {
+    "title": {
+      "title": "Specification Combination (S₁ + S₂)"
+    },
+    "suffix": "1"
+  },
+  "sub-a7udhKFOU3-h2LYpBkie_": {
+    "title": {
+      "title": "Composition Properties"
+    },
+    "suffix": "2"
+  },
+  "sec-LUj58UniUYiDJ-BI2QMU3": "Temporal Properties",
+  "sub-xwdB7EQ-8VWutgYfeGmUP": {
+    "title": {
+      "title": "Temporal Logic for Specifications"
+    },
+    "suffix": "1"
+  },
+  "sub-7Oc_E72D_BbOMR7aePOPg": {
+    "title": {
+      "title": "Standard Temporal Properties"
+    },
+    "suffix": "2"
+  },
+  "sec-ZBsFkK5bvDEL4m-rsfH17": "Constraint Conflict Resolution",
+  "sub-gZS4khSlWYeWkHGuUYYX4": {
+    "title": {
+      "title": "Priority-Based Override Semantics"
+    },
+    "suffix": "1"
+  },
+  "sub-mooNYE1Wl6oxd2J8gbntL": {
+    "title": {
+      "title": "Resolution Algorithm"
+    },
+    "suffix": "2"
+  },
+  "sec-RBDT59WZE2xJyi9k5UFvY": "Garbage Collection Proofs",
+  "sub-iFirzldEY8Pz3a3uoO2Be": {
+    "title": {
+      "title": "GC Safety Requirements"
+    },
+    "suffix": "1"
+  },
+  "sub-Xr72NAIc1SIa4LG_PzaS5": {
+    "title": {
+      "title": "GC Correctness Proofs"
+    },
+    "suffix": "2"
+  },
+  "sec-rRDDwm1LZy_CFk7nC2L0k": "Certification Objective Coverage Matrix",
+  "sub-uDiGAs9ugbik4-El3W1Rb": {
+    "title": {
+      "title": "DO-178C Objective Coverage [v2.4]"
+    },
+    "suffix": "1"
+  },
+  "sub-1trYd0fF2p3B0AfMjxrbK": {
+    "title": {
+      "title": "ISO 26262 Objective Coverage"
+    },
+    "suffix": "2"
+  },
+  "sec-Nei3FTlw11oOPZVBq920l": "STPA/FMEA Integration Framework",
+  "sub-NcB7Atdx6VyySv2tz45xK": {
+    "title": {
+      "title": "ISO 26262 Part 9 Requirements"
+    },
+    "suffix": "1"
+  },
+  "sub-6dUUtiFofAXIXmUIpGmeF": {
+    "title": {
+      "title": "STPA Integration"
+    },
+    "suffix": "2"
+  },
+  "sub-U84ZnWVaCvrh4Ir1xroli": {
+    "title": {
+      "title": "FMEA/FTA Integration"
+    },
+    "suffix": "3"
+  },
+  "sub-EPEEV-LMbC30OWgru6QE9": {
+    "title": {
+      "title": "Dependent Failure Analysis"
+    },
+    "suffix": "4"
+  },
+  "sub-v2NCOk_z-cR5PkLeqywLt": {
+    "title": {
+      "title": "Quantitative Safety Metrics"
+    },
+    "suffix": "5"
+  },
+  "sec-x6eVbGvoVfS9GNeqNkLUG": "Formal Attenuation Properties",
+  "sub-pCGFvFCO4L8j4h3PKCeei": {
+    "title": {
+      "title": "Attenuation Function Specification"
+    },
+    "suffix": "1"
+  },
+  "sub--lh0ubFdGgOWL0AP8LRDJ": {
+    "title": {
+      "title": "Attenuation Verification"
+    },
+    "suffix": "2"
+  },
+  "sec-dM0e66FHuNRBmoEaMjfxF": "Cross-Standard Traceability Matrix",
+  "sub-QmJI7hwONtDkMOsLuJtQQ": {
+    "title": {
+      "title": "DO-178C ↔ ISO 26262 Equivalence"
+    },
+    "suffix": "1"
+  },
+  "sub-OT6enWqAnGLLvulbUnnSi": {
+    "title": {
+      "title": "Process Mapping"
+    },
+    "suffix": "2"
+  },
+  "sub-hDaZXqxPvYSNfVdlv0-oK": {
+    "title": {
+      "title": "Tool Qualification Mapping"
+    },
+    "suffix": "3"
+  },
+  "sec-F4EMqD3954zBnfEDnmQGj": "Tier Boundary Formal Semantics",
+  "sub-8oKjG8_y8I20haN2MhaxW": {
+    "title": {
+      "title": "LSL-Style Tier Separation"
+    },
+    "suffix": "1"
+  },
+  "sub-ZnXEjhV3rxTWu6GxnV-0T": {
+    "title": {
+      "title": "Type-to-Sort Mapping"
+    },
+    "suffix": "2"
+  },
+  "sec-FKg-HIOFmN1Oiyr_KJhnT": "Summary",
+  "sec-Ksy2-gPkkxdYKBYNqe76U": "Glossary of Key Terms",
+  "sec-syYS1lzON5CBCL1ZdsBul": "Comprehensive Bibliography",
+  "sub-lWxDw_9dG32DFR0-Dy6kg": {
+    "title": {
+      "title": "Type Soundness & Covariant Subtyping"
+    },
+    "suffix": "1"
+  },
+  "sub-ltQzFXCRBIDlmgd8ujBPO": {
+    "title": {
+      "title": "Constraint Decidability (SMT)"
+    },
+    "suffix": "2"
+  },
+  "sub-8m30TvQWyhwZkdrughHRy": {
+    "title": {
+      "title": "CRDT Convergence & Composition [v2.4]"
+    },
+    "suffix": "3"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "id": "sec-ojM0_ZLauOdjNuKK99Pg0",
+  "title": "Per-Language INV-1..5 Implementation Checklists",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-w6k6pjr7la60aaosG06sw",
+      "title": "Rust Checklist (Tier 1 - Provably Sound)",
+      "defs": [],
+      "content": [
+        {
+          "type": "checklist",
+          "label": "INV-1 DEEP IMMUTABILITY",
+          "items": [
+            "Create #[derive(Immutable)] proc-macro that checks: No Cell<T> fields, No RefCell<T> fields, No UnsafeCell<T> fields, No Arc<Mutex<T>> or Arc<RwLock<T>> fields, All nested types also derive Immutable",
+            "Compile-time error if interior mutability detected",
+            "Test: Verify Cell<Layer> fails to compile"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-2 CONSTRUCTION ATOMICITY",
+          "items": [
+            "Make Element::new() private (pub(crate) or private)",
+            "Provide ElementBuilder with pub fn build() -> Result<Arc<Element>, Error>",
+            "Builder validates all fields before construction",
+            "Never return &Element during construction",
+            "Test: Verify partial construction is impossible"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-3 REFLECTION/FFI PROHIBITION",
+          "items": [
+            "Add #![forbid(unsafe_code)] to crate root",
+            "No std::mem::transmute anywhere in codebase",
+            "No std::ptr operations on Element or Layer",
+            "Audit all dependencies for unsafe that touches Element",
+            "CI check: cargo deny check unsafe"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-4 SERIALIZATION INTEGRITY",
+          "items": [
+            "Implement custom Serialize/Deserialize (not #[derive])",
+            "Include layer hash in serialized form: let hash = blake3::hash(&layer.canonical_bytes());",
+            "Verify hash on deserialization, reject if mismatch",
+            "Test: Tampered serialized data rejected",
+            "Test: Round-trip e == deserialize(serialize(e))"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-5 THREAD-SAFE PUBLICATION",
+          "items": [
+            "Element implements Send + Sync",
+            "Builder returns Arc<Element>, never raw Element",
+            "Use crossbeam::scope for structured concurrency",
+            "No &mut Element after construction",
+            "Test: Concurrent read access from multiple threads",
+            "Test: MIRI for undefined behavior detection"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-5KzPtMaZ-kAinxpu43M8t",
+      "title": "Kotlin Checklist (Tier 2 - Compile-Time Contracts + Assertions)",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "**Tier 2 Verification Approach**: Kotlin relies primarily on **compile-time contracts** (require(), check(), Kotlin Contracts KEEP) and conventional assertions, NOT formal runtime monitors. JetBrains states: \"There are no plans on bringing [contracts] to the run-time in the near future.\" Standard assert() is disabled by default on JVM. Research exists for coroutine monitoring (Springer 2022) and ESBMC-Jimple model checking (ISSTA 2022), but these are not production-standard runtime verification tools."
+        },
+        {
+          "type": "checklist",
+          "label": "INV-1 DEEP IMMUTABILITY",
+          "items": [
+            "Use data class with val-only properties",
+            "Add @Immutable annotation (custom or from Compose)",
+            "Configure detekt/ktlint rule to reject var in Layer",
+            "Runtime check: reflectively verify no mutable fields",
+            "All collection properties use List (not MutableList)",
+            "Test: Verify modification attempts throw at runtime"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-2 CONSTRUCTION ATOMICITY",
+          "items": [
+            "Private constructor: private constructor()",
+            "Companion object factory: companion object { fun create(...): Element }",
+            "Validation in init block before any property access",
+            "No 'this' escape during construction",
+            "Test: Partially constructed object cannot be observed"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-3 REFLECTION/FFI PROHIBITION",
+          "items": [
+            "Use sealed class/interface for Layer hierarchy",
+            "Add @JvmSynthetic to prevent Java reflection access",
+            "Module-info.java: no opens for element package",
+            "Security manager (if available): block setAccessible on Layer",
+            "ProGuard/R8 rules to obfuscate internal structure"
+          ]
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-23u7B2-zf3erJIUlspjn4",
+      "title": "TypeScript Checklist (Tier 3 - Convention Enforced)",
+      "defs": [],
+      "content": [
+        {
+          "type": "checklist",
+          "label": "INV-1 DEEP IMMUTABILITY",
+          "items": [
+            "Use readonly modifiers on all properties",
+            "Use Readonly<T> for object properties",
+            "Use ReadonlyArray<T> for array properties",
+            "ESLint rule: prefer-readonly-parameter-types",
+            "ESLint rule: no-object-mutation (from eslint-plugin-functional)",
+            "Use Object.freeze() at runtime for defense-in-depth"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-2 CONSTRUCTION ATOMICITY",
+          "items": [
+            "Private constructor: private constructor() {}",
+            "Static factory: static create(...): Result<Element, ValidationError>",
+            "Use zod or io-ts for runtime validation in factory",
+            "Factory returns Readonly<Element>",
+            "No 'this' passed to callbacks during construction"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "INV-3 REFLECTION PROHIBITION",
+          "items": [
+            "ESLint rule: no-prototype-builtins",
+            "No Object.defineProperty on Element or Layer",
+            "No Proxy wrapping of core types",
+            "Freeze prototypes: Object.freeze(Element.prototype)"
+          ]
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

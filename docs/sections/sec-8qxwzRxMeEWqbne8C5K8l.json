@@ -1,0 +1,811 @@
+{
+  "id": "sec-8qxwzRxMeEWqbne8C5K8l",
+  "title": "Abstract Syntax",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-xYOy8xUJpcssgjNVmANNW",
+      "title": "Element",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "An Element is the atomic unit of specification."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.1 (Element)",
+          "text": "e ::= ⟨id, τ, l, π, μ⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Unique identifier"
+            },
+            {
+              "term": "τ ∈ TYPE",
+              "definition": "Element type (from layer's type vocabulary)"
+            },
+            {
+              "term": "l ∈ ID",
+              "definition": "Layer identifier (membership) [IMMUTABLE - see §5.3] ⟹ Forward reference explained in Type System section"
+            },
+            {
+              "term": "π : NAME → VALUE",
+              "definition": "Properties (partial function)"
+            },
+            {
+              "term": "μ : METADATA",
+              "definition": "Metadata record"
+            }
+          ]
+        },
+        {
+          "type": "admonition",
+          "level": "critical",
+          "text": "CRITICAL INVARIANT [v2.0]: The layer component 'l' is IMMUTABLE after creation. This enables covariant subtyping in §5.3 while maintaining type soundness. To change an element's layer, delete and recreate with new layer assignment."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.2 (Metadata)",
+          "text": "METADATA = ⟨created: TIME, updated: TIME, version: VersionVector, status: STATUS, actor: ACTOR, clock: CLOCK⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "STATUS = {draft, active, deprecated, archived}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.3 (Version Vector) [v2.0]",
+          "text": "VersionVector = ACTOR → ℕ"
+        },
+        {
+          "type": "paragraph",
+          "text": "Operations:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "vv₁ ≤ vv₂  iff  ∀α. vv₁(α) ≤ vv₂(α)     -- partial order",
+            "vv₁ ⊔ vv₂  =  λα. max(vv₁(α), vv₂(α))   -- join (supremum)",
+            "inc(vv, α) =  vv[α ↦ vv(α) + 1]          -- increment"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Notation: e.id, e.τ, e.l, e.π, e.μ for projections"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-1PQdtQJCcUP4hsmjE7iJL",
+      "title": "Layer",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A Layer is a level of abstraction containing elements."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.4 (Tier)",
+          "text": "TIER = {motivation, logical, realization, grounding}"
+        },
+        {
+          "type": "paragraph",
+          "text": "with total order: motivation < logical < realization < grounding"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.5 (Tier Semantics) [v2.0]",
+          "text": "The tier ordering represents REFINEMENT direction:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "motivation",
+              "definition": "WHY - goals, values, and rationale"
+            },
+            {
+              "term": "logical",
+              "definition": "WHAT - abstract design and contracts"
+            },
+            {
+              "term": "realization",
+              "definition": "HOW - concrete implementation approach"
+            },
+            {
+              "term": "grounding",
+              "definition": "WHERE - physical artifacts and bindings"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Refinement: tier(l₁) < tier(l₂) means l₂ REFINES l₁ (l₂ provides more concrete details implementing l₁'s abstractions). This is analogous to MDA's CIM → PIM → PSM progression. **Dependency arrows point FROM concrete TO abstract** (e.g., realization → logical, meaning concrete elements DEPEND ON abstract specifications). This is enforced by Coherence (G6): pos(src) ≥ pos(tgt). See §2.3 for dependency direction vs impact flow clarification."
+        },
+        {
+          "type": "diagram",
+          "format": "ascii",
+          "content": "┌─────────────────────────────────────────────────────────────────────┐\n│                                                                     │\n│                         TIER FLOW DIAGRAM                           │\n│                                                                     │\n│  ┌─────────────────────────────────────────────────────────────┐   │\n│  │  MOTIVATION (WHY)                                           │   │\n│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐                      │   │\n│  │  │  Goal   │  │  Value  │  │  Metric │                      │   │\n│  │  └────┬────┘  └────┬────┘  └────┬────┘                      │   │\n│  └───────┼────────────┼────────────┼───────────────────────────┘   │\n│          │            │            │                               │\n│          │ traces_to ▲│            │  ◄── UPWARD (certification)   │\n│          │            │            │                               │\n│  ┌───────┼────────────┼────────────┼───────────────────────────┐   │\n│  │  LOGICAL (WHAT)    │            │                           │   │\n│  │  ┌────┴────┐  ┌────┴────┐  ┌────┴────┐                      │   │\n│  │  │Component│  │ Contract│  │   API   │                      │   │\n│  │  └────┬────┘  └────┬────┘  └────┬────┘                      │   │\n│  └───────┼────────────┼────────────┼───────────────────────────┘   │\n│          │            │            │                               │\n│          ▼ realizes   ▼ requires   ▼  ◄── DOWNWARD (refinement)    │\n│          │            │            │                               │\n│  ┌───────┼────────────┼────────────┼───────────────────────────┐   │\n│  │  REALIZATION (HOW) │            │                           │   │\n│  │  ┌────┴────┐  ┌────┴────┐  ┌────┴────┐                      │   │\n│  │  │  Module │  │  Config │  │ Pipeline│                      │   │\n│  │  └────┬────┘  └────┬────┘  └────┬────┘                      │   │\n│  └───────┼────────────┼────────────┼───────────────────────────┘   │\n│          │            │            │                               │\n│          ▼ realizes   ▼            ▼                               │\n│          │            │            │                               │\n│  ┌───────┼────────────┼────────────┼───────────────────────────┐   │\n│  │  GROUNDING (WHERE) │            │                           │   │\n│  │  ┌────┴────┐  ┌────┴────┐  ┌────┴────┐                      │   │\n│  │  │  File   │  │ Symbol  │  │  Line   │  ←── Bindings        │   │\n│  │  └─────────┘  └─────────┘  └─────────┘                      │   │\n│  └─────────────────────────────────────────────────────────────┘   │\n│                                                                     │\n│  LEGEND:                                                            │\n│    ▼ realizes/requires  = Refinement (downward, cascade attenuates)│\n│    ▲ traces_to          = Certification (upward, cascade blocked)  │\n│                                                                     │\n└─────────────────────────────────────────────────────────────────────┘",
+          "caption": "Figure 2.1: Tier flow showing the asymmetry between dependency direction (realizes/requires go downward) and traces_to (upward for certification). Impact cascades follow dependency arrows with attenuation across tier boundaries.",
+          "alt": "Diagram showing four tiers (Motivation, Logical, Realization, Grounding) with downward refinement dependencies (realizes/requires) and upward certification dependencies (traces_to). Cascade attenuation occurs on downward propagation."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.6 (Layer)",
+          "text": "l ::= ⟨id, name, tier, order, Q, T, deps⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Unique identifier"
+            },
+            {
+              "term": "name ∈ NAME",
+              "definition": "Human-readable name"
+            },
+            {
+              "term": "tier ∈ TIER",
+              "definition": "Which tier this layer belongs to"
+            },
+            {
+              "term": "order ∈ ℕ",
+              "definition": "Position within tier (0 = most abstract)"
+            },
+            {
+              "term": "Q ∈ NAME",
+              "definition": "The question this layer answers"
+            },
+            {
+              "term": "T ⊆ TYPE",
+              "definition": "Vocabulary of element types"
+            },
+            {
+              "term": "deps ⊆ ID",
+              "definition": "Layer dependencies (required layers)"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.7 (Layer Position)",
+          "text": "pos(l) = ⟨l.tier, l.order⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ordering: pos(l₁) < pos(l₂) iff l₁.tier < l₂.tier ∨ (l₁.tier = l₂.tier ∧ l₁.order < l₂.order)"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-przG8f9oPcQ5oNMXdlyHX",
+      "title": "Dependency",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A Dependency is a directed relationship between elements."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.8 (Dependency Type)",
+          "text": "DEPTYPE = {realizes, requires, produces, consumes, constrains, validates, traces_to}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.9 (Strength)",
+          "text": "STRENGTH = {hard, soft}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Semantics:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "hard",
+              "definition": "Breaking this dependency invalidates the specification"
+            },
+            {
+              "term": "soft",
+              "definition": "Breaking this dependency degrades but doesn't invalidate"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.10 (Cardinality)",
+          "text": "CARDINALITY = {one_to_one, one_to_many, many_to_one, many_to_many}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.11 (Dependency)",
+          "text": "d ::= ⟨id, src, tgt, δ, σ, κ, cascade_boundary⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Unique identifier"
+            },
+            {
+              "term": "src ∈ ID × ID",
+              "definition": "Source (element_id, layer_id)"
+            },
+            {
+              "term": "tgt ∈ ID × ID",
+              "definition": "Target (element_id, layer_id)"
+            },
+            {
+              "term": "δ ∈ DEPTYPE",
+              "definition": "Dependency type"
+            },
+            {
+              "term": "σ ∈ STRENGTH",
+              "definition": "Hard or soft"
+            },
+            {
+              "term": "κ ∈ CARDINALITY",
+              "definition": "Cardinality constraint"
+            },
+            {
+              "term": "cascade_boundary ∈ 𝔹",
+              "definition": "Whether cascade propagation stops here [v2.0]"
+            }
+          ]
+        },
+        {
+          "type": "admonition",
+          "level": "important",
+          "text": "**Dependency Direction vs Impact Flow Semantics [v2.4.4 Clarification]**\n\nDependencies have TWO distinct directional semantics:\n\n**1. Structural Direction (src → tgt)**: The dependency arrow shows WHO depends ON WHOM.\n- `d.src → d.tgt` means \"src depends on tgt\" (src is dependent, tgt is dependee)\n- `realizes`: concrete_impl → abstract_spec (impl depends on spec)\n- `requires`: component_A → component_B (A depends on B)\n- Coherence (G6): `pos(d.src) ≥ pos(d.tgt)` (dependent ≥ dependee in concreteness)\n\n**2. Impact Flow**: CASCADE walks deps where `d.src.elem = changed_element`, propagates to `d.tgt`.\n- When element e changes, impact flows TO elements e depends on\n- Example: Component C realizes Spec S → dependency `C → S`\n  - If C changes: cascade finds `d.src=C`, propagates impact to S ✓\n  - If S changes: cascade finds deps `d.src=S` (none of type realizes), no auto-propagation to C\n- This prevents circular cascades while maintaining traceability\n\n**Reconciling 'changes cascade down'**: This phrase in §4.6 means Coherence prevents upward structural dependencies (abstract layers don't depend on concrete). Impact flows along dependency arrows (dependent → dependee), which by G6 is always same-tier or concrete→abstract."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notation: src(d) = d.src, tgt(d) = d.tgt; d : e₁ →[δ] e₂ means dependency d from e₁ to e₂ of type δ"
+        }
+      ],
+      "suffix": "3"
+    },
+    {
+      "id": "sub-CyAf_GsK2z3HhpvlCgKlD",
+      "title": "Constraint",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A Constraint is a rule that must hold across elements."
+        },
+        {
+          "type": "admonition",
+          "level": "note",
+          "text": "SOUNDNESS FIX [v2.0]: The predicate language φ is now formally specified as a combination of QF_LIA, QF_LRA, and QF_UF (Quantifier-Free Linear Integer Arithmetic, Linear Real Arithmetic, and Uninterpreted Functions with Equality). This ensures decidability per SMT-LIB 2.6 standard using Nelson-Oppen combination."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 2.12 (Predicate Language - SMT-LIB Constraint Logic)**"
+        },
+        {
+          "type": "paragraph",
+          "text": "The constraint predicate language combines three decidable SMT-LIB theories:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "**QF_LIA**: Quantifier-Free Linear Integer Arithmetic (sort Int)",
+            "**QF_LRA**: Quantifier-Free Linear Real Arithmetic (sort Real)",
+            "**QF_UF**: Quantifier-Free Uninterpreted Functions with Equality"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Sorts and Coercions**:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "Sorts: Int, Real, Bool, Element, Layer, Dependency",
+            "Coercion: to_real : Int → Real (standard SMT-LIB coercion)",
+            "No implicit coercion from Real to Int (explicit floor/ceil required)"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Nelson-Oppen Requirements**: QF_LIA, QF_LRA, and QF_UF are stably infinite and have disjoint signatures (Int/Real arithmetic operators vs uninterpreted functions), satisfying combination requirements (Nelson & Oppen 1979)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Terms:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "t ::= x : σ                    -- Typed variable (σ ∈ {Int, Real, Bool, Element, ...})",
+            "    | n : Int                  -- Integer literal",
+            "    | r : Real                 -- Real literal",
+            "    | t₁ + t₂ | t₁ - t₂        -- Addition, subtraction (same sort)",
+            "    | n × t                    -- Scalar multiplication (n : Int)",
+            "    | to_real(t)               -- Int → Real coercion",
+            "    | f(t₁, ..., tₙ)           -- Uninterpreted function (signature declared)",
+            "    | e.π(p) : VALUE           -- Property access (runtime value)",
+            "    | |S| : Int                -- Set cardinality (finite sets only)",
+            "    | count(S, pred) : Int     -- Counting with predicate (see below)"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Finite Set Cardinality Semantics**: The `count(S, pred)` operator is defined for FINITE element sets only. Given a finite set S ⊆ E and predicate pred : E → Bool, `count(S, pred) = |{e ∈ S | pred(e)}|`. This is decidable because all specifications have finite E, L, D, C sets per §3 (WF-ID ensures finite identifiers)."
+        },
+        {
+          "type": "admonition",
+          "level": "important",
+          "text": "**SMT Solver Requirements**: Constraints using |S| or count() require an SMT solver with BOTH QF_LIA/QF_LRA theory AND finite sets theory (e.g., Z3 with (set Int) or CVC5 with finite sets). Pure QF_LIA + QF_UF solvers cannot handle set cardinality. Implementations may choose to: (1) require sets-capable solver for full K0 conformance, OR (2) restrict Kernel to QF_LIA/LRA/UF only and treat |S|/count() as K1+ extensions."
+        },
+        {
+          "type": "paragraph",
+          "text": "Atomic Formulas:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "a ::= t₁ = t₂                  -- Equality",
+            "    | t₁ ≠ t₂                  -- Disequality",
+            "    | t₁ < t₂ | t₁ ≤ t₂        -- Integer/real comparisons",
+            "    | t₁ > t₂ | t₁ ≥ t₂",
+            "    | e ∈ S                    -- Set membership",
+            "    | d : e₁ → e₂              -- Dependency existence"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Formulas (Quantifier-Free):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "φ ::= a                        -- Atomic formula",
+            "    | ¬φ                       -- Negation",
+            "    | φ₁ ∧ φ₂                  -- Conjunction",
+            "    | φ₁ ∨ φ₂                  -- Disjunction",
+            "    | φ₁ ⇒ φ₂                  -- Implication",
+            "    | if φ₁ then φ₂ else φ₃   -- Conditional"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Bounded Quantification (decidable extension):"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "φ ::= ∀ e ∈ E_finite. φ        -- Universal over finite set",
+            "    | ∃ e ∈ E_finite. φ        -- Existential over finite set"
+          ]
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 2.1 (Constraint Decidability)",
+          "text": "For any constraint c with predicate φ in QF_LIA + QF_LRA + QF_UF (combined via Nelson-Oppen): sat(φ) is decidable in NP (via SMT solving); unsat(φ) is decidable in co-NP"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.13 (Constraint Category)",
+          "text": "CATEGORY = {existence, uniqueness, completeness, consistency, validity, dependency, ordering, coverage, alignment, boundary}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.14 (Severity)",
+          "text": "SEVERITY = {error, warning, info}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.15 (Scope)",
+          "text": "scope ::= ⟨srcLayer: ID*, srcType: TYPE*, tgtLayer: ID*, tgtType: TYPE*⟩"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.16 (Constraint)",
+          "text": "c ::= ⟨id, name, scope, cat, sev, φ, msg, priority⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Unique identifier"
+            },
+            {
+              "term": "name ∈ NAME",
+              "definition": "Human-readable name"
+            },
+            {
+              "term": "scope ∈ SCOPE",
+              "definition": "What elements this applies to"
+            },
+            {
+              "term": "cat ∈ CATEGORY",
+              "definition": "Constraint category"
+            },
+            {
+              "term": "sev ∈ SEVERITY",
+              "definition": "Violation severity"
+            },
+            {
+              "term": "φ : P(E) × P(D) → 𝔹",
+              "definition": "Predicate (in SMT-LIB QF_LIA + QF_LRA + QF_UF)"
+            },
+            {
+              "term": "msg : P(E) → NAME",
+              "definition": "Error message generator"
+            },
+            {
+              "term": "priority ∈ ℕ",
+              "definition": "For conflict resolution [v2.0]"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.17 (Constraint Satisfaction)",
+          "text": "S ⊨ c iff c.φ(elements(S), dependencies(S)) = ⊤"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.18 (Constraint Conflict) [v2.0]",
+          "text": "conflict(c₁, c₂) iff unsat(c₁.φ ∧ c₂.φ)"
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Normative SMT-LIB 2.6 Encoding"
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 2.19 (SMT-LIB 2.6 Constraint Encoding) [v2.5]**: The following SMT-LIB 2.6 preamble defines the normative encoding for STRATUM constraints. Implementations MUST use this exact logic declaration and sort/function signatures for K0 conformance."
+        },
+        {
+          "type": "code",
+          "language": "smt2",
+          "lines": [
+            "; SMT-LIB 2.6 Standard Preamble for STRATUM Constraints",
+            "(set-logic QF_AUFLIRA)  ; Combined logic: Arrays, Uninterpreted Functions, Linear Integer/Real Arithmetic",
+            "",
+            "; Core domain sorts",
+            "(declare-sort Element 0)    ; Element identifiers",
+            "(declare-sort Layer 0)      ; Layer identifiers",
+            "(declare-sort Dependency 0) ; Dependency identifiers",
+            "",
+            "; Element projection functions (uninterpreted)",
+            "(declare-fun elem-id (Element) Int)       ; Element → unique integer ID",
+            "(declare-fun elem-layer (Element) Layer)  ; Element → Layer membership",
+            "(declare-fun elem-type (Element) Int)     ; Element → type code",
+            "",
+            "; Layer projection functions",
+            "(declare-fun layer-tier (Layer) Int)      ; Layer → tier code (0=motivation, 1=logical, 2=realization, 3=grounding)",
+            "(declare-fun layer-order (Layer) Int)     ; Layer → position within tier",
+            "",
+            "; Dependency projection functions",
+            "(declare-fun dep-src (Dependency) Element)     ; Dependency → source element",
+            "(declare-fun dep-tgt (Dependency) Element)     ; Dependency → target element",
+            "(declare-fun dep-type (Dependency) Int)        ; Dependency → type code",
+            "(declare-fun dep-strength (Dependency) Int)    ; 0=soft, 1=hard",
+            "",
+            "; Property access function (uninterpreted, domain-specific)",
+            "; Usage: (declare-fun prop-complexity (Element) Int)",
+            "; Each property gets its own typed accessor function",
+            "",
+            "; Set cardinality (for finite element/dependency sets)",
+            "; Encoded as integer constants: |E| = elem-count, |D| = dep-count",
+            "(declare-const elem-count Int)",
+            "(declare-const dep-count Int)",
+            "(assert (>= elem-count 0))",
+            "(assert (>= dep-count 0))",
+            "",
+            "; Tier ordering axioms (if needed for coherence constraints)",
+            "; (assert (forall ((l1 Layer) (l2 Layer))",
+            ";   (=> (< (layer-tier l1) (layer-tier l2))",
+            ";       (< (layer-position l1) (layer-position l2)))))",
+            "; Note: Quantifiers push logic to AUFLIRA (undecidable), avoid if possible"
+          ]
+        },
+        {
+          "type": "admonition",
+          "level": "note",
+          "text": "**Logic Selection Rationale**: QF_AUFLIRA combines four theories: Arrays (for element/dependency collections), Uninterpreted Functions (for property access), Linear Integer Arithmetic (for counts, tier codes), and Linear Real Arithmetic (for attenuation factors). This is the MINIMAL combined logic that supports all Kernel constraint patterns. Solvers: Z3 4.8+, CVC5 1.0+, MathSAT 5.6+ all support QF_AUFLIRA."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Example Constraint**: Feature test coverage (§4.2 completeness example) encoded in SMT-LIB 2.6:"
+        },
+        {
+          "type": "code",
+          "language": "smt2",
+          "lines": [
+            "; Constraint: ∀ feature f. ∃ test t. tests(t, f)",
+            "; Property declarations",
+            "(declare-fun is-feature (Element) Bool)",
+            "(declare-fun is-test (Element) Bool)",
+            "(declare-fun tests-feature (Dependency) Bool)  ; dep.type = validates",
+            "",
+            "; Finite quantification over elements (expanded to conjunction)",
+            "; For specification with elements e1, e2, ..., en:",
+            "(assert (=> (is-feature e1)",
+            "            (or (and (tests-feature d1) (= (dep-src d1) t1) (= (dep-tgt d1) e1))",
+            "                (and (tests-feature d2) (= (dep-src d2) t2) (= (dep-tgt d2) e1))",
+            "                ; ... for all test elements t_i and dependencies d_j",
+            "            )))",
+            "; Repeat for e2, e3, ..., en",
+            "",
+            "; Alternative encoding using counting (requires finite sets extension):",
+            "; (assert (forall ((f Element))",
+            ";   (=> (is-feature f)",
+            ";       (> (select feature-test-count f) 0))))",
+            "; where (declare-fun feature-test-count (Array Element Int))"
+          ]
+        },
+        {
+          "type": "admonition",
+          "level": "warning",
+          "text": "**Bounded Quantification Trade-off**: Quantified formulas (∀, ∃) over finite element sets are DECIDABLE when expanded to finite conjunctions/disjunctions, but may cause exponential blowup. K0 implementations MAY choose to: (1) fully expand quantifiers at query-time (guarantees decidability, may be slow), OR (2) use heuristic quantifier instantiation (fast, may report 'unknown' for complex constraints). K1+ conformance REQUIRES full expansion with definite sat/unsat answers."
+        },
+        {
+          "type": "paragraph",
+          "text": "Resolution: When conflict(c₁, c₂), apply constraint with higher priority. If equal priority, flag for manual resolution."
+        }
+      ],
+      "suffix": "4"
+    },
+    {
+      "id": "sub-hokiwCzrIfE6qFGSucWVf",
+      "title": "Binding",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A Binding connects abstract elements to concrete artifacts."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.19 (Binding Completeness)",
+          "text": "COMPLETENESS = {complete, partial, stub}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.20 (Verification State) [v2.0]",
+          "text": "VERIFICATION = {unverified, pending, verified, failed, stale}"
+        },
+        {
+          "type": "paragraph",
+          "text": "State transitions:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "unverified → pending   (verification initiated)",
+            "pending → verified     (verification succeeded)",
+            "pending → failed       (verification failed)",
+            "verified → stale       (bound artifact changed)",
+            "stale → pending        (re-verification initiated)",
+            "failed → pending       (retry verification)"
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.21 (Artifact Reference)",
+          "text": "artifact ::= ⟨type: ARTIFACT_TYPE, uri: URI, hash: HASH, verified_at: TIME*⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "ARTIFACT_TYPE = {file, symbol, line_range, url, database_record, ...}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.22 (Binding)",
+          "text": "b ::= ⟨id, abstract, concrete, completeness, verification, evidence⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Unique identifier"
+            },
+            {
+              "term": "abstract ∈ ID × ID",
+              "definition": "(element_id, layer_id)"
+            },
+            {
+              "term": "concrete ∈ ARTIFACT",
+              "definition": "Physical artifact"
+            },
+            {
+              "term": "completeness ∈ COMPLETENESS",
+              "definition": "How complete is the binding"
+            },
+            {
+              "term": "verification ∈ VERIFICATION",
+              "definition": "Current verification state [EXPANDED]"
+            },
+            {
+              "term": "evidence ∈ List<EVIDENCE>",
+              "definition": "Verification evidence [v2.0]"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.23 (Evidence) [v2.0]",
+          "text": "evidence ::= ⟨type: EVIDENCE_TYPE, timestamp: TIME, result: 𝔹, details: VALUE⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "EVIDENCE_TYPE = {test_result, static_analysis, manual_review, audit_log, ...}"
+        }
+      ],
+      "suffix": "5"
+    },
+    {
+      "id": "sub-4p4RHhG9shx4eEYEWo2Uh",
+      "title": "Cascade Rule",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A Cascade Rule defines how changes propagate."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.24 (Change Type)",
+          "text": "CHANGE = {create, update, delete, deprecate}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.25 (Impact Level)",
+          "text": "IMPACT = {⊥, cosmetic, degraded, breaking}"
+        },
+        {
+          "type": "paragraph",
+          "text": "with total order: ⊥ < cosmetic < degraded < breaking"
+        },
+        {
+          "type": "paragraph",
+          "text": "⊥ represents \"no impact\" - explicitly included for completeness"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.26 (Cascade Rule)",
+          "text": "r ::= ⟨id, trigger, propagation, effect⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "trigger     = ⟨elementTypes: TYPE*, changeType: CHANGE⟩",
+            "propagation = ⟨depTypes: DEPTYPE*, direction: DIR, maxDepth: ℕ*, respectBoundary: 𝔹⟩",
+            "effect      = ⟨severity: IMPACT, action: NAME, attenuates: 𝔹⟩"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "DIR = {forward, backward, both}"
+        },
+        {
+          "type": "paragraph",
+          "text": "respectBoundary: if true, stop at dependencies with cascade_boundary = ⊤"
+        }
+      ],
+      "suffix": "6"
+    },
+    {
+      "id": "sub-G3_ARB8KVMkMvSpCFg6_y",
+      "title": "Specification",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A Specification is a complete STRATUM model."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.27 (Specification)",
+          "text": "S ::= ⟨id, name, domain, version, L, E, D, C, B, R, H⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Specification identifier"
+            },
+            {
+              "term": "name ∈ NAME",
+              "definition": "Human-readable name"
+            },
+            {
+              "term": "domain ∈ NAME",
+              "definition": "Domain profile identifier"
+            },
+            {
+              "term": "version ∈ VersionVector",
+              "definition": "Causal version [v2.0 changed]"
+            },
+            {
+              "term": "L ⊆ LAYER",
+              "definition": "Set of layers"
+            },
+            {
+              "term": "E ⊆ ELEMENT",
+              "definition": "Set of elements"
+            },
+            {
+              "term": "D ⊆ DEPENDENCY",
+              "definition": "Set of dependencies"
+            },
+            {
+              "term": "C ⊆ CONSTRAINT",
+              "definition": "Set of constraints"
+            },
+            {
+              "term": "B ⊆ BINDING",
+              "definition": "Set of bindings"
+            },
+            {
+              "term": "R ⊆ CASCADE_RULE",
+              "definition": "Set of cascade rules"
+            },
+            {
+              "term": "H ∈ HISTORY",
+              "definition": "Operation history for CRDT [v2.0]"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 2.28 (History) [v2.0]",
+          "text": "H = List<Operation>; Operation = ⟨op_id: ID, actor: ACTOR, clock: CLOCK, type: OP_TYPE, payload⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "OP_TYPE = {add_element, remove_element, update_element, add_dep, ...}"
+        }
+      ],
+      "suffix": "7"
+    }
+  ]
+}

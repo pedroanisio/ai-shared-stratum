@@ -1,0 +1,168 @@
+{
+  "id": "sec-YFHOeAjN2dYDjDiTocSSI",
+  "title": "Schema Evolution",
+  "defs": [],
+  "overview": "Rules and operations for evolving specification schemas while preserving validity",
+  "content": [],
+  "children": [
+    {
+      "id": "sub-3QOCGH8SrcI0jJ6WEmRxB",
+      "title": "Evolution Types",
+      "defs": [
+        {
+          "id": "def-evolution-type",
+          "kind": "enum",
+          "number": "16.1",
+          "section": "sec-16-1",
+          "name": "EVOLUTION_TYPE",
+          "description": "Types of schema evolution",
+          "values": [
+            "backward_compatible",
+            "forward_compatible",
+            "full_compatible",
+            "breaking"
+          ]
+        },
+        {
+          "id": "def-schema-change",
+          "kind": "type",
+          "number": "16.2",
+          "section": "sec-16-1",
+          "name": "SchemaChange",
+          "description": "A change to the specification schema",
+          "syntax": "change ::= ⟨type: CHANGE_TYPE, target: PATH, before: Schema?, after: Schema?, migration: Migration?⟩",
+          "change_types": [
+            "add_field",
+            "remove_field",
+            "rename_field",
+            "change_type",
+            "add_constraint",
+            "remove_constraint",
+            "add_layer",
+            "remove_layer",
+            "add_element_type",
+            "deprecate_element_type"
+          ]
+        }
+      ],
+      "overview": "Categories of schema changes",
+      "content": [],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-cgPvQ6yFyVCwCgmrCthMD",
+      "title": "Compatibility Rules",
+      "defs": [
+        {
+          "id": "rule-backward-compat",
+          "kind": "rule",
+          "number": "BACKWARD-COMPAT",
+          "section": "sec-16-2",
+          "name": "Backward Compatibility",
+          "description": "Old data can be read by new schema",
+          "label": "BACKWARD-COMPAT",
+          "premises": [],
+          "conclusion": "∀ S : Schema_old. parse(serialize(S), Schema_new) succeeds",
+          "compatible_changes": [
+            "add_optional_field",
+            "add_field_with_default",
+            "widen_type",
+            "add_enum_value"
+          ]
+        },
+        {
+          "id": "rule-forward-compat",
+          "kind": "rule",
+          "number": "FORWARD-COMPAT",
+          "section": "sec-16-2",
+          "name": "Forward Compatibility",
+          "description": "New data can be read by old schema",
+          "label": "FORWARD-COMPAT",
+          "premises": [],
+          "conclusion": "∀ S : Schema_new. parse(serialize(S), Schema_old) succeeds",
+          "compatible_changes": [
+            "add_optional_field (ignored)",
+            "remove_optional_field"
+          ]
+        },
+        {
+          "id": "rule-breaking-change",
+          "kind": "rule",
+          "number": "BREAKING-CHANGE",
+          "section": "sec-16-2",
+          "name": "Breaking Change",
+          "description": "Changes that break compatibility",
+          "label": "BREAKING-CHANGE",
+          "premises": [],
+          "conclusion": "∃ S : Schema_old. parse(serialize(S), Schema_new) fails",
+          "breaking_changes": [
+            "remove_required_field",
+            "narrow_type",
+            "remove_enum_value",
+            "change_field_type_incompatibly",
+            "add_required_constraint"
+          ]
+        }
+      ],
+      "overview": "Rules for determining compatibility",
+      "content": [],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-f0nZDNKKljK_EWuTRFdhe",
+      "title": "Migration Operations",
+      "defs": [
+        {
+          "id": "def-migration",
+          "kind": "type",
+          "number": "16.3",
+          "section": "sec-16-3",
+          "name": "Migration",
+          "description": "A data migration script",
+          "syntax": "migration ::= ⟨id: ID, from_version: VERSION, to_version: VERSION, transforms: List<Transform>, reversible: 𝔹⟩"
+        },
+        {
+          "id": "def-transform",
+          "kind": "type",
+          "number": "16.4",
+          "section": "sec-16-3",
+          "name": "Transform",
+          "description": "A single transformation operation",
+          "syntax": "transform ::= ⟨type: TRANSFORM_TYPE, path: PATH, expression: EXPR⟩",
+          "transform_types": [
+            "set_default",
+            "copy_field",
+            "rename_field",
+            "compute_field",
+            "drop_field",
+            "split_field",
+            "merge_fields"
+          ]
+        },
+        {
+          "id": "op-migrate",
+          "kind": "function",
+          "number": "16.5",
+          "section": "sec-16-3",
+          "name": "migrate",
+          "description": "Migrate specification to new schema version",
+          "signature": "migrate : Specification × Migration → Result<Specification, MigrationError>"
+        },
+        {
+          "id": "thm-migration-validity",
+          "kind": "theorem",
+          "number": "16.1",
+          "section": "sec-16-3",
+          "name": "Migration Validity Preservation",
+          "description": "Valid specifications remain valid after migration",
+          "conclusion": "If Valid(S) under Schema_old and migration is sound, then Valid(migrate(S, migration)) under Schema_new",
+          "category": "preservation",
+          "proof_sketch": "**Proof Sketch [v2.5]**: By structural induction on the migration transform list.\n\n**Base case**: Empty transform list. migrate(S, ⟨∅⟩) = S. Since Valid(S) under Schema_old and Schema_old = Schema_new (no changes), Valid(S) under Schema_new. ✓\n\n**Inductive case**: Transform list t₁::ts. Assume Valid(S) and migration is sound.\n\n1. **Well-formedness preservation**: Each transform type preserves WF-rules:\n   - `set_default`: Adds values to existing elements → preserves WF-ID, WF-LAYER, WF-ACYCLIC\n   - `rename_field`: Bijective renaming → preserves all structural properties\n   - `compute_field`: Pure function of existing data → preserves dependencies\n   - `drop_field`: Removal never violates WF-rules (may violate constraints)\n   - `copy_field`, `split_field`, `merge_fields`: Preserve element count and dependency graph\n\n2. **Guarantee preservation**: Migration soundness requires:\n   - G1 (Traceability): Transform cannot remove traces_to edges → preserved\n   - G2 (Completeness): New error constraints satisfied by construction (migration transforms ensure this)\n   - G3 (Consistency): Transforms compute consistent values (no contradictions introduced)\n   - G4 (Groundedness): Bindings preserved or migrated with evidence\n   - G5 (Determinism): Cascade rules updated consistently\n   - G6 (Coherence): Layer positions unchanged → dependency directions preserved\n   - G7 (Explainability): Unsat cores re-computed for new schema\n\n3. **Constraint compatibility**:\n   - Backward-compatible: Old constraints still valid (new fields optional or have defaults)\n   - Forward-compatible: New constraints don't reference removed fields\n   - Breaking changes: Migration MUST provide transforms that satisfy new required constraints\n\n**Migration soundness criterion**: A migration is sound iff:\n```\n∀ transform ∈ migration.transforms.\n  transform preserves WellFormed(S) ∧\n  transform preserves {G1, G2, G3, G4, G5, G6} ∧\n  (transform.type = add_field ⇒ ∃ default_value) ∧\n  (transform.type = remove_field ⇒ field not referenced in constraints)\n```\n\n**Termination**: Migration applies finite transform list sequentially in O(|transforms| × |E|) time.\n\nTherefore, Valid(S) ∧ Sound(migration) ⇒ Valid(migrate(S, migration)). ∎"
+        }
+      ],
+      "overview": "Data migration during evolution",
+      "content": [],
+      "suffix": "3"
+    }
+  ]
+}

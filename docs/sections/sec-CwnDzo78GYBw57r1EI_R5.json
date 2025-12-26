@@ -1,0 +1,151 @@
+{
+  "id": "sec-CwnDzo78GYBw57r1EI_R5",
+  "title": "Inference Rules",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-WtpM3I2MOujIM5u6SCjC5",
+      "title": "Specification Validation",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Well-Formed Specification:"
+        },
+        {
+          "type": "rule",
+          "label": "SPEC-WF",
+          "formula": "WF-ID(S)  WF-LAYER(S)  WF-TYPE(S)  WF-DEP-ENDPOINTS(S)\nWF-BINDING-SOURCE(S)  WF-LAYER-DEPS(S)  WF-TIER-ORDER(S)\nWF-TIER-COMPLETE(S)  WF-ACYCLIC-LAYERS(S)  WF-ACYCLIC-HARD(S)\n───────────────────────────────────────────────────────────────────────────\nWellFormed(S)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Valid Specification:"
+        },
+        {
+          "type": "rule",
+          "label": "SPEC-VALID (K0 - Six Guarantees)",
+          "formula": "WellFormed(S)  Traceable(S)  Complete(S)  Consistent(S)\nGrounded(S)  Deterministic(S)  Coherent(S)\n───────────────────────────────────────────────────────────────────────────\nValid_K0(S)"
+        },
+        {
+          "type": "rule",
+          "label": "SPEC-VALID-K1 (K1+ - Seven Guarantees)",
+          "formula": "Valid_K0(S)  Explainable(S)\n───────────────────────────────\nValid_K1(S)"
+        },
+        {
+          "type": "admonition",
+          "level": "note",
+          "text": "**Conformance Levels**: K0 (Kernel) conformance requires G1-G6. K1 (Certified-Aware) adds G7 (Explainability). For backward compatibility, Valid(S) ≡ Valid_K0(S) unless explicitly stated otherwise."
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-BtTpQ81gRcV38qnt6uRnL",
+      "title": "Constraint Satisfaction",
+      "defs": [],
+      "content": [
+        {
+          "type": "rule",
+          "label": "CONSTR-SAT: Single Constraint Satisfaction",
+          "formula": "c.φ(elements(S), dependencies(S)) = ⊤\n──────────────────────────────────────\nS ⊨ c"
+        },
+        {
+          "type": "rule",
+          "label": "CONSTR-ALL: All Constraints Satisfaction",
+          "formula": "∀ c ∈ constraints(S). S ⊨ c\n───────────────────────────────\nS ⊨ constraints(S)"
+        },
+        {
+          "type": "rule",
+          "label": "CONSTR-VIOL: Constraint Violation",
+          "formula": "c.φ(elements(S), dependencies(S)) = ⊥\n──────────────────────────────────────\nS ⊭ c with message c.msg(elements(S))"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-5Xu8Vv_BHhTdzfCjtqDRo",
+      "title": "Cascade Computation",
+      "defs": [],
+      "content": [
+        {
+          "type": "admonition",
+          "level": "note",
+          "text": "**v2.4 Limitation**: These rules only implement forward direction (d.src → d.tgt). The direction and respectBoundary fields from CascadeRule (Definition 2.26) are not yet formalized in the inference rules. See v2.5 Polarity Table proposal for complete formalization."
+        },
+        {
+          "type": "paragraph",
+          "text": "Base Case - Direct Impact:"
+        },
+        {
+          "type": "rule",
+          "label": "CASCADE-1",
+          "formula": "d ∈ D    d.src.elem = e.id    d.δ ∈ r.propagation.depTypes\nd.cascade_boundary ≠ ⊤ ∨ ¬r.propagation.respectBoundary\n──────────────────────────────────────────────────────────\n(elem(d.tgt), r.effect.severity(1)) ∈ cascade(S, e, ch, r)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inductive Case - Transitive Impact:"
+        },
+        {
+          "type": "rule",
+          "label": "CASCADE-N",
+          "formula": "(e', sev) ∈ cascade(S, e, ch, r)    d.src.elem = e'.id\nd.δ ∈ r.propagation.depTypes    n < r.propagation.maxDepth\nd.cascade_boundary ≠ ⊤ ∨ ¬r.propagation.respectBoundary\n──────────────────────────────────────────────────────────\n(elem(d.tgt), r.effect.severity(n+1)) ∈ cascade(S, e, ch, r)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Attenuation:"
+        },
+        {
+          "type": "rule",
+          "label": "CASCADE-ATT",
+          "formula": "r.effect.attenuates = ⊤    severity(n) = s\n──────────────────────────────────────────\nseverity(n+1) = attenuate(s)"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "where attenuate(breaking) = degraded",
+            "      attenuate(degraded) = cosmetic",
+            "      attenuate(cosmetic) = ⊥",
+            "      attenuate(⊥) = ⊥"
+          ]
+        }
+      ],
+      "suffix": "3"
+    },
+    {
+      "id": "sub-KSKls8IkRl28ALimhUa0J",
+      "title": "Trace Computation",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Base Case - Root:"
+        },
+        {
+          "type": "rule",
+          "label": "TRACE-ROOT",
+          "formula": "root(e)\n─────────\ntrace(e) = [e]"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inductive Case - Follow traces_to (impl → requirement):"
+        },
+        {
+          "type": "rule",
+          "label": "TRACE-STEP",
+          "formula": "¬root(e)    d.tgt.elem = e.id    d.δ = traces_to    trace(elem(d.src)) = p\n──────────────────────────────────────────────────────────\ntrace(e) = e :: p"
+        },
+        {
+          "type": "paragraph",
+          "text": "Trace Path Property:"
+        },
+        {
+          "type": "theorem",
+          "label": "Trace Path Property",
+          "formula": "trace(e) = [e₀, e₁, ..., eₙ] → pos(layer(e₀)) ≥ ... ≥ pos(layer(eₙ))",
+          "description": "Trace paths ascend through the abstraction hierarchy (implementation to motivation)"
+        }
+      ],
+      "suffix": "4"
+    }
+  ]
+}

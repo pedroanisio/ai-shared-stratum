@@ -1,0 +1,149 @@
+{
+  "id": "sec-Jcn-W5ZXGpackkeeq-isa",
+  "title": "Type System",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-3wnjydGHE6NMdVzwCTKTu",
+      "title": "Type Syntax",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Base Types:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "τ ::= string | number | boolean | null",
+            "    | τ[]                           -- Array type",
+            "    | {p₁: τ₁, ..., pₙ: τₙ}        -- Object type",
+            "    | τ₁ | τ₂                       -- Union type",
+            "    | τ₁ & τ₂                       -- Intersection type",
+            "    | Ref<L, T>                     -- Reference to element of type T in layer L"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Element Types:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "ElementType<L> ::= {",
+            "  id: string,",
+            "  type: T where T ∈ L.T,",
+            "  layer: L.id,",
+            "  properties: PropertiesOf<T>,",
+            "  metadata: Metadata",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Reference Types:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "Ref<L, T> = { elementId: string, layerId: L.id, expectedType: T }"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-q0EEAv8YqBOqWHWG1EbmY",
+      "title": "Typing Judgments",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Contexts:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "Γ ::= ∅ | Γ, x : τ | Γ, l : Layer | Γ, e : Element<L>"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Judgments:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "Γ ⊢ e : τ           -- e has type τ in context Γ",
+            "Γ ⊢ d : D           -- d is a valid dependency in context Γ",
+            "Γ ⊢ c : C           -- c is a valid constraint in context Γ",
+            "Γ ⊢ S valid         -- S is a valid specification in context Γ"
+          ]
+        },
+        {
+          "type": "rule",
+          "label": "T-ELEMENT: Element Typing",
+          "formula": "l ∈ Γ    τ ∈ l.T    Γ ⊢ π : PropertiesOf<τ>\n─────────────────────────────────────────────────────────────────────────────\nΓ ⊢ ⟨id, τ, l.id, π, μ⟩ : Element<l>"
+        },
+        {
+          "type": "rule",
+          "label": "T-REF: Reference Typing",
+          "formula": "Γ ⊢ e : Element<L>    e.τ = T\n─────────────────────────────────────────────────────────────────────────────\nΓ ⊢ ref(e) : Ref<L, T>"
+        },
+        {
+          "type": "rule",
+          "label": "T-DEP: Dependency Typing",
+          "formula": "Γ ⊢ e₁ : Element<L₁>    Γ ⊢ e₂ : Element<L₂>    validDepType(δ, e₁.τ, e₂.τ)\n─────────────────────────────────────────────────────────────────────────────\nΓ ⊢ ⟨id, (e₁.id, L₁), (e₂.id, L₂), δ, σ, κ⟩ : Dependency"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-AE4RbWXOtuZuBmjZlLUcT",
+      "title": "Subtyping",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Subtyping Judgment: τ₁ <: τ₂ (τ₁ is a subtype of τ₂)"
+        },
+        {
+          "type": "rule",
+          "label": "S-REFL: Reflexivity",
+          "formula": "─────────\nτ <: τ"
+        },
+        {
+          "type": "rule",
+          "label": "S-TRANS: Transitivity",
+          "formula": "τ₁ <: τ₂    τ₂ <: τ₃\n──────────────────────\nτ₁ <: τ₃"
+        },
+        {
+          "type": "rule",
+          "label": "S-UNION-L: Union Left",
+          "formula": "τ₁ <: τ₁ | τ₂"
+        },
+        {
+          "type": "rule",
+          "label": "S-UNION-R: Union Right",
+          "formula": "τ₂ <: τ₁ | τ₂"
+        },
+        {
+          "type": "rule",
+          "label": "S-WIDTH: Object Width Subtyping",
+          "formula": "{p₁: τ₁, ..., pₙ: τₙ, pₙ₊₁: τₙ₊₁} <: {p₁: τ₁, ..., pₙ: τₙ}"
+        },
+        {
+          "type": "rule",
+          "label": "S-DEPTH: Object Depth Subtyping",
+          "formula": "τᵢ <: τᵢ' for all i\n──────────────────────────────────────\n{p₁: τ₁, ..., pₙ: τₙ} <: {p₁: τ₁', ..., pₙ: τₙ'}"
+        },
+        {
+          "type": "rule",
+          "label": "S-ELEMENT: Element Subtyping",
+          "formula": "L₁ <: L₂    T₁ <: T₂\n─────────────────────────────\nElement<L₁, T₁> <: Element<L₂, T₂>"
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

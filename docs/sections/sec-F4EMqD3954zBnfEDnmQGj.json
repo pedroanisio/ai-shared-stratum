@@ -1,0 +1,169 @@
+{
+  "id": "sec-F4EMqD3954zBnfEDnmQGj",
+  "title": "Tier Boundary Formal Semantics",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-8oKjG8_y8I20haN2MhaxW",
+      "title": "LSL-Style Tier Separation",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Following Larch Shared Language (LSL) patterns for specification layers."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 30.1 (Sort Hierarchy)",
+          "text": "Each tier defines a sort (type universe) with explicit mappings:"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "Tier[0] : Sort_Critical",
+            "  → Types: CriticalElement, SafetyConstraint, HazardMitigation",
+            "  → Properties: ASIL-D/DAL-A verified, mechanized proofs",
+            "",
+            "Tier[1] : Sort_High",
+            "  → Types: HighIntegrityElement, VerifiedConstraint",
+            "  → Properties: ASIL-C/DAL-B verified, model-checked",
+            "",
+            "Tier[2] : Sort_Medium",
+            "  → Types: MediumIntegrityElement, TestedConstraint",
+            "  → Properties: ASIL-B/DAL-C verified, property-tested",
+            "",
+            "Tier[3] : Sort_Low",
+            "  → Types: LowIntegrityElement, ReviewedConstraint",
+            "  → Properties: ASIL-A/DAL-D verified, code-reviewed"
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 30.2 (Sort Inclusion)",
+          "text": "Lower tiers may reference higher tiers (dependencies flow downward):\n\n  Sort_Low ⊇ Sort_Medium ⊇ Sort_High ⊇ Sort_Critical\n\nInterpretation: Low-tier code may call high-tier functions, but not vice versa. This enforces the \"no upward dependencies\" invariant architecturally."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 30.3 (Cross-Tier Interface)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "interface TierBoundary<S_source, S_target> {",
+            "  // Source tier (lower integrity)",
+            "  sourceTier: Tier;",
+            "  sourceSort: S_source;",
+            "",
+            "  // Target tier (higher integrity)",
+            "  targetTier: Tier;",
+            "  targetSort: S_target;",
+            "",
+            "  // Crossing requires explicit validation",
+            "  crossing: (value: S_source) => Validated<S_target> | Error;",
+            "",
+            "  // Attenuation applied at crossing",
+            "  attenuation: AttenuationFactor;",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Invariant: Cross-tier dependencies must go through TierBoundary interface. This is enforced at the type level in implementations."
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-ZnXEjhV3rxTWu6GxnV-0T",
+      "title": "Type-to-Sort Mapping",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Each STRATUM element type maps to a sort based on its containing layer's tier:"
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Element Type",
+            "Layer Tier",
+            "Mapped Sort",
+            "Verification Required"
+          ],
+          "rows": [
+            [
+              "Requirement",
+              "0",
+              "Sort_Critical",
+              "Mechanized proof"
+            ],
+            [
+              "Requirement",
+              "1",
+              "Sort_High",
+              "TLA+ model checking"
+            ],
+            [
+              "Requirement",
+              "2",
+              "Sort_Medium",
+              "Property-based testing"
+            ],
+            [
+              "Requirement",
+              "3",
+              "Sort_Low",
+              "Unit testing"
+            ],
+            [
+              "Constraint",
+              "0",
+              "Sort_Critical",
+              "SMT + manual review"
+            ],
+            [
+              "Constraint",
+              "1",
+              "Sort_High",
+              "SMT verification"
+            ],
+            [
+              "Constraint",
+              "2",
+              "Sort_Medium",
+              "SMT verification"
+            ],
+            [
+              "Constraint",
+              "3",
+              "Sort_Low",
+              "Review only"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Type-to-sort mapping function:"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "function mapToSort(element: Element, layer: Layer): Sort {",
+            "  return SORT_MAP[layer.tier] ?? Sort_Low;",
+            "}",
+            "",
+            "const SORT_MAP = {",
+            "  0: Sort_Critical,",
+            "  1: Sort_High,",
+            "  2: Sort_Medium,",
+            "  3: Sort_Low",
+            "};"
+          ]
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

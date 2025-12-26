@@ -1,0 +1,139 @@
+{
+  "id": "sec-FzfSSWJ73nYlWnpzz3-B7",
+  "title": "Domain Profiles",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-J0kyTrjtY23aK-igt7xv4",
+      "title": "Domain Profile Definition",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 8.1 (Domain Profile)",
+          "text": "A Domain Profile P is a tuple:\n\nP ::= ⟨id, name, layers, depTypes, constraintCats, bindingTypes, cascades⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Unique domain identifier"
+            },
+            {
+              "term": "name ∈ NAME",
+              "definition": "Human-readable name"
+            },
+            {
+              "term": "layers : List<LayerDef>",
+              "definition": "Layer definitions for this domain"
+            },
+            {
+              "term": "depTypes : List<DepTypeDef>",
+              "definition": "Dependency types for this domain"
+            },
+            {
+              "term": "constraintCats : List<CatDef>",
+              "definition": "Constraint categories"
+            },
+            {
+              "term": "bindingTypes : List<BindDef>",
+              "definition": "Binding types for this domain"
+            },
+            {
+              "term": "cascades : List<CascadeDef>",
+              "definition": "Cascade rules"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 8.2 (Profile Satisfaction)",
+          "text": "S satisfies P (written S : P) iff:\n• S.domain = P.id\n• ∀ l ∈ S.L. l conforms to some layer definition in P.layers\n• ∀ d ∈ S.D. d.δ ∈ P.depTypes\n• ∀ c ∈ S.C. c.cat ∈ P.constraintCats\n• ∀ b ∈ S.B. b.concrete.type ∈ P.bindingTypes"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-sHxf-VES1s5tfu5TfCaK_",
+      "title": "Canonical Domain Profiles",
+      "defs": [],
+      "content": [
+        {
+          "type": "profile",
+          "label": "Profile 8.1: Software Systems",
+          "layers": {
+            "motivation": [
+              "Strategy(BusinessDomain, Goal, Metric, Constraint, NFR)",
+              "Intent(Persona, Journey, Feature, AcceptanceCriteria)"
+            ],
+            "logical": [
+              "Design(Component, Pattern, Token, Layout)",
+              "Domain(BoundedContext, Aggregate, Command, Event)",
+              "Contract(API, Message, Effect, Error)"
+            ],
+            "realization": [
+              "Persistence(Database, DataLake, Cache, Search)",
+              "Runtime(Config, FeatureFlag, Secret, Permission)",
+              "Operations(Deployment, Pipeline, Observability, SLO)"
+            ],
+            "grounding": [
+              "Physical(File, Symbol, Line, Repository)"
+            ]
+          }
+        },
+        {
+          "type": "profile",
+          "label": "Profile 8.2: Organizations",
+          "layers": {
+            "motivation": [
+              "Vision(Mission, Vision, Value, StrategicGoal)",
+              "Objectives(OKR, KPI, Initiative, SuccessMetric)"
+            ],
+            "logical": [
+              "Structure(Department, Team, Role, Responsibility)",
+              "Process(Workflow, Decision, Approval, Escalation)",
+              "Policy(Policy, Guideline, Standard, Procedure)"
+            ],
+            "realization": [
+              "Capability(Skill, Tool, System, Resource)",
+              "Execution(Project, Task, Milestone, Deliverable)",
+              "Governance(Committee, Review, Audit, Compliance)"
+            ],
+            "grounding": [
+              "Artifact(Document, Record, Report, Asset)"
+            ]
+          }
+        },
+        {
+          "type": "profile",
+          "label": "Profile 8.3: Manufacturing",
+          "layers": {
+            "motivation": [
+              "BusinessCase(ProductGoal, MarketNeed, Constraint, Regulation)",
+              "Requirements(Functional, Performance, Safety, Quality)"
+            ],
+            "logical": [
+              "Design(Assembly, Subassembly, Part, Interface)",
+              "Process(Operation, Sequence, Tooling, Fixture)",
+              "Quality(Inspection, Test, Tolerance, Specification)"
+            ],
+            "realization": [
+              "Production(Workstation, Machine, Material, Routing)",
+              "Control(Parameter, Setpoint, Program, Recipe)",
+              "Logistics(Inventory, Supply, Schedule, Capacity)"
+            ],
+            "grounding": [
+              "Physical(Drawing, BOM, WorkInstruction, Equipment)"
+            ]
+          }
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

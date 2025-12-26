@@ -1,0 +1,116 @@
+{
+  "id": "sec-5jP_ZWlaA8SfDbhVxrG99",
+  "title": "Binding Verification Lifecycle",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-4vJaXL82mEBrXVULpKYBW",
+      "title": "Verification State Machine",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "**Definition 14.1 (Verification State Machine)**"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "lines": [
+            "                 ┌─────────────────────────────────────────┐",
+            "                 │                                         │",
+            "                 ▼                                         │",
+            "┌──────────┐  initiate  ┌─────────┐  success  ┌──────────┐│",
+            "│unverified│───────────►│ pending │──────────►│ verified ││",
+            "└──────────┘            └─────────┘           └──────────┘│",
+            "                             │                     │       │",
+            "                          failure                change    │",
+            "                             │                     │       │",
+            "                             ▼                     ▼       │",
+            "                        ┌────────┐           ┌───────┐    │",
+            "                        │ failed │           │ stale │────┘",
+            "                        └────────┘           └───────┘     retry",
+            "                             │                     │",
+            "                             └─────────────────────┘",
+            "                                    retry"
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 14.2 (State Transitions)",
+          "text": "transition : VERIFICATION × EVENT → VERIFICATION"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "transition(unverified, initiate) = pending",
+            "transition(pending, success) = verified",
+            "transition(pending, failure) = failed",
+            "transition(verified, artifact_changed) = stale",
+            "transition(stale, initiate) = pending",
+            "transition(failed, retry) = pending",
+            "",
+            "All other combinations return the current state unchanged."
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-vcz6foaOiAx1iuHklHTyd",
+      "title": "Verification Evidence",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 14.3 (Evidence Record)",
+          "text": "evidence ::= ⟨\n  id: ID,\n  type: EVIDENCE_TYPE,\n  timestamp: TIME,\n  binding_id: ID,\n  result: 𝔹,\n  confidence: [0, 1],           -- Confidence score\n  details: VALUE,               -- Type-specific details\n  expires_at: TIME*             -- Optional expiration\n⟩\n\nEVIDENCE_TYPE = {\n  test_result,        -- Automated test execution\n  static_analysis,    -- Code analysis tool output\n  type_check,         -- Type system verification\n  manual_review,      -- Human review attestation\n  audit_log,          -- Audit trail entry\n  trace_verification, -- Traceability check\n  coverage_report     -- Test coverage data\n}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 14.4 (Verification Decision)",
+          "text": "verify : Binding × List<Evidence> → VERIFICATION"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "verify(b, evidence) =",
+            "  let passing = [e ∈ evidence | e.result = ⊤ ∧ ¬expired(e)]",
+            "  let failing = [e ∈ evidence | e.result = ⊥ ∧ ¬expired(e)]",
+            "  let confidence = Σ(e.confidence for e in passing) / |passing|",
+            "",
+            "  if |failing| > 0 then failed",
+            "  else if |passing| = 0 then unverified",
+            "  else if confidence ≥ THRESHOLD then verified",
+            "  else pending"
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 14.5 (Staleness Detection)",
+          "text": "isStale : Binding → 𝔹\n\nisStale(b) =\n  b.verification = verified ∧\n  (b.concrete.hash ≠ currentHash(b.concrete.uri) ∨\n   ∃ e ∈ evidence(b). expired(e))"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-3NlKMZupL4yEDrO1ZHZOa",
+      "title": "Verification Constraints",
+      "defs": [],
+      "content": [
+        {
+          "type": "rule",
+          "label": "Constraint C-VERIFY-GROUNDING",
+          "formula": "∀ e ∈ E. leaf(e) → ∃ b ∈ B.\n  b.abstract.elem = e.id ∧\n  b.verification ∈ {verified, pending}",
+          "description": "Leaf elements must have verified or pending bindings for G4 to hold"
+        },
+        {
+          "type": "rule",
+          "label": "Constraint C-VERIFY-FRESH",
+          "formula": "∀ b ∈ B. b.verification = verified →\n  ¬isStale(b) ∨ staleness_age(b) < MAX_STALE_DURATION",
+          "description": "Verified bindings must not be stale beyond threshold"
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

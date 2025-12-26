@@ -1,0 +1,264 @@
+{
+  "id": "sec-Nei3FTlw11oOPZVBq920l",
+  "title": "STPA/FMEA Integration Framework",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-NcB7Atdx6VyySv2tz45xK",
+      "title": "ISO 26262 Part 9 Requirements",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "v2.3 identified gaps in ISO 26262 Part 9 (sections 9.7-9.8). v2.4 closes these gaps with a formal STPA/FMEA integration framework."
+        },
+        {
+          "type": "table",
+          "columns": [
+            "ISO 26262-9 Requirement",
+            "v2.3 Status",
+            "v2.4 Status"
+          ],
+          "rows": [
+            [
+              "9.7: Dependent failure analysis",
+              "✗ GAP",
+              "✓ ADDRESSED (§27.4)"
+            ],
+            [
+              "9.8: Safety analyses (FMEA/FTA)",
+              "✗ GAP",
+              "✓ ADDRESSED (§27.2-27.3)"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Reference standards:\n  • SAE J3187 (2022): STPA-Based Safety Analysis of Automotive Systems\n  • SAE J3307 (2025): STPA Recommended Practice\n  • Leveson (2011): Engineering a Safer World"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-6dUUtiFofAXIXmUIpGmeF",
+      "title": "STPA Integration",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "STPA (System-Theoretic Process Analysis) is a top-down hazard analysis method. STRATUM integrates STPA via explicit modeling of control structures."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 27.1 (STPA Control Structure)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "interface STPAControlAction {",
+            "  id: string;",
+            "  name: string;",
+            "  controller: ElementID;        // STRATUM element providing control",
+            "  controlledProcess: ElementID; // STRATUM element being controlled",
+            "  actuator?: ElementID;         // Optional actuator element",
+            "  sensor?: ElementID;           // Optional sensor element",
+            "  feedbackLoop: boolean;",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 27.2 (Unsafe Control Action - UCA)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "// STPA Handbook (Leveson & Thomas 2018) defines four provably complete UCA types.",
+            "// WRONG_DIRECTION is a subcategory of PROVIDED_WRONG for parametric control actions.",
+            "type UCAType =",
+            "  | 'NOT_PROVIDED'      // Type 1: Required action not provided",
+            "  | 'PROVIDED_WRONG'    // Type 2: Action provided incorrectly (includes WRONG_DIRECTION)",
+            "  | 'WRONG_TIMING'      // Type 3: Too early, too late, or out of sequence",
+            "  | 'STOPPED_TOO_SOON'  // Type 4: Stopped too soon or applied too long",
+            "  | 'WRONG_DIRECTION';  // Parametric subcategory: wrong polarity/direction (subset of Type 2)",
+            "",
+            "interface UnsafeControlAction {",
+            "  id: string;",
+            "  controlActionId: string;",
+            "  ucaType: UCAType;",
+            "  context: string;          // When this UCA is hazardous",
+            "  hazard: HazardID;         // Link to system hazard",
+            "  safetyConstraint: string; // Derived safety constraint",
+            "  formalProperty?: string;  // STRATUM constraint derivation",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 27.3 (Causal Scenario)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "type ScenarioType =",
+            "  | 'CONTROLLER_FAILURE'     // Controller logic error",
+            "  | 'ACTUATOR_FAILURE'       // Actuator malfunction",
+            "  | 'SENSOR_FAILURE'         // Sensor provides wrong feedback",
+            "  | 'COMMUNICATION_FAILURE'  // Message corruption or delay",
+            "  | 'PROCESS_MODEL_FAILURE'  // Incorrect mental model",
+            "  | 'EXTERNAL_DISTURBANCE';  // Environmental factor"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Algorithm 26.1 (STPA-to-STRATUM Constraint Derivation):\n\nFor each UCA identified:\n\n1. Extract safety constraint from UCA negation:\n   UCA: \"Brake command not provided when vehicle speed > 0 and obstacle ahead\"\n   SC:  \"Brake command MUST be provided when speed > 0 AND obstacle detected\"\n\n2. Map to STRATUM constraint:\n   {\n     type: 'SAFETY',\n     priority: 500,  // SAFETY level per §23\n     predicate: 'IF speed > 0 AND obstacle THEN brakeCommand = ACTIVE',\n     source: { type: 'STPA', ucaId: 'UCA-001', hazardId: 'H-003' }\n   }\n\n3. Verify formal property:\n   □(speed > 0 ∧ obstacle → ◇≤100ms brakeCommand = ACTIVE)\n\n4. Add to RTM with bidirectional traceability:\n   Hazard → UCA → Safety Constraint → STRATUM Constraint → Formal Property"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-U84ZnWVaCvrh4Ir1xroli",
+      "title": "FMEA/FTA Integration",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "FMEA (inductive, bottom-up) and FTA (deductive, top-down) complement STPA."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 27.4 (FMEA Entry)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "interface FMEAEntry {",
+            "  elementId: ElementID;           // STRATUM element being analyzed",
+            "  failureMode: string;            // How the element can fail",
+            "  localEffect: string;            // Effect on immediate subsystem",
+            "  systemEffect: string;           // Effect on overall system",
+            "  severity: 1 | 2 | 3 | 4 | 5;    // 5 = catastrophic",
+            "  occurrence: 1 | 2 | 3 | 4 | 5;  // 5 = very likely",
+            "  detection: 1 | 2 | 3 | 4 | 5;   // 5 = undetectable",
+            "  rpn: number;                    // Risk Priority Number = S × O × D",
+            "  mitigation: string;",
+            "  derivedConstraint?: ConstraintID;  // STRATUM constraint if RPN > threshold",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "**Recommended RPN Thresholds by ASIL** (STRATUM recommendations, not ISO 26262 requirements):\n\nNote: ISO 26262 uses HARA (Severity × Exposure × Controllability) matrices, not RPN multiplication. These thresholds represent commonly used industry practice (typical organizational thresholds range 100-150). AIAG-VDA FMEA (2019) introduced Action Priority as an alternative.\n\n  ASIL-D: RPN > 8 requires mitigation\n  ASIL-C: RPN > 16 requires mitigation\n  ASIL-B: RPN > 32 requires mitigation\n  ASIL-A: RPN > 64 requires mitigation"
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 27.5 (FTA Gate)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "type FTAGate = 'AND' | 'OR' | 'XOR' | 'PRIORITY_AND' | 'INHIBIT';",
+            "",
+            "interface FTANode {",
+            "  id: string;",
+            "  type: 'TOP_EVENT' | 'INTERMEDIATE' | 'BASIC_EVENT' | 'UNDEVELOPED';",
+            "  description: string;",
+            "  gate?: FTAGate;",
+            "  children?: FTANode[];",
+            "  elementId?: ElementID;      // Link to STRATUM element for basic events",
+            "  failureRate?: number;       // λ (failures per hour) for quantitative FTA",
+            "  cutSets?: string[][];       // Minimal cut sets (computed)",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "FTA-to-STRATUM mapping:\n  • Basic events → Element failure modes\n  • Intermediate events → Subsystem failures\n  • Top event → System hazard\n  • Minimal cut sets → Dependent failure combinations"
+        }
+      ],
+      "suffix": "3"
+    },
+    {
+      "id": "sub-EPEEV-LMbC30OWgru6QE9",
+      "title": "Dependent Failure Analysis",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "ISO 26262-9.7 requires analysis of dependent failures including:\n  • Common Cause Failures (CCF)\n  • Cascading Failures\n  • Common Mode Failures"
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 27.6 (Dependent Failure)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "interface DependentFailure {",
+            "  id: string;",
+            "  type: 'CCF' | 'CASCADE' | 'COMMON_MODE';",
+            "  affectedElements: ElementID[];",
+            "  commonCause?: string;           // Root cause for CCF",
+            "  propagationPath?: ElementID[];  // Path for cascading failures",
+            "  coupling: 'HARDWARE' | 'SOFTWARE' | 'ENVIRONMENTAL' | 'HUMAN';",
+            "  mitigations: string[];",
+            "  residualRisk: 'ACCEPTABLE' | 'TOLERABLE' | 'UNACCEPTABLE';",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "STRATUM integration:\n\n1. CCF analysis uses layer boundaries:\n   Elements in same layer share implementation → potential CCF\n   Elements in different tiers have architectural separation\n\n2. Cascade analysis uses dependency graph:\n   impactedElements(change) → identifies cascade paths\n   Attenuation function (§18) limits cascade propagation\n\n3. Common mode uses type hierarchy:\n   Elements of same type may share failure modes\n   Variant types (per §2.2) indicate potential common mode"
+        }
+      ],
+      "suffix": "4"
+    },
+    {
+      "id": "sub-v2NCOk_z-cR5PkLeqywLt",
+      "title": "Quantitative Safety Metrics",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "ISO 26262 requires quantitative metrics for hardware; software uses them as supporting evidence."
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Metric",
+            "Formula",
+            "Target (ASIL-D)"
+          ],
+          "rows": [
+            [
+              "SPFM",
+              "1 - Σ(λSPF)/Σ(λ)",
+              "≥ 99%"
+            ],
+            [
+              "LFM",
+              "1 - Σ(λLF)/Σ(λ)",
+              "≥ 90%"
+            ],
+            [
+              "PMHF",
+              "Σ(λresidual)",
+              "< 10 FIT"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Where:\n  SPFM = Single Point Fault Metric\n  LFM = Latent Fault Metric\n  PMHF = Probabilistic Metric for Hardware Failures\n  FIT = Failures in Time (per 10⁹ hours)\n\nSTRATUM supports these by:\n  • Tracking element failure rates in metadata\n  • Computing SPFM/LFM from safety mechanism coverage\n  • Generating PMHF estimates from FTA cut set analysis"
+        }
+      ],
+      "suffix": "5"
+    }
+  ]
+}

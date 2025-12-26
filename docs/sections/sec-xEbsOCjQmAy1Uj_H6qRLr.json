@@ -1,0 +1,116 @@
+{
+  "id": "sec-xEbsOCjQmAy1Uj_H6qRLr",
+  "title": "Extension Mechanism",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-yif8bUmIT6rhAIIzhypni",
+      "title": "Extension Types",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 9.1 (Stratum Extension)",
+          "text": "A Stratum Extension X is a tuple:\n\nX ::= ⟨id, name, placement, schemas, constraints, cascades⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Extension identifier"
+            },
+            {
+              "term": "name ∈ NAME",
+              "definition": "Human-readable name"
+            },
+            {
+              "term": "placement ∈ PLACEMENT",
+              "definition": "Where to insert in stack"
+            },
+            {
+              "term": "schemas : TYPE → Schema",
+              "definition": "Element type schemas"
+            },
+            {
+              "term": "constraints : List<Constraint>",
+              "definition": "Additional constraints"
+            },
+            {
+              "term": "cascades : List<CascadeRule>",
+              "definition": "Additional cascade rules"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 9.2 (Placement)",
+          "text": "PLACEMENT = { tier: TIER, after: ID*, before: ID*, parallel: ID* }"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 9.3 (Constraint Pack)",
+          "text": "A Constraint Pack CP is a tuple:\n\nCP ::= ⟨id, name, domain, constraints, requires⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "id ∈ ID",
+              "definition": "Pack identifier"
+            },
+            {
+              "term": "name ∈ NAME",
+              "definition": "Human-readable name"
+            },
+            {
+              "term": "domain ∈ NAME",
+              "definition": "Target domain (e.g., \"healthcare\")"
+            },
+            {
+              "term": "constraints : List<Constraint>",
+              "definition": "Constraints in this pack"
+            },
+            {
+              "term": "requires : List<ID>",
+              "definition": "Required extensions"
+            }
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-v_2QxsK7RqQj0amHynWzj",
+      "title": "Extension Composition",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 9.4 (Extension Application)",
+          "text": "apply : Profile × Extension → Profile\n\napply(P, X) = P' where:\n  P'.layers = insertLayer(P.layers, X.placement, X.schemas)\n  P'.constraints = P.constraints ∪ X.constraints\n  P'.cascades = P.cascades ∪ X.cascades"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 9.5 (Pack Application)",
+          "text": "applyPack : Profile × ConstraintPack → Profile\n\napplyPack(P, CP) = P' where:\n  P'.constraints = P.constraints ∪ CP.constraints"
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 9.1 (Extension Monotonicity)",
+          "formula": "If Valid(S) and S : P, then for extension X:\n  either Valid(S) and S : apply(P, X)\n  or ∃ new violations from X.constraints",
+          "description": "Extensions can only add constraints, never remove them"
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

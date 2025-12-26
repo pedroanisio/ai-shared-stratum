@@ -1,0 +1,91 @@
+{
+  "id": "sec-aBNKnM08R3W5pfjELaQas",
+  "title": "Operations",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-amKfbMudBf4a5EIxM14St",
+      "title": "Query Operations",
+      "defs": [],
+      "content": [
+        {
+          "type": "operation",
+          "label": "Operation 7.1: validate",
+          "signature": "validate : Specification → List<Violation>",
+          "semantics": "validate(S) = [ (c, c.msg(E)) | c ∈ C, S ⊭ c ]"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.2: trace",
+          "signature": "trace : Specification × Element → List<Element>",
+          "semantics": "trace(S, e) = compute trace path from e to root"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.3: impact",
+          "signature": "impact : Specification × Change → Set<(Element, Effect)>",
+          "semantics": "impact(S, δ) = ⋃ { cascade(S, elem(δ), δ.changeType, r) | r ∈ R, r.trigger matches δ }"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.4: coverage",
+          "signature": "coverage : Specification × Layer → CoverageMetrics",
+          "semantics": "coverage(S, l) = {\n  total: |{e ∈ E | e.l = l.id}|,\n  bound: |{e ∈ E | e.l = l.id ∧ bound(e)}|,\n  traced: |{e ∈ E | e.l = l.id ∧ trace(S,e) ≠ ∅}|\n}"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.5: bind",
+          "signature": "bind : Specification × Element → Option<Artifact>",
+          "semantics": "bind(S, e) = if ∃b ∈ B. b.abstract.elem = e.id then Some(b.concrete) else None"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-9q6VwEYOZyqBvxep8Dw5x",
+      "title": "Modification Operations",
+      "defs": [],
+      "content": [
+        {
+          "type": "operation",
+          "label": "Operation 7.6: addElement",
+          "signature": "addElement : Specification × Element → Result<Specification, Error>",
+          "semantics": "addElement(S, e) =\n  let S' = S with E' = E ∪ {e}\n  if WellFormed(S') then Ok(S') else Err(violations)"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.7: addDependency",
+          "signature": "addDependency : Specification × Dependency → Result<Specification, Error>",
+          "semantics": "addDependency(S, d) =\n  let S' = S with D' = D ∪ {d}\n  if WellFormed(S') ∧ Coherent(S') then Ok(S') else Err(violations)"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.8: removeElement",
+          "signature": "removeElement : Specification × ElementId → Result<Specification, Warning>",
+          "semantics": "removeElement(S, eid) =\n  let affected = impact(S, ⟨eid, delete, {}⟩)\n  let S' = S with E' = {e ∈ E | e.id ≠ eid},\n                   D' = {d ∈ D | d.src.elem ≠ eid ∧ d.tgt.elem ≠ eid},\n                   B' = {b ∈ B | b.abstract.elem ≠ eid}\n  Ok(S') with warnings about affected"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-doChtsVucb4PgzoofGPjB",
+      "title": "Comparison Operations",
+      "defs": [],
+      "content": [
+        {
+          "type": "operation",
+          "label": "Operation 7.9: diff",
+          "signature": "diff : Specification × Specification → Set<Change>",
+          "semantics": "diff(S₁, S₂) = {\n  added: {e ∈ S₂.E | e.id ∉ ids(S₁.E)},\n  removed: {e ∈ S₁.E | e.id ∉ ids(S₂.E)},\n  modified: {(e₁, e₂) | e₁ ∈ S₁.E, e₂ ∈ S₂.E, e₁.id = e₂.id, e₁ ≠ e₂}\n}"
+        },
+        {
+          "type": "operation",
+          "label": "Operation 7.10: merge",
+          "signature": "merge : Specification × Specification → Result<Specification, Conflict>",
+          "semantics": "merge(S₁, S₂) =\n  let conflicts = detectConflicts(S₁, S₂)\n  if conflicts = ∅ then\n    Ok(S₁ ⊔ S₂)  -- lattice join\n  else\n    Err(conflicts)"
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

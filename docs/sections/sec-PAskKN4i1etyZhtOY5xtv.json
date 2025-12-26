@@ -1,0 +1,131 @@
+{
+  "id": "sec-PAskKN4i1etyZhtOY5xtv",
+  "title": "Mechanized Proof Templates",
+  "defs": [],
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "This section provides proof templates for mechanizing STRATUM guarantees in theorem provers."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§19.1 TLA+ Cascade Termination Template"
+    },
+    {
+      "type": "code",
+      "language": "tla+",
+      "lines": [
+        "--------------------------- MODULE CascadeTermination ---------------------------",
+        "(* STRATUM Cascade Termination Proof",
+        " * Proves: cascade(S, e, ch, r) terminates for well-formed specifications",
+        " *)",
+        "",
+        "EXTENDS Naturals, FiniteSets, Sequences",
+        "",
+        "CONSTANTS",
+        "    Elements,           \\* Set of element IDs",
+        "    MaxHardPathLength,  \\* = 6 (from attenuation function)",
+        "    MaxSoftPathLength   \\* = 2 (from attenuation function)",
+        "",
+        "VARIABLES",
+        "    visited,            \\* Set of visited elements",
+        "    queue,              \\* Propagation queue",
+        "    impact,             \\* Current impact level per element",
+        "    terminated          \\* Termination flag",
+        "",
+        "\\* Impact levels as numbers: 0=bottom, 1=cosmetic, 2=degraded, 3=breaking",
+        "ImpactLevels == 0..3",
+        "",
+        "\\* Attenuation function (hard dependencies, decay rate 0.5)",
+        "AttenuateHard(i, d) ==",
+        "    LET decayed == i - (d \\div 2)",
+        "    IN IF decayed < 0 THEN 0 ELSE decayed",
+        "",
+        "\\* Attenuation function (soft dependencies, decay rate 1.5)",
+        "AttenuateSoft(i, d) ==",
+        "    LET decayed == i - ((3 * d) \\div 2)",
+        "    IN IF decayed < 0 THEN 0 ELSE decayed",
+        "",
+        "\\* THEOREM: Cascade always terminates",
+        "\\* Proof strategy:",
+        "\\*   1. visited grows monotonically",
+        "\\*   2. Elements is finite",
+        "\\*   3. Impact decreases via attenuation",
+        "\\*   4. When impact = 0, element not added to queue",
+        "THEOREM CascadeTerminates ==",
+        "    Spec => <>(terminated = TRUE)",
+        "",
+        "============================================================================="
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§19.2 Coq Type Soundness Template"
+    },
+    {
+      "type": "code",
+      "language": "coq",
+      "lines": [
+        "(* STRATUM Type Soundness Proof",
+        " * Proves: Progress + Preservation for Element<L,T> with INV-1..5",
+        " * Based on RustBelt methodology (Jung et al., POPL 2018)",
+        " *)",
+        "",
+        "Require Import Coq.Lists.List.",
+        "Require Import Coq.Sets.Ensembles.",
+        "Require Import Coq.Logic.Classical_Prop.",
+        "",
+        "(** * Core Definitions *)",
+        "",
+        "(** Immutability predicate *)",
+        "Definition Immutable (T : Type) :=",
+        "  forall (x y : T) (f : T -> T), f x = x.",
+        "",
+        "(** Layer type - must be immutable *)",
+        "Parameter Layer : Type.",
+        "Axiom layer_immutable : Immutable Layer.",
+        "",
+        "(** Main theorems *)",
+        "Theorem progress : forall e : Element, well_typed e -> can_step e \\/ is_value e.",
+        "Theorem preservation : forall e e', well_typed e -> step e e' -> well_typed e'."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "§19.3 Lean 4 CRDT Convergence Template"
+    },
+    {
+      "type": "code",
+      "language": "lean",
+      "lines": [
+        "/- STRATUM CRDT Convergence Proof",
+        " - Proves: Strong Eventual Consistency for composed CRDT",
+        " - Based on Gomes et al. 2017 (OOPSLA) methodology",
+        " -/",
+        "",
+        "import Mathlib.Data.Finset.Basic",
+        "import Mathlib.Order.Lattice",
+        "",
+        "/-- Version vector for causality tracking --/",
+        "structure VersionVector where",
+        "  clocks : Actor → Nat",
+        "",
+        "/-- Element state as CRDT --/",
+        "structure ElementCRDT where",
+        "  id : String",
+        "  properties : PropertyMap",
+        "  version : VersionVector",
+        "",
+        "/-- Main theorem: Strong Eventual Consistency --/",
+        "theorem strong_eventual_consistency :",
+        "  ∀ (r1 r2 : Replica),",
+        "    received r1 = received r2 →",
+        "    state r1 = state r2 := by",
+        "  sorry -- Proof via ACI properties"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "id": "sec-rRDDwm1LZy_CFk7nC2L0k",
+  "title": "Certification Objective Coverage Matrix",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-uDiGAs9ugbik4-El3W1Rb",
+      "title": "DO-178C Objective Coverage [v2.4]",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Status legend:\n  ✓ ADDRESSED - Specification provides mechanism to satisfy\n  ◐ TOOL - Depends on implementing tool\n  ○ PROCESS - Organizational process required\n  ✗ GAP - Not addressed (documented below)"
+        },
+        {
+          "type": "admonition",
+          "level": "correction",
+          "text": "v2.4 CORRECTION: DO-178C specifies 71 objectives at DAL-A (was incorrectly 70 in v2.3)"
+        },
+        {
+          "type": "table",
+          "label": "Summary by Table",
+          "columns": [
+            "Table",
+            "Total",
+            "✓ Addressed",
+            "◐ Tool",
+            "○ Process",
+            "✗ Gap"
+          ],
+          "rows": [
+            [
+              "A-1",
+              "7",
+              "2",
+              "0",
+              "5",
+              "0"
+            ],
+            [
+              "A-2",
+              "7",
+              "5",
+              "2",
+              "0",
+              "0"
+            ],
+            [
+              "A-3",
+              "7",
+              "5",
+              "1",
+              "1",
+              "0"
+            ],
+            [
+              "A-4",
+              "13",
+              "9",
+              "2",
+              "2",
+              "0"
+            ],
+            [
+              "A-5",
+              "9",
+              "5",
+              "3",
+              "1",
+              "0"
+            ],
+            [
+              "A-6",
+              "5",
+              "1",
+              "4",
+              "0",
+              "0"
+            ],
+            [
+              "A-7",
+              "5",
+              "2",
+              "3",
+              "0",
+              "0"
+            ],
+            [
+              "A-8",
+              "9",
+              "6",
+              "2",
+              "1",
+              "0"
+            ],
+            [
+              "A-9",
+              "4",
+              "3",
+              "0",
+              "1",
+              "0"
+            ],
+            [
+              "A-10",
+              "5",
+              "3",
+              "0",
+              "2",
+              "0"
+            ],
+            [
+              "TOTAL",
+              "71",
+              "41",
+              "17",
+              "13",
+              "0"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "INTERPRETATION:\n\n• 41 objectives: STRATUM specification directly addresses\n• 17 objectives: Require implementing tool (e.g., compiler, test harness)\n• 13 objectives: Require organizational process (outside tool scope)\n• 0 objectives: Gaps requiring specification changes\n\nFOR CERTIFICATION:\nAll 71 objectives must be satisfied. STRATUM addresses 41 directly.\nImplementing organization must:\n  1. Select/develop tools satisfying 17 tool-dependent objectives\n  2. Define processes satisfying 13 process objectives\n  3. Document rationale in Software Accomplishment Summary\n\nThere is no \"percentage compliance\" - either all objectives are satisfied with documented evidence, or certification cannot be achieved."
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-1trYd0fF2p3B0AfMjxrbK",
+      "title": "ISO 26262 Objective Coverage",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Part 6: Product development at the software level"
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Clause",
+            "Status"
+          ],
+          "rows": [
+            [
+              "6.5: Initiation of product development at software level",
+              "○ PROCESS"
+            ],
+            [
+              "6.6: Specification of software safety requirements",
+              "✓ (§2-4)"
+            ],
+            [
+              "6.7: Software architectural design",
+              "✓ (§3)"
+            ],
+            [
+              "6.8: Software unit design and implementation",
+              "◐ TOOL"
+            ],
+            [
+              "6.9: Software unit verification",
+              "✓ (§4,14)"
+            ],
+            [
+              "6.10: Software integration and verification",
+              "◐ TOOL"
+            ],
+            [
+              "6.11: Verification of software safety requirements",
+              "✓ (§4,14)"
+            ],
+            [
+              "6.12: Software configuration management",
+              "✓ (§14)"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Part 9: Automotive Safety Integrity Level (ASIL)-oriented and safety-oriented analyses [v2.4 ADDRESSED]"
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Clause",
+            "Status"
+          ],
+          "rows": [
+            [
+              "9.5: Analyses of dependent failures",
+              "✓ (§27.4)"
+            ],
+            [
+              "9.7: Safety analyses (STPA)",
+              "✓ (§27.2)"
+            ],
+            [
+              "9.8: Safety analyses (FMEA/FTA)",
+              "✓ (§27.3)"
+            ]
+          ]
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

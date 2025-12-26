@@ -1,0 +1,122 @@
+{
+  "id": "sec-pYrht_aqaJ5gENPPS98r-",
+  "title": "Well-Formedness Conditions",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-u18tB1pKQdXgyWtzMKNt9",
+      "title": "Structural Well-Formedness",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "A specification S is structurally well-formed iff all of the following hold:"
+        },
+        {
+          "type": "rule",
+          "label": "WF-ID: Unique Identifiers",
+          "formula": "∀ e₁, e₂ ∈ E. e₁.id = e₂.id → e₁ = e₂\n∀ l₁, l₂ ∈ L. l₁.id = l₂.id → l₁ = l₂\n∀ d₁, d₂ ∈ D. d₁.id = d₂.id → d₁ = d₂\n∀ c₁, c₂ ∈ C. c₁.id = c₂.id → c₁ = c₂\n∀ b₁, b₂ ∈ B. b₁.id = b₂.id → b₁ = b₂"
+        },
+        {
+          "type": "rule",
+          "label": "WF-LAYER: Layer Membership",
+          "formula": "∀ e ∈ E. ∃ l ∈ L. e.l = l.id",
+          "description": "Every element belongs to a layer that exists"
+        },
+        {
+          "type": "rule",
+          "label": "WF-TYPE: Type Vocabulary",
+          "formula": "∀ e ∈ E. let l = layer(e) in e.τ ∈ l.T",
+          "description": "Every element's type is in its layer's vocabulary"
+        },
+        {
+          "type": "rule",
+          "label": "WF-DEP-ENDPOINTS: Dependency Endpoints",
+          "formula": "∀ d ∈ D. ∃ e₁, e₂ ∈ E. d.src.elem = e₁.id ∧ d.tgt.elem = e₂.id",
+          "description": "Dependency endpoints reference existing elements"
+        },
+        {
+          "type": "rule",
+          "label": "WF-BINDING-SOURCE: Binding Sources",
+          "formula": "∀ b ∈ B. ∃ e ∈ E. b.abstract.elem = e.id",
+          "description": "Binding sources reference existing elements"
+        },
+        {
+          "type": "rule",
+          "label": "WF-LAYER-DEPS: Layer Dependencies",
+          "formula": "∀ l ∈ L. ∀ dep ∈ l.deps. ∃ l' ∈ L. l'.id = dep",
+          "description": "Layer dependencies reference existing layers"
+        },
+        {
+          "type": "rule",
+          "label": "WF-TIER-ORDER: Tier Ordering",
+          "formula": "∀ l ∈ L. ∀ dep ∈ l.deps. let l' = getLayer(dep) in pos(l') ≤ pos(l)",
+          "description": "Layers only depend on layers at same or higher abstraction"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-ZjGSTSjqSxpTW7FUneFbV",
+      "title": "Tier Completeness",
+      "defs": [],
+      "content": [
+        {
+          "type": "rule",
+          "label": "WF-TIER-COMPLETE: All Tiers Present",
+          "formula": "∀ t ∈ TIER. ∃ l ∈ L. l.tier = t",
+          "description": "Every tier has at least one layer"
+        },
+        {
+          "type": "paragraph",
+          "text": "This ensures the specification addresses all four fundamental questions:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "motivation: WHY does this exist?",
+            "logical: WHAT is the structure?",
+            "realization: HOW does it work?",
+            "grounding: WHERE does it exist?"
+          ]
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-N4IBDNbvYLcD_8c4BC2NX",
+      "title": "Acyclicity",
+      "defs": [],
+      "content": [
+        {
+          "type": "rule",
+          "label": "WF-ACYCLIC-LAYERS: No Layer Cycles",
+          "formula": "Let G_L = (L, {(l, l') | l' ∈ l.deps})\nG_L is acyclic"
+        },
+        {
+          "type": "rule",
+          "label": "WF-ACYCLIC-HARD: No Hard Dependency Cycles",
+          "formula": "Let G_D = (E, {(e₁, e₂) | ∃d ∈ D. d.src.elem = e₁.id ∧ d.tgt.elem = e₂.id ∧ d.σ = hard})\nG_D is acyclic",
+          "description": "Hard dependencies must be acyclic"
+        },
+        {
+          "type": "paragraph",
+          "text": "Note: Soft dependencies MAY form cycles (for mutual references, etc.)"
+        },
+        {
+          "type": "rule",
+          "label": "WF-SOFT-CYCLE-BOUNDED: Soft Cycle Boundaries",
+          "formula": "∀ cycle C in G_D^soft. ∃ d ∈ C. d.cascade_boundary = ⊤\nwhere G_D^soft = (E, {(e₁, e₂) | ∃d ∈ D. d.src.elem = e₁.id ∧ d.tgt.elem = e₂.id ∧ d.σ = soft})",
+          "description": "Every soft dependency cycle must have at least one cascade boundary to prevent infinite propagation"
+        },
+        {
+          "type": "rule",
+          "label": "WF-CASCADE-TERMINATION: Cascade Depth Bounded",
+          "formula": "∀ r ∈ R. ∃ n ∈ ℕ. r.max_depth = n\n∀ cascade path P in impact(S, e, r). |P| ≤ r.max_depth",
+          "description": "Cascade rules must specify maximum propagation depth, and all cascade paths must respect this bound"
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}

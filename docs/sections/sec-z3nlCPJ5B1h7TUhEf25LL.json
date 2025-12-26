@@ -1,0 +1,243 @@
+{
+  "id": "sec-z3nlCPJ5B1h7TUhEf25LL",
+  "title": "Certification Artifacts",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-B7-uHxNnfdyA71feDUufV",
+      "title": "Requirements Traceability Matrix (RTM)",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 17.1 (RTM Export)",
+          "text": "generateRTM : Specification → RTMDocument"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "RTMDocument = {",
+            "  metadata: {",
+            "    specificationId: ID,",
+            "    generatedAt: TIME,",
+            "    generatorVersion: String,",
+            "    standard: DO-178C | ISO-26262 | ASPICE",
+            "  },",
+            "  matrix: List<RTMRow>",
+            "}",
+            "",
+            "RTMRow = {",
+            "  -- Requirement (motivation/logical tier)",
+            "  requirementId: ID,",
+            "  requirementText: String,",
+            "  requirementIntegrity: IntegrityLevel,",
+            "  safetyGoals: List<ID>,              -- ISO 26262: linked hazards",
+            "",
+            "  -- Design (logical/realization tier)",
+            "  designElements: List<{",
+            "    id: ID,",
+            "    type: String,",
+            "    traceType: realizes | derives | constrains",
+            "  }>,",
+            "",
+            "  -- Implementation (realization/grounding tier)",
+            "  implementations: List<{",
+            "    artifactUri: String,",
+            "    artifactType: source_code | binary | config,",
+            "    bindingCompleteness: complete | partial | stub,",
+            "    lastVerified: TIME",
+            "  }>,",
+            "",
+            "  -- Verification",
+            "  testCases: List<{",
+            "    id: ID,",
+            "    type: unit | integration | system | acceptance,",
+            "    result: pass | fail | not_run,",
+            "    coverage: Number,",
+            "    lastRun: TIME",
+            "  }>,",
+            "",
+            "  -- Verification evidence summary",
+            "  verificationStatus: VerificationState,",
+            "  reviewRecords: List<ReviewRecordSummary>,",
+            "  evidenceSummary: {",
+            "    totalEvidence: Number,",
+            "    passingEvidence: Number,",
+            "    averageConfidence: Number,",
+            "    lastEvidenceDate: TIME",
+            "  }",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Export formats: CSV, PDF, DOORS-XML, ReqIF"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-g6bO7r2UJBcJichagjzjq",
+      "title": "Review Checklists",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 17.2 (Checklist Generation)",
+          "text": "generateChecklist : Element × Standard × IntegrityLevel → Checklist"
+        },
+        {
+          "type": "paragraph",
+          "text": "DO-178C Checklists by DAL:"
+        },
+        {
+          "type": "checklist",
+          "label": "DAL_A (Level A - Catastrophic)",
+          "items": [
+            "Software Requirements Standards compliance",
+            "Requirements traceability to system requirements",
+            "Requirements accuracy and consistency",
+            "Algorithm correctness verification",
+            "MC/DC structural coverage achieved",
+            "Data coupling and control coupling analysis",
+            "Stack analysis completed",
+            "Timing analysis completed",
+            "Source code to object code traceability",
+            "Tool qualification evidence complete",
+            "Independence requirements satisfied",
+            "Problem reports addressed"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "DAL_B (Level B - Hazardous)",
+          "items": [
+            "Software Requirements Standards compliance",
+            "Requirements traceability to system requirements",
+            "Requirements accuracy and consistency",
+            "Decision coverage achieved",
+            "Data coupling analysis",
+            "Tool qualification evidence complete",
+            "Problem reports addressed"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "DAL_C (Level C - Major)",
+          "items": [
+            "Software Requirements Standards compliance",
+            "Requirements traceability",
+            "Statement coverage achieved",
+            "Problem reports addressed"
+          ]
+        },
+        {
+          "type": "checklist",
+          "label": "DAL_D/E (Level D/E - Minor/No Effect)",
+          "items": [
+            "Basic requirements review",
+            "Functional testing completed"
+          ]
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-nGzEjE1opI3BWOMo1wcnq",
+      "title": "Change Impact Analysis",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 17.3 (Change Impact Analysis Report)",
+          "text": "analyzeChangeImpact : Specification × Change → ImpactReport"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "Change = {",
+            "  type: create | update | delete | deprecate,",
+            "  elementId: ID,",
+            "  previousState: Element?,",
+            "  newState: Element?,",
+            "  changedFields: List<String>,",
+            "  changeRationale: String,",
+            "  changeAuthor: Actor,",
+            "  changeTimestamp: TIME",
+            "}",
+            "",
+            "ImpactReport = {",
+            "  metadata: { changeId: ID, analysisTimestamp: TIME, analyzerVersion: String },",
+            "  changedElement: { id, type, layer, integrity, changeType, changedFields },",
+            "  directImpacts: List<{ elementId, dependencyType, impactSeverity, integrity, affectedProperties, requiredActions }>,",
+            "  transitiveImpacts: List<{ elementId, pathFromChange, pathLength, attenuatedSeverity, integrity }>,",
+            "  criticalImpacts: List<{ elementId, integrity, impactSeverity, requiresReview, requiredReviewers }>,",
+            "  verificationImpact: { bindingsInvalidated, evidenceExpired, reviewsRequired, testsToRerun },",
+            "  summary: { totalElementsAffected, criticalElementsAffected, maxIntegrityAffected, estimatedReviewHours, riskAssessment }",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Risk Assessment Calculation:\n  critical: Any ASIL_D/DAL_A element with severity ≥ degraded\n  high: Any ASIL_C/DAL_B element with severity ≥ degraded\n  medium: Any ASIL_B/DAL_C element with severity = breaking\n  low: All other cases"
+        }
+      ],
+      "suffix": "3"
+    },
+    {
+      "id": "sub-gzoPfB0Mf5HhIbZkA3wOS",
+      "title": "Formal Proof Artifacts",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "For DAL_A / ASIL_D certification, formal proofs are REQUIRED in the package."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Definition 17.4 (Proof Artifact)**"
+        },
+        {
+          "type": "code",
+          "language": "typescript",
+          "lines": [
+            "ProofArtifact = {",
+            "  id: ID,",
+            "  theorem: String,               -- Informal statement",
+            "  formalStatement: String,       -- In proof assistant syntax",
+            "  prover: coq | lean | isabelle | tlaplus | dafny,",
+            "  proofStatus: complete | partial | admitted,",
+            "  sourceFile: URI,               -- Path to proof file",
+            "  checkedAt: TIME,",
+            "  checkedBy: String,             -- Proof checker version",
+            "  dependencies: List<ID>,        -- Other theorems used",
+            "  assumptions: List<String>,     -- Axioms/admits",
+            "  coverage: {",
+            "    specificationElements: List<ID>,  -- Elements this proof covers",
+            "    constraints: List<ID>,            -- Constraints this proof validates",
+            "    wellFormedness: List<String>      -- WF rules this proof validates",
+            "  }",
+            "}"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Required Proofs for STRATUM Certification:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "1. type_soundness.v (Coq) - Progress + Preservation for Element<L,T>",
+            "2. cascade_termination.tla (TLA+) - cascade(S, e, ch, r) terminates for well-formed S",
+            "3. crdt_convergence.lean (Lean) - Strong Eventual Consistency for composed CRDT",
+            "4. constraint_decidability.dfy (Dafny) - sat(φ) is decidable for φ in QF-LIRA+EUF",
+            "5. attenuation_properties.v (Coq) - Absorption, Monotonicity, Anti-monotonicity, Soft-faster, Bottom"
+          ]
+        }
+      ],
+      "suffix": "4"
+    }
+  ]
+}

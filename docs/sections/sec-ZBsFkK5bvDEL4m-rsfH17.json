@@ -1,0 +1,118 @@
+{
+  "id": "sec-ZBsFkK5bvDEL4m-rsfH17",
+  "title": "Constraint Conflict Resolution",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-gZS4khSlWYeWkHGuUYYX4",
+      "title": "Priority-Based Override Semantics",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "When constraints conflict, resolution is determined by priority."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 23.1 (Constraint Priority)",
+          "text": "Priority sources (highest to lowest):"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "1. REGULATORY (priority 1000+)",
+              "definition": "Safety standard requirements (DO-178C, ISO 26262), Legal/compliance mandates, Regulatory body directives"
+            },
+            {
+              "term": "2. SAFETY (priority 500-999)",
+              "definition": "ASIL-D/DAL-A requirements, Hazard mitigations, Security requirements"
+            },
+            {
+              "term": "3. ARCHITECTURAL (priority 100-499)",
+              "definition": "System-level constraints, Interface contracts, Performance requirements"
+            },
+            {
+              "term": "4. DESIGN (priority 10-99)",
+              "definition": "Component constraints, Module boundaries, Coding standards"
+            },
+            {
+              "term": "5. PREFERENCE (priority 1-9)",
+              "definition": "Style guidelines, Naming conventions, Optional recommendations"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "label": "Definition 23.2 (Conflict Detection)",
+          "text": "Two constraints c₁ and c₂ conflict iff:\n  ∃ σ. sat(c₁, σ) ∧ sat(c₂, σ) ∧ ¬sat(c₁ ∧ c₂, σ)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Conflict types:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "DIRECT: c₁ ∧ c₂ is unsatisfiable",
+            "INDIRECT: c₁ ∧ c₂ ∧ D is unsatisfiable (D = derived constraints)",
+            "RESOURCE: c₁ and c₂ compete for limited resource",
+            "TEMPORAL: c₁ and c₂ impose conflicting timing"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-mooNYE1Wl6oxd2J8gbntL",
+      "title": "Resolution Algorithm",
+      "defs": [],
+      "content": [
+        {
+          "type": "code",
+          "lines": [
+            "function resolveConflicts(C: Set<Constraint>) → ResolvedSet:",
+            "  conflicts := detectConflicts(C)",
+            "  resolved := {}",
+            "  overridden := {}",
+            "",
+            "  for (c₁, c₂, type) in conflicts:",
+            "    if c₁.priority > c₂.priority:",
+            "      overridden.add(c₂)",
+            "      resolved.add({",
+            "        winner: c₁,",
+            "        loser: c₂,",
+            "        reason: 'priority',",
+            "        type: type",
+            "      })",
+            "    else if c₂.priority > c₁.priority:",
+            "      overridden.add(c₁)",
+            "      resolved.add({",
+            "        winner: c₂,",
+            "        loser: c₁,",
+            "        reason: 'priority',",
+            "        type: type",
+            "      })",
+            "    else:",
+            "      // Equal priority - flag for manual resolution",
+            "      resolved.add({",
+            "        winner: null,",
+            "        loser: null,",
+            "        reason: 'manual_required',",
+            "        type: type,",
+            "        constraints: [c₁, c₂]",
+            "      })",
+            "",
+            "  return {",
+            "    active: C \\ overridden,",
+            "    overridden: overridden,",
+            "    resolutions: resolved,",
+            "    manualRequired: resolved.filter(r => r.reason = 'manual_required')",
+            "  }"
+          ]
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

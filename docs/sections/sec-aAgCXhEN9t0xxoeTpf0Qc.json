@@ -1,0 +1,176 @@
+{
+  "id": "sec-aAgCXhEN9t0xxoeTpf0Qc",
+  "title": "Concurrency Semantics",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-aCpuFB0g_AW1E2KHOm2S4",
+      "title": "Concurrent Modification Model",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "STRATUM supports collaborative specification development via CRDT-based eventual consistency. This section formalizes the concurrency model."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 13.1 (Operation)",
+          "text": "op ::= ⟨id, actor, clock, type, payload⟩\n\nOP_TYPE = {\n  add_element(e),\n  remove_element(eid),\n  update_property(eid, prop, value),\n  add_dependency(d),\n  remove_dependency(did),\n  add_constraint(c),\n  update_binding(b)\n}"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 13.2 (Causality)",
+          "text": "op₁ → op₂ (op₁ causally precedes op₂) iff:\n  op₁.clock < op₂.clock\n\nop₁ ∥ op₂ (op₁ concurrent with op₂) iff:\n  ¬(op₁ → op₂) ∧ ¬(op₂ → op₁)"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 13.3 (Operation Semantics)",
+          "text": "apply : Specification × Operation → Specification"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "apply(S, op) = case op.type of",
+            "  add_element(e) →",
+            "    if e.id ∉ ids(S.E)",
+            "    then S with E' = E ∪ {e}, H' = H ++ [op]",
+            "    else S with E' = E[e.id ↦ e ⊔ S.E(e.id)], H' = H ++ [op]",
+            "",
+            "  remove_element(eid) →",
+            "    S with",
+            "      E' = {e ∈ E | e.id ≠ eid ∨ e.μ.clock > op.clock},",
+            "      H' = H ++ [op]",
+            "    -- Add-wins: concurrent add beats remove",
+            "",
+            "  update_property(eid, prop, value) →",
+            "    let e = S.E(eid) in",
+            "    let e' = e with π' = π[prop ↦ (value, op.clock)] in  -- LWW register",
+            "    S with E' = E[eid ↦ e'], H' = H ++ [op]",
+            "",
+            "  add_dependency(d) →",
+            "    S with D' = D ∪ {d}, H' = H ++ [op]"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-ncM8XSD0TtcAXMwb3LvpB",
+      "title": "Replica Synchronization",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 13.4 (Replica State)",
+          "text": "A replica R is a pair (S, seen) where:\n  S: current specification state\n  seen: set of operation IDs that have been applied"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 13.5 (Synchronization)",
+          "text": "sync : Replica × Replica → Replica × Replica"
+        },
+        {
+          "type": "code",
+          "lines": [
+            "sync(R₁, R₂) =",
+            "  let new_for_1 = {op ∈ R₂.H | op.id ∉ R₁.seen}",
+            "  let new_for_2 = {op ∈ R₁.H | op.id ∉ R₂.seen}",
+            "  let R₁' = foldl(apply, R₁.S, causal_sort(new_for_1))",
+            "  let R₂' = foldl(apply, R₂.S, causal_sort(new_for_2))",
+            "  ((R₁'.S, R₁.seen ∪ ids(new_for_1)),",
+            "   (R₂'.S, R₂.seen ∪ ids(new_for_2)))"
+          ]
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 13.1 (Convergence)",
+          "formula": "For any two replicas R₁, R₂ that have synchronized:\n  R₁.S = R₂.S",
+          "description": "All replicas eventually converge to the same state"
+        },
+        {
+          "type": "theorem",
+          "label": "Theorem 13.2 (Intention Preservation)",
+          "formula": "If op is a local operation on replica R:\n  effect(op) ⊆ effect_in_final_state(op)",
+          "description": "The intent of an operation is preserved in the final merged state (modulo conflict resolution rules)"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-5ZzTuUr-yJlnKDwIXmYhu",
+      "title": "Conflict Resolution Policies",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "For concurrent operations on the same entity:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "1. Add-wins (for elements, dependencies)",
+              "definition": "If op₁ = add(x) and op₂ = remove(x.id) and op₁ ∥ op₂: x is present in final state"
+            },
+            {
+              "term": "2. Last-Writer-Wins (for properties)",
+              "definition": "If op₁ = update(e, p, v₁) and op₂ = update(e, p, v₂) and op₁ ∥ op₂: use v_i where op_i.clock is lexicographically greater"
+            },
+            {
+              "term": "3. Priority-based (for constraints)",
+              "definition": "If conflict(c₁, c₂): if c₁.priority > c₂.priority then apply c₁; else if c₂.priority > c₁.priority then apply c₂; else flag for manual resolution"
+            },
+            {
+              "term": "4. Union (for cascade rules)",
+              "definition": "All cascade rules from both replicas are kept. Duplicate rules (by id) are merged using LWW."
+            }
+          ]
+        }
+      ],
+      "suffix": "3"
+    },
+    {
+      "id": "sub-rpCOBO3mGT4XORPhF2Soz",
+      "title": "CRDT Verification",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Verification approaches for CRDT implementations scale with assurance level requirements."
+        },
+        {
+          "type": "table",
+          "label": "Verification Approaches by Assurance Level",
+          "columns": [
+            "Level",
+            "Verification Approach",
+            "Reference"
+          ],
+          "rows": [
+            [
+              "DAL-A/ASIL-D",
+              "Mechanized proof (Lean/Coq)",
+              "iasakura/lean-yjs (2025), Gomes et al. 2017 (Isabelle)"
+            ],
+            [
+              "DAL-B/ASIL-C",
+              "Type-system verified, Model checking (TLA+/TLC)",
+              "Zakhour et al. 2023 (PLDI), Cousineau et al. 2012 (FM)"
+            ],
+            [
+              "DAL-C/ASIL-B",
+              "Property-based testing, Bounded model checking",
+              "QuickCheck/Hypothesis, CBMC"
+            ],
+            [
+              "DAL-D/ASIL-A",
+              "Unit testing + code review",
+              "Standard practice"
+            ]
+          ]
+        }
+      ],
+      "suffix": "4"
+    }
+  ]
+}

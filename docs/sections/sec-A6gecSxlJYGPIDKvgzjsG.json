@@ -1,0 +1,280 @@
+{
+  "id": "sec-A6gecSxlJYGPIDKvgzjsG",
+  "title": "Policy [v2.5]",
+  "defs": [],
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "A Policy defines automated remediation workflows triggered by violations, changes, or specification states. Policies complement Constraints: constraints define WHAT must hold, policies define HOW to respond when constraints don't hold."
+    },
+    {
+      "type": "definition",
+      "label": "Definition 2.28 (Policy)",
+      "text": "p ::= ⟨id, name, appliesTo, actions, priority⟩"
+    },
+    {
+      "type": "paragraph",
+      "text": "where:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "id ∈ ID",
+          "definition": "Unique identifier"
+        },
+        {
+          "term": "name ∈ NAME",
+          "definition": "Human-readable name"
+        },
+        {
+          "term": "appliesTo",
+          "definition": "Trigger conditions (see Definition 2.29)"
+        },
+        {
+          "term": "actions",
+          "definition": "Response actions (see Definition 2.30)"
+        },
+        {
+          "term": "priority ∈ ℕ",
+          "definition": "For conflict resolution (higher = more important)"
+        }
+      ]
+    },
+    {
+      "type": "definition",
+      "label": "Definition 2.29 (Policy Trigger)",
+      "text": "appliesTo ::= ⟨constraintCategories?, guarantees?, integrityLevels?, severities?⟩"
+    },
+    {
+      "type": "paragraph",
+      "text": "where:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "constraintCategories ∈ P(CATEGORY)",
+          "definition": "Optional: trigger on specific constraint types"
+        },
+        {
+          "term": "guarantees ∈ P({'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7'})",
+          "definition": "Optional: trigger on guarantee violations"
+        },
+        {
+          "term": "integrityLevels ∈ P(IntegrityLevel)",
+          "definition": "Optional: trigger on ASIL_D, DAL_A, etc."
+        },
+        {
+          "term": "severities ∈ P(SEVERITY)",
+          "definition": "Optional: trigger on error, warning, info"
+        }
+      ]
+    },
+    {
+      "type": "definition",
+      "label": "Definition 2.30 (Policy Actions)",
+      "text": "actions ::= ⟨suggestedFixes?, requiredReviewers?, requiredEvidenceTypes?, minimumEvidenceCount?, blockingBehavior, notificationChannels?⟩"
+    },
+    {
+      "type": "paragraph",
+      "text": "where:"
+    },
+    {
+      "type": "definition-list",
+      "items": [
+        {
+          "term": "suggestedFixes ∈ FixTemplate*",
+          "definition": "Optional: automated fix suggestions"
+        },
+        {
+          "term": "requiredReviewers ∈ ⟨role: NAME, count: ℕ, escalationTimeout?: Duration⟩?",
+          "definition": "Optional: human review requirements"
+        },
+        {
+          "term": "requiredEvidenceTypes ∈ P(EvidenceType)?",
+          "definition": "Optional: types of evidence required"
+        },
+        {
+          "term": "minimumEvidenceCount ∈ ℕ?",
+          "definition": "Optional: minimum evidence records"
+        },
+        {
+          "term": "blockingBehavior ∈ {block_merge, warn_only, auto_fix}",
+          "definition": "Required: enforcement level"
+        },
+        {
+          "term": "notificationChannels ∈ NAME*?",
+          "definition": "Optional: where to send alerts"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Standard Policies"
+    },
+    {
+      "type": "paragraph",
+      "text": "STRATUM v2.5 defines standard policies shipped with domain profiles:"
+    },
+    {
+      "type": "code",
+      "language": "typescript",
+      "lines": [
+        "// POL-ASIL-D-REVIEW: Automotive safety-critical",
+        "{",
+        "  id: 'POL-ASIL-D-REVIEW',",
+        "  name: 'ASIL-D Dual Review Requirement',",
+        "  appliesTo: { integrityLevels: ['ASIL_D'] },",
+        "  actions: {",
+        "    requiredReviewers: { role: 'safety-engineer', count: 2,",
+        "                         escalationTimeout: '48h' },",
+        "    requiredEvidenceTypes: ['static_analysis', 'manual_review'],",
+        "    minimumEvidenceCount: 2,",
+        "    blockingBehavior: 'block_merge'",
+        "  },",
+        "  priority: 1000",
+        "}",
+        "",
+        "// POL-DAL-A-EVIDENCE: Avionics critical",
+        "{",
+        "  id: 'POL-DAL-A-EVIDENCE',",
+        "  name: 'DAL-A MC/DC + Formal Proof Required',",
+        "  appliesTo: { integrityLevels: ['DAL_A'] },",
+        "  actions: {",
+        "    requiredEvidenceTypes: ['mcdc_coverage', 'formal_proof'],",
+        "    minimumEvidenceCount: 2,",
+        "    blockingBehavior: 'block_merge'",
+        "  },",
+        "  priority: 1000",
+        "}",
+        "",
+        "// POL-G4-BINDING: Groundedness assistance",
+        "{",
+        "  id: 'POL-G4-BINDING',",
+        "  name: 'Suggest Binding Creation',",
+        "  appliesTo: { guarantees: ['G4'] },",
+        "  actions: {",
+        "    suggestedFixes: [",
+        "      { template: 'create_binding', params: { layer: 'grounding' } }",
+        "    ],",
+        "    blockingBehavior: 'warn_only'",
+        "  },",
+        "  priority: 500",
+        "}",
+        "",
+        "// POL-G7-EXPLAIN: Require explanations",
+        "{",
+        "  id: 'POL-G7-EXPLAIN',",
+        "  name: 'Require Human-Readable Explanation',",
+        "  appliesTo: { guarantees: ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7'] },",
+        "  actions: {",
+        "    blockingBehavior: 'warn_only'  // G7 provides explanations automatically",
+        "  },",
+        "  priority: 100",
+        "}"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Formal Policy Semantics"
+    },
+    {
+      "type": "definition",
+      "label": "Definition 2.31 (Policy Evaluation Semantics) [v2.5]",
+      "text": "evaluatePolicies : Spec × P(Violation) → P(PolicyAction)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Given specification S and violation set V, the policy evaluator returns the set of triggered actions:"
+    },
+    {
+      "type": "code",
+      "lines": [
+        "evaluatePolicies(S, V) = ⋃_{p ∈ policies(S)} match(p, V)",
+        "",
+        "where:",
+        "  match(p, V) = if triggers(p, V)",
+        "                then {⟨p.id, p.actions, violations_matched⟩}",
+        "                else ∅",
+        "",
+        "  triggers(p, V) = ∃ v ∈ V. satisfies(v, p.appliesTo)",
+        "",
+        "  satisfies(v, t) = (t.constraintCategories = ε ∨ v.constraint.cat ∈ t.constraintCategories)",
+        "                  ∧ (t.guarantees = ε ∨ violatesGuarantee(v) ∈ t.guarantees)",
+        "                  ∧ (t.integrityLevels = ε ∨ v.element.integrityLevel ∈ t.integrityLevels)",
+        "                  ∧ (t.severities = ε ∨ v.constraint.sev ∈ t.severities)",
+        "",
+        "  violatesGuarantee : Violation → {'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7'}*",
+        "  violatesGuarantee(v) = { g | g ∈ guarantees(S) ∧ ¬g(S) ∧ v ∈ witnesses(g, S) }"
+      ]
+    },
+    {
+      "type": "definition",
+      "label": "Definition 2.32 (Policy Conflict Resolution) [v2.5]",
+      "text": "When multiple policies trigger with conflicting blockingBehavior, resolve via priority:"
+    },
+    {
+      "type": "code",
+      "lines": [
+        "conflictingPolicies(A) = { (a₁, a₂) ∈ A × A | conflicts(a₁.behavior, a₂.behavior) }",
+        "",
+        "conflicts(b₁, b₂) = (b₁ = block_merge ∧ b₂ = auto_fix)",
+        "                  ∨ (b₁ = auto_fix ∧ b₂ = block_merge)",
+        "                  ∨ (b₁ = warn_only ∧ b₂ ≠ warn_only)",
+        "",
+        "resolve(A) = if conflictingPolicies(A) = ∅",
+        "             then A",
+        "             else { a ∈ A | a.priority = max_{a' ∈ A} a'.priority }",
+        "",
+        "finalBehavior(A) = let A' = resolve(A) in",
+        "                   if ∃ a ∈ A'. a.behavior = block_merge",
+        "                   then block_merge",
+        "                   else if ∃ a ∈ A'. a.behavior = auto_fix",
+        "                   then auto_fix",
+        "                   else warn_only"
+      ]
+    },
+    {
+      "type": "theorem",
+      "label": "Theorem 2.2 (Policy Evaluation Determinism) [v2.5]",
+      "text": "For any specification S and violation set V, evaluatePolicies(S, V) is deterministic and terminates in O(|policies(S)| × |V|) time."
+    },
+    {
+      "type": "admonition",
+      "level": "note",
+      "text": "**Proof Sketch**: Each policy p is checked against each violation v (O(|P| × |V|)). The satisfies predicate evaluates in O(1) given finite sets. Conflict resolution selects highest-priority policy in O(|A|) where |A| ≤ |P|. Total: O(|P| × |V|) + O(|P|) = O(|P| × |V|). ∎"
+    },
+    {
+      "type": "definition",
+      "label": "Definition 2.33 (Policy Merge Semantics) [v2.5]",
+      "text": "When composing specifications S₁ ⊕ S₂, policies merge with override semantics:"
+    },
+    {
+      "type": "code",
+      "lines": [
+        "policies(S₁ ⊕ S₂) = override(policies(S₁), policies(S₂))",
+        "",
+        "where:",
+        "  override(P₁, P₂) = { p ∈ P₁ | p.id ∉ ids(P₂) } ∪ P₂",
+        "",
+        "  ids(P) = { p.id | p ∈ P }"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Rationale**: Higher-level compositions (e.g., project-level policies) override lower-level defaults (e.g., domain profile policies). This follows the 'configuration as code' principle where composition S₁ ⊕ S₂ means 'S₂ extends S₁ with overrides'."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Policy Evaluation**: The operational implementation of `evaluatePolicies(S, violations)` follows Definitions 2.31-2.33 above. For validation integration, policies are evaluated after constraint checking per Operation 7.1 (validate). Policy conflict resolution uses priority ordering per §23 (same mechanism as Constraint priority)."
+    },
+    {
+      "type": "admonition",
+      "level": "note",
+      "text": "**Conformance**: Policy system is **K1 (Certified-Aware)**, not K0. K0 implementations may ignore policies. K1+ implementations MUST evaluate policies and respect `blockingBehavior`."
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "id": "sec-taGb2W-Ks5lKWB8hcj3UY",
+  "title": "Semantic Properties (The Seven Guarantees)",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-2rVTmZOx_FfwEKLswk1-j",
+      "title": "Traceability",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.1 (Root Element)",
+          "text": "root(e) ≡ layer(e).tier = motivation ∧ ¬∃d ∈ D. d.tgt.elem = e.id ∧ d.δ = traces_to"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 4.2 (Trace Path)",
+          "text": "tracePath(e) = shortest path from e to some e' where root(e') following traces_to dependencies from target to source (impl → requirement)"
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G1 - TRACEABILITY",
+          "formula": "∀ e ∈ E. ∃ e' ∈ E. root(e') ∧ reachable(e, e', traces_to)",
+          "description": "Every element traces back to a root element in the motivation tier (traces_to goes impl → requirement)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally, for specification S:\nTraceable(S) ≡ ∀ e ∈ elements(S). tracePath(e) ≠ ∅"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-K1-qOmCVrnDqLrLgOd_aa",
+      "title": "Completeness",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.3 (Constraint Satisfaction)",
+          "text": "S ⊨ c ≡ c.φ(elements(S), dependencies(S)) = ⊤"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 4.4 (Error Constraints)",
+          "text": "ErrorConstraints(S) = {c ∈ constraints(S) | c.sev = error}"
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G2 - COMPLETENESS",
+          "formula": "∀ c ∈ ErrorConstraints(S). S ⊨ c",
+          "description": "All error-level constraints are satisfied"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally:\nComplete(S) ≡ ∀ c ∈ ErrorConstraints(S). c.φ(E, D) = ⊤"
+        },
+        {
+          "type": "paragraph",
+          "text": "Common completeness constraints:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "∀ feature f. ∃ test t. tests(t, f) - Feature test coverage",
+            "∀ api a. ∃ doc d. documents(d, a) - API documentation",
+            "∀ aggregate ag. ∃ command c. commands(ag, c) - Aggregate has commands"
+          ]
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-sbASI3HUkg21rQji8CA3y",
+      "title": "Consistency",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.5 (Contradiction)",
+          "text": "contradiction(e₁, e₂) ≡ ∃ property p.\n  e₁.π(p) is defined ∧ e₂.π(p) is defined ∧\n  e₁.π(p) ≠ e₂.π(p) ∧ shouldMatch(e₁, e₂, p)"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 4.6 (Should Match)",
+          "text": "shouldMatch(e₁, e₂, p) ≡ ∃ c ∈ C. c.cat = consistency ∧ c specifies e₁.p must equal e₂.p"
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G3 - CONSISTENCY",
+          "formula": "∀ e₁, e₂ ∈ E. ¬contradiction(e₁, e₂)",
+          "description": "No two elements have contradictory properties"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally:\nConsistent(S) ≡ ∀ e₁, e₂ ∈ elements(S). ¬contradiction(e₁, e₂)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Common consistency constraints:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "API return type = Handler return type",
+            "Event schema = Event handler expected schema",
+            "Database field type = Domain entity field type"
+          ]
+        }
+      ],
+      "suffix": "3"
+    },
+    {
+      "id": "sub-PNmArYZo6xNqQZsWMEHGT",
+      "title": "Groundedness",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.7 (Leaf Element)",
+          "text": "leaf(e) ≡ layer(e).tier = grounding"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 4.8 (Bound Element)",
+          "text": "bound(e) ≡ ∃ b ∈ B. b.abstract.elem = e.id"
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G4 - GROUNDEDNESS",
+          "formula": "∀ e ∈ E. leaf(e) → bound(e)",
+          "description": "Every leaf element has a binding to physical reality"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally:\nGrounded(S) ≡ ∀ e ∈ elements(S). leaf(e) → bound(e)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Binding types per domain:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Software: Component → File:Line",
+            "Manufacturing: Part → Drawing + BOM",
+            "Healthcare: Protocol → EMR Configuration",
+            "Legal: Clause → Document Section"
+          ]
+        }
+      ],
+      "suffix": "4"
+    },
+    {
+      "id": "sub-XWHt4rvXeJPsjryeyJk-f",
+      "title": "Determinism",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.9 (Change)",
+          "text": "δ ::= ⟨element: ID, changeType: CHANGE, details: VALUE⟩"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 4.10 (Impact)",
+          "text": "impact(S, δ) = ⋃ {cascade(S, elem(δ), δ.changeType, r) | r ∈ R, r.trigger matches δ}"
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G5 - DETERMINISM",
+          "formula": "∀ δ : CHANGE. impact(S, δ) is computable before applying δ",
+          "description": "The impact of any change is predictable before making the change"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally:\nDeterministic(S) ≡ impact : S × CHANGE → P(E × EFFECT) is total and computable in O(|E| + |D|) time"
+        },
+        {
+          "type": "paragraph",
+          "text": "This enables:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Pre-change impact analysis",
+            "Automated change review",
+            "Risk assessment",
+            "Staged rollout decisions"
+          ]
+        }
+      ],
+      "suffix": "5"
+    },
+    {
+      "id": "sub-BY56RlNT5fC29dbs7WShu",
+      "title": "Coherence",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.11 (Layer Respecting)",
+          "text": "layerRespecting(d) ≡ let l_s = layer(src(d)), l_t = layer(tgt(d)) in\n  pos(l_s) ≥ pos(l_t) ∨ d.δ = traces_to"
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G6 - COHERENCE",
+          "formula": "∀ d ∈ D. layerRespecting(d)",
+          "description": "Dependencies flow from concrete to abstract (except traces_to)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally:\nCoherent(S) ≡ ∀ d ∈ dependencies(S). layerRespecting(d)"
+        },
+        {
+          "type": "paragraph",
+          "text": "This ensures:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Abstraction boundaries are respected",
+            "Implementation details don't leak upward",
+            "Changes cascade predictably (down, not up)"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Exception: traces_to dependencies go UP (from impl to requirement)"
+        }
+      ],
+      "suffix": "6"
+    },
+    {
+      "id": "sub-KiCYjiFp6iFIhq6fcelIP",
+      "title": "Explainability [v2.5]",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "When validation fails, humans need actionable explanations. G7 requires that every violation report includes an irreducible unsat core—the minimal set of constraints causing the failure—and human-readable diagnostic text."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 4.12 (Explanation)",
+          "text": "explanation ::= ⟨violatedGuarantee, unsatCore, blameChain, humanReadable, suggestedFix?⟩"
+        },
+        {
+          "type": "paragraph",
+          "text": "where:"
+        },
+        {
+          "type": "definition-list",
+          "items": [
+            {
+              "term": "violatedGuarantee ∈ {'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7'}",
+              "definition": "Which guarantee failed"
+            },
+            {
+              "term": "unsatCore ⊆ constraints(S)",
+              "definition": "Minimal unsatisfiable subset (see Theorem 10.12)"
+            },
+            {
+              "term": "blameChain ∈ Operation*",
+              "definition": "Causal chain of changes leading to violation (uses vector clocks from §2.1, §12)"
+            },
+            {
+              "term": "humanReadable ∈ NAME",
+              "definition": "Natural language explanation targeting domain experts"
+            },
+            {
+              "term": "suggestedFix ∈ Operation?",
+              "definition": "Optional: automated remediation per Policy (§2.8)"
+            }
+          ]
+        },
+        {
+          "type": "guarantee",
+          "label": "GUARANTEE G7 - EXPLAINABILITY",
+          "formula": "∀ violations v from validate(S). ∃ explanation x. explains(x, v) ∧ irreducible(x.unsatCore)",
+          "description": "Every validation failure has an irreducible explanation with minimal unsat core"
+        },
+        {
+          "type": "paragraph",
+          "text": "Formally:\nExplainable(S) ≡ validate(S) produces explanations for all violations"
+        },
+        {
+          "type": "paragraph",
+          "text": "**Implementation**: Use SMT solver unsat core extraction (Z3 `unsat_core()`, CVC5 `getUnsatCore()`). See Theorem 10.12 for irreducibility proof obligation."
+        },
+        {
+          "type": "admonition",
+          "level": "note",
+          "text": "**Conformance**: G7 is **K1 (Certified-Aware)**, not K0. K0 implementations may return violations without explanations. K1+ implementations MUST provide irreducible unsat cores per Theorem 10.12."
+        },
+        {
+          "type": "paragraph",
+          "text": "**Example**: See §1.5 Demo Scenario for complete G7 workflow showing blame chains and suggested fixes."
+        }
+      ],
+      "suffix": "7"
+    },
+    {
+      "id": "sub-Q_FIkGVXUuZIl6JAWPVwl",
+      "title": "Valid Specification",
+      "defs": [],
+      "content": [
+        {
+          "type": "definition",
+          "label": "Definition 4.13 (Valid Specification)",
+          "text": "Valid(S) ≡ WellFormed(S) ∧\n           Traceable(S) ∧       -- G1\n           Complete(S) ∧        -- G2\n           Consistent(S) ∧      -- G3\n           Grounded(S) ∧        -- G4\n           Deterministic(S) ∧   -- G5\n           Coherent(S) ∧        -- G6\n           Explainable(S)       -- G7 [v2.5]"
+        },
+        {
+          "type": "paragraph",
+          "text": "A specification is valid iff it is well-formed and satisfies all seven guarantees. Note: G7 (Explainability) is K1 conformance; K0 implementations check G1-G6 only."
+        }
+      ],
+      "suffix": "8"
+    }
+  ]
+}

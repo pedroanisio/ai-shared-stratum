@@ -1,0 +1,85 @@
+{
+  "id": "sec-RBDT59WZE2xJyi9k5UFvY",
+  "title": "Garbage Collection Proofs",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-iFirzldEY8Pz3a3uoO2Be",
+      "title": "GC Safety Requirements",
+      "defs": [],
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Garbage collection in CRDTs must preserve convergence properties."
+        },
+        {
+          "type": "definition",
+          "label": "Definition 24.1 (GC Safety)",
+          "text": "A garbage collection operation gc : State → State is SAFE iff:"
+        },
+        {
+          "type": "rule",
+          "label": "GC-1 (Convergence Preservation)",
+          "formula": "∀ s₁, s₂. s₁ ⊔ s₂ = s₃ ⟹ gc(s₁) ⊔ gc(s₂) = gc(s₃)",
+          "description": "GC commutes with merge"
+        },
+        {
+          "type": "rule",
+          "label": "GC-2 (Causal Stability)",
+          "formula": "gc removes tombstone t only if: ∀ replica r. r has observed t",
+          "description": "No replica can generate conflicting operation"
+        },
+        {
+          "type": "rule",
+          "label": "GC-3 (No Information Loss)",
+          "formula": "∀ op. applicable(op, s) ⟹ applicable(op, gc(s))",
+          "description": "GC doesn't break future operations"
+        },
+        {
+          "type": "definition",
+          "label": "Definition 24.2 (Tombstone Stability)",
+          "text": "A tombstone t is STABLE at replica r iff:\n  ∀ replica r'. r'.clock ≥ clock_at_creation(t)\n\nInformally: All replicas have \"caught up\" past the tombstone creation."
+        },
+        {
+          "type": "paragraph",
+          "text": "Stability detection methods:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "1. VECTOR CLOCK COMPARISON: t stable when min(all_clocks) ≥ t.clock",
+            "2. ACKNOWLEDGMENT: Each replica explicitly acks receiving t",
+            "3. CHECKPOINT: Periodic global synchronization point",
+            "4. TIME-BASED: t stable after duration D (requires clock sync)"
+          ]
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-Xr72NAIc1SIa4LG_PzaS5",
+      "title": "GC Correctness Proofs",
+      "defs": [],
+      "content": [
+        {
+          "type": "theorem",
+          "label": "Theorem 24.1 (Checkpoint GC Safety)",
+          "formula": "Given:\n  - All replicas reach checkpoint C\n  - Tombstone t was created before C\n  - gc removes t after checkpoint\nThen: gc satisfies GC-1, GC-2, GC-3"
+        },
+        {
+          "type": "paragraph",
+          "text": "Proof:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "GC-1: At checkpoint, all replicas have same state. gc applied uniformly to identical states produces identical results. ⊔ on identical states is idempotent, so gc(s) ⊔ gc(s) = gc(s). ✓",
+            "GC-2: Checkpoint C guarantees all replicas observed t. No replica can generate add operation for element with tombstone t (causally after). Therefore, t is stable. ✓",
+            "GC-3: Operations concurrent with t would have been merged before checkpoint. Post-checkpoint operations cannot conflict with t (causal order). ✓"
+          ]
+        }
+      ],
+      "suffix": "2"
+    }
+  ]
+}

@@ -1,0 +1,327 @@
+{
+  "id": "stratum-formal-spec-v2.5",
+  "title": "STRATUM Formal Specification",
+  "version": "2.5.0-alpha",
+  "description": "A layered specification framework for describing complex artifacts with formal guarantees",
+  "namespace": "stratum.spec",
+  "meta": {
+    "subtitle": "A Formal System for Specifying Complex Artifacts",
+    "abstract": "STRATUM v2.5.0-alpha introduces conformance levels (K0-K3) and adds the seventh guarantee G7 (Explainability). This ALPHA release defines the Kernel (K0) as a 2-hour reading path covering core data structures, well-formedness, six guarantees (G1-G6), and basic operations. K1 (Certified-Aware) adds G7 with irreducible unsat cores and the Policy System for automated remediation. Building on v2.4.4, this version includes: (1) schema evolution with compatibility rules (§16), (2) STPA/FMEA hazard integration (§27), (3) formal attenuation properties (§28), (4) cross-standard DO-178C ↔ ISO 26262 traceability (§29), (5) LSL-style tier boundary semantics (§30), and (6) comprehensive 100+ term glossary (§30). The specification maintains backward compatibility while enabling regulated industry adoption through explicit conformance tiers.",
+    "keywords": [
+      "formal specification",
+      "layered architecture",
+      "traceability",
+      "dependency management",
+      "type system",
+      "constraint validation",
+      "cascade propagation",
+      "CRDT",
+      "concurrency",
+      "verification lifecycle",
+      "query language",
+      "schema evolution",
+      "distributed consensus",
+      "incremental validation"
+    ],
+    "revisionNotes": [
+      {
+        "section": "§5",
+        "description": "Type system soundness fixes (invariant layer parameters)",
+        "type": "fix",
+        "since": "2.0"
+      },
+      {
+        "section": "§2.4",
+        "description": "Decidable constraint language (QF-LIRA + EUF)",
+        "type": "fix",
+        "since": "2.0"
+      },
+      {
+        "section": "§7.3",
+        "description": "Explicit lattice structure for merge",
+        "type": "enhancement",
+        "since": "2.0"
+      },
+      {
+        "section": "§6.3",
+        "description": "Complete attenuation function specification",
+        "type": "fix",
+        "since": "2.0"
+      },
+      {
+        "section": "§3.4",
+        "description": "Soft/hard dependency cascade boundary rules",
+        "type": "enhancement",
+        "since": "2.0"
+      },
+      {
+        "section": "§13",
+        "description": "Concurrency semantics (CRDT-based)",
+        "type": "new",
+        "since": "2.0"
+      },
+      {
+        "section": "§14",
+        "description": "Binding verification lifecycle",
+        "type": "new",
+        "since": "2.0"
+      },
+      {
+        "section": "§15",
+        "description": "Formal Properties and Theorems (consolidates v1.0 §10 with proofs)",
+        "type": "enhancement",
+        "since": "2.0"
+      },
+      {
+        "section": "§16",
+        "description": "Schema evolution: compatibility rules, migration operations",
+        "type": "new",
+        "since": "2.4"
+      },
+      {
+        "section": "§25",
+        "description": "Bibliography citation corrections (3 erroneous papers removed)",
+        "type": "fix",
+        "since": "2.4"
+      },
+      {
+        "section": "§26",
+        "description": "DO-178C/ISO 26262 coverage matrix corrections",
+        "type": "fix",
+        "since": "2.4"
+      },
+      {
+        "section": "§27",
+        "description": "STPA/FMEA integration framework",
+        "type": "new",
+        "since": "2.4"
+      },
+      {
+        "section": "§28",
+        "description": "Formal attenuation properties (monotonicity, BIBO stability)",
+        "type": "new",
+        "since": "2.4"
+      },
+      {
+        "section": "§29",
+        "description": "Cross-standard traceability (DO-178C ↔ ISO 26262)",
+        "type": "new",
+        "since": "2.4"
+      },
+      {
+        "section": "§30",
+        "description": "LSL-style tier boundary semantics",
+        "type": "new",
+        "since": "2.4"
+      },
+      {
+        "section": "manifest",
+        "description": "Structural reorganization: 6 logical parts, bibliography moved to end, §10 deprecated",
+        "type": "enhancement",
+        "since": "2.4.1"
+      }
+    ],
+    "domains": [
+      "Software Systems",
+      "Organizations",
+      "Manufacturing",
+      "Healthcare",
+      "Legal",
+      "Enterprise Architecture"
+    ]
+  },
+  "sections": [
+    {
+      "id": "sec-01",
+      "number": "1",
+      "title": "Foundations",
+      "$ref": "sec-XYQxS3DjhGgZ24R6PyyfR.json"
+    },
+    {
+      "id": "sec-01-demo",
+      "number": "1.5",
+      "title": "STRATUM in Action: Requirement Change Impact",
+      "$ref": "sec-ggoNjElo79ZXKuYjlF7mW.json"
+    },
+    {
+      "id": "sec-02",
+      "number": "2",
+      "title": "Abstract Syntax",
+      "$ref": "sec-8qxwzRxMeEWqbne8C5K8l.json"
+    },
+    {
+      "id": "sec-02-policy",
+      "number": "2.8",
+      "title": "Policy [v2.5]",
+      "$ref": "sec-A6gecSxlJYGPIDKvgzjsG.json"
+    },
+    {
+      "id": "sec-03",
+      "number": "3",
+      "title": "Well-Formedness Conditions",
+      "$ref": "sec-pYrht_aqaJ5gENPPS98r-.json"
+    },
+    {
+      "id": "sec-04",
+      "number": "4",
+      "title": "Semantic Properties (The Seven Guarantees)",
+      "$ref": "sec-taGb2W-Ks5lKWB8hcj3UY.json"
+    },
+    {
+      "id": "sec-05",
+      "number": "5",
+      "title": "Type System",
+      "$ref": "sec-Jcn-W5ZXGpackkeeq-isa.json"
+    },
+    {
+      "id": "sec-06",
+      "number": "6",
+      "title": "Inference Rules",
+      "$ref": "sec-CwnDzo78GYBw57r1EI_R5.json"
+    },
+    {
+      "id": "sec-07",
+      "number": "7",
+      "title": "Operations",
+      "$ref": "sec-aBNKnM08R3W5pfjELaQas.json"
+    },
+    {
+      "id": "sec-08",
+      "number": "8",
+      "title": "Domain Profiles",
+      "$ref": "sec-FzfSSWJ73nYlWnpzz3-B7.json"
+    },
+    {
+      "id": "sec-09",
+      "number": "9",
+      "title": "Extension Mechanism",
+      "$ref": "sec-xEbsOCjQmAy1Uj_H6qRLr.json"
+    },
+    {
+      "id": "sec-10",
+      "number": "10",
+      "title": "Formal Properties and Theorems",
+      "$ref": "sec-Xu_Ovl71oIhLU1kaCurK_.json"
+    },
+    {
+      "id": "sec-11",
+      "number": "11",
+      "title": "Reference Implementation",
+      "$ref": "sec-TmlplXlhpu2gAP4_iKrgd.json"
+    },
+    {
+      "id": "sec-13",
+      "number": "13",
+      "title": "Concurrency Semantics",
+      "$ref": "sec-aAgCXhEN9t0xxoeTpf0Qc.json"
+    },
+    {
+      "id": "sec-14",
+      "number": "14",
+      "title": "Binding Verification Lifecycle",
+      "$ref": "sec-5jP_ZWlaA8SfDbhVxrG99.json"
+    },
+    {
+      "id": "sec-16",
+      "number": "16",
+      "title": "Schema Evolution",
+      "$ref": "sec-YFHOeAjN2dYDjDiTocSSI.json"
+    },
+    {
+      "id": "sec-17",
+      "number": "17",
+      "title": "Certification Artifacts",
+      "$ref": "sec-z3nlCPJ5B1h7TUhEf25LL.json"
+    },
+    {
+      "id": "sec-18",
+      "number": "18",
+      "title": "Tool Qualification Guidance (DO-330)",
+      "$ref": "sec-S3Z17-kDEc2A9A92Y0bqi.json"
+    },
+    {
+      "id": "sec-19",
+      "number": "19",
+      "title": "Mechanized Proof Templates",
+      "$ref": "sec-PAskKN4i1etyZhtOY5xtv.json"
+    },
+    {
+      "id": "sec-20",
+      "number": "20",
+      "title": "Per-Language INV-1..5 Implementation Checklists",
+      "$ref": "sec-ojM0_ZLauOdjNuKK99Pg0.json"
+    },
+    {
+      "id": "sec-21",
+      "number": "21",
+      "title": "Compositional Semantics",
+      "$ref": "sec-dIOSpm6loMFLin3AzkYRN.json"
+    },
+    {
+      "id": "sec-22",
+      "number": "22",
+      "title": "Temporal Properties",
+      "$ref": "sec-LUj58UniUYiDJ-BI2QMU3.json"
+    },
+    {
+      "id": "sec-23",
+      "number": "23",
+      "title": "Constraint Conflict Resolution",
+      "$ref": "sec-ZBsFkK5bvDEL4m-rsfH17.json"
+    },
+    {
+      "id": "sec-24",
+      "number": "24",
+      "title": "Garbage Collection Proofs",
+      "$ref": "sec-RBDT59WZE2xJyi9k5UFvY.json"
+    },
+    {
+      "id": "sec-26",
+      "number": "26",
+      "title": "Certification Objective Coverage Matrix",
+      "$ref": "sec-rRDDwm1LZy_CFk7nC2L0k.json"
+    },
+    {
+      "id": "sec-27",
+      "number": "27",
+      "title": "STPA/FMEA Integration Framework",
+      "$ref": "sec-Nei3FTlw11oOPZVBq920l.json"
+    },
+    {
+      "id": "sec-28",
+      "number": "28",
+      "title": "Formal Attenuation Properties",
+      "$ref": "sec-x6eVbGvoVfS9GNeqNkLUG.json"
+    },
+    {
+      "id": "sec-29",
+      "number": "29",
+      "title": "Cross-Standard Traceability Matrix",
+      "$ref": "sec-dM0e66FHuNRBmoEaMjfxF.json"
+    },
+    {
+      "id": "sec-30",
+      "number": "30",
+      "title": "Tier Boundary Formal Semantics",
+      "$ref": "sec-F4EMqD3954zBnfEDnmQGj.json"
+    },
+    {
+      "id": "sec-12",
+      "number": "12",
+      "title": "Summary",
+      "$ref": "sec-FKg-HIOFmN1Oiyr_KJhnT.json"
+    },
+    {
+      "id": "sec-31",
+      "number": "31",
+      "title": "Glossary of Key Terms",
+      "$ref": "sec-Ksy2-gPkkxdYKBYNqe76U.json"
+    },
+    {
+      "id": "sec-32",
+      "number": "32",
+      "title": "Comprehensive Bibliography",
+      "$ref": "sec-syYS1lzON5CBCL1ZdsBul.json"
+    }
+  ]
+}

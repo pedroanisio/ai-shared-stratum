@@ -1,0 +1,115 @@
+{
+  "id": "sec-syYS1lzON5CBCL1ZdsBul",
+  "title": "Comprehensive Bibliography",
+  "defs": [],
+  "children": [
+    {
+      "id": "sub-lWxDw_9dG32DFR0-Dy6kg",
+      "title": "Type Soundness & Covariant Subtyping",
+      "defs": [],
+      "content": [
+        {
+          "type": "reference",
+          "key": "Wright-Felleisen-1994",
+          "rating": "★★★★★ CANONICAL",
+          "citation": "Wright, A.K. and Felleisen, M. \"A Syntactic Approach to Type Soundness\" Information and Computation, 115(1):38-94, 1994. DOI: 10.1006/inco.1994.1093",
+          "use": "Progress + Preservation proof structure (§2.1, Theorem 2.1)"
+        },
+        {
+          "type": "reference",
+          "key": "Amin-Tate-2016",
+          "rating": "★★★★★ CRITICAL",
+          "citation": "Amin, N. and Tate, R. \"Java and Scala's Type Systems are Unsound: The Existential Crisis of Null Pointers through Covariant Containers\" OOPSLA 2016, pp. 838-848. DOI: 10.1145/2983990.2984004",
+          "use": "Why INV-1 (immutability) is required for covariant soundness (§2.1)"
+        },
+        {
+          "type": "reference",
+          "key": "Jung-2018-RustBelt",
+          "rating": "★★★★★ GOLD STANDARD",
+          "citation": "Jung, R., Jourdan, J.-H., Krebbers, R., and Dreyer, D. \"RustBelt: Securing the Foundations of the Rust Programming Language\" POPL 2018, Article 66. DOI: 10.1145/3158154",
+          "use": "Interior mutability escape hatches, mechanized soundness (§2.1, §19)"
+        },
+        {
+          "type": "reference",
+          "key": "Pierce-2002-TAPL",
+          "rating": "★★★ TEXTBOOK",
+          "citation": "Pierce, B.C. \"Types and Programming Languages\" MIT Press, 2002. ISBN: 978-0262162098",
+          "use": "Variance fundamentals (Chapter 19), subtyping (Chapter 15)"
+        }
+      ],
+      "suffix": "1"
+    },
+    {
+      "id": "sub-ltQzFXCRBIDlmgd8ujBPO",
+      "title": "Constraint Decidability (SMT)",
+      "defs": [],
+      "content": [
+        {
+          "type": "reference",
+          "key": "Nelson-Oppen-1979",
+          "rating": "★★★★★ FOUNDATIONAL",
+          "citation": "Nelson, G. and Oppen, D.C. \"Simplification by Cooperating Decision Procedures\" ACM TOPLAS, 1(2):245-257, 1979. DOI: 10.1145/357073.357079",
+          "use": "Theory combination theorem (QF-LIRA + EUF decidability) (§2.4)"
+        },
+        {
+          "type": "reference",
+          "key": "Bansal-2017-CVC5",
+          "rating": "★★★★★ CRITICAL",
+          "citation": "Bansal, K., Reynolds, A., Barrett, C., and Tinelli, C. \"A New Decision Procedure for Finite Sets and Cardinality Constraints in SMT\" IJCAR 2016, LNCS 9706, pp. 82-98. DOI: 10.1007/978-3-319-40229-1_7",
+          "use": "count() decidability via finite sets theory (§2.4, Theorem 2.2)"
+        }
+      ],
+      "suffix": "2"
+    },
+    {
+      "id": "sub-8m30TvQWyhwZkdrughHRy",
+      "title": "CRDT Convergence & Composition [v2.4]",
+      "defs": [],
+      "content": [
+        {
+          "type": "reference",
+          "key": "Shapiro-2011-CRDT",
+          "rating": "★★★★★ FOUNDATIONAL",
+          "citation": "Shapiro, M., Preguiça, N., Baquero, C., and Zawirski, M. \"Conflict-free Replicated Data Types\" SSS 2011, LNCS 6976, pp. 386-400. DOI: 10.1007/978-3-642-24550-3_29",
+          "use": "SEC theorem, ACI requirements (§11, Theorem 11.1)"
+        },
+        {
+          "type": "reference",
+          "key": "Gomes-2017-Automerge",
+          "rating": "★★★★★ MECHANIZED",
+          "citation": "Gomes, V., Kleppmann, M., Mulligan, D., and Beresford, A. \"Verifying Strong Eventual Consistency in Distributed Systems\" OOPSLA 2017, Article 109. DOI: 10.1145/3133933. Distinguished Paper Award.",
+          "use": "Isabelle/HOL CRDT proofs methodology (§11, §21)"
+        },
+        {
+          "type": "reference",
+          "key": "iasakura-lean-yjs-2025",
+          "rating": "★★★★ VERIFIED",
+          "citation": "iasakura. \"lean-yjs: Lean 4 formalization of Yjs/YATA\" GitHub, 2025.",
+          "use": "Lean 4 CRDT verification (§11)"
+        },
+        {
+          "type": "reference",
+          "key": "Laddad-2022-Katara",
+          "rating": "★★★★ SYNTHESIS",
+          "citation": "Laddad, S., et al. \"Katara: Synthesizing CRDTs with Verified Lifting\" OOPSLA 2022. DOI: 10.1145/3563336",
+          "use": "SMT-based CRDT synthesis (§11)"
+        },
+        {
+          "type": "reference",
+          "key": "Zakhour-2023-PLDI",
+          "rating": "★★★★ TYPE-CHECKING",
+          "citation": "Zakhour, S., et al. \"Type-Checking CRDT Convergence\" PLDI 2023. DOI: 10.1145/3591276",
+          "use": "Static verification of CRDT convergence (§11)"
+        },
+        {
+          "type": "reference",
+          "key": "Cousineau-2012-TLA",
+          "rating": "★★★★★ FOUNDATIONAL",
+          "citation": "Cousineau, D., Doligez, D., Lamport, L., et al. \"TLA+ Proofs\" FM 2012, LNCS 7436. DOI: 10.1007/978-3-642-32759-9_14",
+          "use": "TLA+ proof system (§21)"
+        }
+      ],
+      "suffix": "3"
+    }
+  ]
+}
