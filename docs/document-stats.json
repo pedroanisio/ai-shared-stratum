@@ -1,0 +1,740 @@
+{
+  "meta": {
+    "id": "stratum-formal-spec-v2.5",
+    "title": "STRATUM Formal Specification",
+    "subtitle": "A Formal System for Specifying Complex Artifacts",
+    "version": "2.5.0-alpha",
+    "description": "A layered specification framework for describing complex artifacts with formal guarantees",
+    "namespace": "stratum.spec",
+    "documentType": "article",
+    "documentStruct": "parts"
+  },
+  "totals": {
+    "sections": 32,
+    "subSections": 80,
+    "contentItems": 579,
+    "defsCount": 9
+  },
+  "contentTypes": {
+    "heading": 40,
+    "paragraph": 197,
+    "definition-list": 35,
+    "admonition": 19,
+    "list": 20,
+    "code": 65,
+    "definition": 80,
+    "diagram": 2,
+    "theorem": 12,
+    "rule": 45,
+    "guarantee": 7,
+    "operation": 10,
+    "profile": 3,
+    "table": 13,
+    "checklist": 19,
+    "reference": 12
+  },
+  "defsKinds": {
+    "enum": 1,
+    "type": 3,
+    "rule": 3,
+    "function": 1,
+    "theorem": 1
+  },
+  "parts": [
+    {
+      "id": "part-01",
+      "number": 1,
+      "title": "Foundations",
+      "sections": [
+        "sec-XYQxS3DjhGgZ24R6PyyfR",
+        "sec-ggoNjElo79ZXKuYjlF7mW",
+        "sec-8qxwzRxMeEWqbne8C5K8l",
+        "sec-A6gecSxlJYGPIDKvgzjsG",
+        "sec-pYrht_aqaJ5gENPPS98r-",
+        "sec-taGb2W-Ks5lKWB8hcj3UY",
+        "sec-Jcn-W5ZXGpackkeeq-isa",
+        "sec-CwnDzo78GYBw57r1EI_R5"
+      ],
+      "totals": {
+        "sections": 8,
+        "subSections": 25,
+        "contentItems": 296,
+        "defsCount": 0
+      },
+      "contentTypes": {
+        "heading": 24,
+        "paragraph": 107,
+        "definition-list": 19,
+        "admonition": 16,
+        "list": 12,
+        "code": 28,
+        "definition": 46,
+        "diagram": 1,
+        "theorem": 3,
+        "rule": 33,
+        "guarantee": 7
+      },
+      "defsKinds": {}
+    },
+    {
+      "id": "part-02",
+      "number": 2,
+      "title": "Operations",
+      "sections": [
+        "sec-aBNKnM08R3W5pfjELaQas",
+        "sec-FzfSSWJ73nYlWnpzz3-B7",
+        "sec-xEbsOCjQmAy1Uj_H6qRLr"
+      ],
+      "totals": {
+        "sections": 3,
+        "subSections": 7,
+        "contentItems": 27,
+        "defsCount": 0
+      },
+      "contentTypes": {
+        "operation": 10,
+        "definition": 7,
+        "paragraph": 3,
+        "definition-list": 3,
+        "profile": 3,
+        "theorem": 1
+      },
+      "defsKinds": {}
+    },
+    {
+      "id": "part-03",
+      "number": 3,
+      "title": "Formal Theory",
+      "sections": [
+        "sec-Xu_Ovl71oIhLU1kaCurK_",
+        "sec-aAgCXhEN9t0xxoeTpf0Qc",
+        "sec-5jP_ZWlaA8SfDbhVxrG99",
+        "sec-YFHOeAjN2dYDjDiTocSSI",
+        "sec-dIOSpm6loMFLin3AzkYRN",
+        "sec-LUj58UniUYiDJ-BI2QMU3",
+        "sec-ZBsFkK5bvDEL4m-rsfH17",
+        "sec-RBDT59WZE2xJyi9k5UFvY",
+        "sec-x6eVbGvoVfS9GNeqNkLUG",
+        "sec-F4EMqD3954zBnfEDnmQGj"
+      ],
+      "totals": {
+        "sections": 10,
+        "subSections": 25,
+        "contentItems": 119,
+        "defsCount": 9
+      },
+      "contentTypes": {
+        "paragraph": 40,
+        "code": 23,
+        "definition": 24,
+        "theorem": 8,
+        "definition-list": 3,
+        "table": 2,
+        "rule": 12,
+        "list": 5,
+        "admonition": 1,
+        "diagram": 1
+      },
+      "defsKinds": {
+        "enum": 1,
+        "type": 3,
+        "rule": 3,
+        "function": 1,
+        "theorem": 1
+      }
+    },
+    {
+      "id": "part-04",
+      "number": 4,
+      "title": "Implementation",
+      "sections": [
+        "sec-TmlplXlhpu2gAP4_iKrgd",
+        "sec-PAskKN4i1etyZhtOY5xtv",
+        "sec-ojM0_ZLauOdjNuKK99Pg0"
+      ],
+      "totals": {
+        "sections": 3,
+        "subSections": 3,
+        "contentItems": 22,
+        "defsCount": 0
+      },
+      "contentTypes": {
+        "paragraph": 3,
+        "admonition": 1,
+        "code": 4,
+        "heading": 3,
+        "checklist": 11
+      },
+      "defsKinds": {}
+    },
+    {
+      "id": "part-05",
+      "number": 5,
+      "title": "Certification",
+      "sections": [
+        "sec-z3nlCPJ5B1h7TUhEf25LL",
+        "sec-S3Z17-kDEc2A9A92Y0bqi",
+        "sec-rRDDwm1LZy_CFk7nC2L0k",
+        "sec-Nei3FTlw11oOPZVBq920l",
+        "sec-dM0e66FHuNRBmoEaMjfxF"
+      ],
+      "totals": {
+        "sections": 5,
+        "subSections": 17,
+        "contentItems": 74,
+        "defsCount": 0
+      },
+      "contentTypes": {
+        "definition": 3,
+        "code": 10,
+        "paragraph": 39,
+        "checklist": 8,
+        "list": 1,
+        "definition-list": 1,
+        "table": 11,
+        "admonition": 1
+      },
+      "defsKinds": {}
+    },
+    {
+      "id": "part-06",
+      "number": 6,
+      "title": "Appendices",
+      "sections": [
+        "sec-FKg-HIOFmN1Oiyr_KJhnT",
+        "sec-Ksy2-gPkkxdYKBYNqe76U",
+        "sec-syYS1lzON5CBCL1ZdsBul"
+      ],
+      "totals": {
+        "sections": 3,
+        "subSections": 3,
+        "contentItems": 41,
+        "defsCount": 0
+      },
+      "contentTypes": {
+        "paragraph": 5,
+        "heading": 13,
+        "list": 2,
+        "definition-list": 9,
+        "reference": 12
+      },
+      "defsKinds": {}
+    }
+  ],
+  "sections": [
+    {
+      "id": "sec-XYQxS3DjhGgZ24R6PyyfR",
+      "number": 1,
+      "title": "Foundations",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 34,
+      "contentTypes": {
+        "heading": 11,
+        "paragraph": 12,
+        "definition-list": 6,
+        "admonition": 2,
+        "list": 3
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-ggoNjElo79ZXKuYjlF7mW",
+      "title": "STRATUM in Action: Requirement Change Impact",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 34,
+      "contentTypes": {
+        "paragraph": 10,
+        "admonition": 3,
+        "heading": 10,
+        "code": 8,
+        "list": 2,
+        "definition-list": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-8qxwzRxMeEWqbne8C5K8l",
+      "number": 2,
+      "title": "Abstract Syntax",
+      "directSubCount": 7,
+      "subCount": 7,
+      "contentItems": 97,
+      "contentTypes": {
+        "paragraph": 42,
+        "definition": 27,
+        "definition-list": 8,
+        "admonition": 6,
+        "code": 10,
+        "diagram": 1,
+        "list": 1,
+        "theorem": 1,
+        "heading": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-A6gecSxlJYGPIDKvgzjsG",
+      "title": "Policy [v2.5]",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 26,
+      "contentTypes": {
+        "paragraph": 8,
+        "definition": 6,
+        "definition-list": 3,
+        "heading": 2,
+        "code": 4,
+        "theorem": 1,
+        "admonition": 2
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-pYrht_aqaJ5gENPPS98r-",
+      "number": 3,
+      "title": "Well-Formedness Conditions",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 16,
+      "contentTypes": {
+        "paragraph": 3,
+        "rule": 12,
+        "list": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-taGb2W-Ks5lKWB8hcj3UY",
+      "number": 4,
+      "title": "Semantic Properties (The Seven Guarantees)",
+      "directSubCount": 8,
+      "subCount": 8,
+      "contentItems": 45,
+      "contentTypes": {
+        "definition": 13,
+        "guarantee": 7,
+        "paragraph": 18,
+        "list": 5,
+        "definition-list": 1,
+        "admonition": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-Jcn-W5ZXGpackkeeq-isa",
+      "number": 5,
+      "title": "Type System",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 21,
+      "contentTypes": {
+        "paragraph": 6,
+        "code": 5,
+        "rule": 10
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-CwnDzo78GYBw57r1EI_R5",
+      "number": 6,
+      "title": "Inference Rules",
+      "directSubCount": 4,
+      "subCount": 4,
+      "contentItems": 23,
+      "contentTypes": {
+        "paragraph": 8,
+        "rule": 11,
+        "admonition": 2,
+        "code": 1,
+        "theorem": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-aBNKnM08R3W5pfjELaQas",
+      "number": 7,
+      "title": "Operations",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 10,
+      "contentTypes": {
+        "operation": 10
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-FzfSSWJ73nYlWnpzz3-B7",
+      "number": 8,
+      "title": "Domain Profiles",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 7,
+      "contentTypes": {
+        "definition": 2,
+        "paragraph": 1,
+        "definition-list": 1,
+        "profile": 3
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-xEbsOCjQmAy1Uj_H6qRLr",
+      "number": 9,
+      "title": "Extension Mechanism",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 10,
+      "contentTypes": {
+        "definition": 5,
+        "paragraph": 2,
+        "definition-list": 2,
+        "theorem": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-Xu_Ovl71oIhLU1kaCurK_",
+      "number": 10,
+      "title": "Formal Properties and Theorems",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 23,
+      "contentTypes": {
+        "paragraph": 14,
+        "code": 9
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-TmlplXlhpu2gAP4_iKrgd",
+      "number": 11,
+      "title": "Reference Implementation",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 3,
+      "contentTypes": {
+        "paragraph": 1,
+        "admonition": 1,
+        "code": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-aAgCXhEN9t0xxoeTpf0Qc",
+      "number": 13,
+      "title": "Concurrency Semantics",
+      "directSubCount": 4,
+      "subCount": 4,
+      "contentItems": 14,
+      "contentTypes": {
+        "paragraph": 3,
+        "definition": 5,
+        "code": 2,
+        "theorem": 2,
+        "definition-list": 1,
+        "table": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-5jP_ZWlaA8SfDbhVxrG99",
+      "number": 14,
+      "title": "Binding Verification Lifecycle",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 10,
+      "contentTypes": {
+        "paragraph": 1,
+        "code": 3,
+        "definition": 4,
+        "rule": 2
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-YFHOeAjN2dYDjDiTocSSI",
+      "number": 16,
+      "title": "Schema Evolution",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 0,
+      "contentTypes": {},
+      "defsCount": 9,
+      "defsKinds": {
+        "enum": 1,
+        "type": 3,
+        "rule": 3,
+        "function": 1,
+        "theorem": 1
+      }
+    },
+    {
+      "id": "sec-z3nlCPJ5B1h7TUhEf25LL",
+      "number": 17,
+      "title": "Certification Artifacts",
+      "directSubCount": 4,
+      "subCount": 4,
+      "contentItems": 17,
+      "contentTypes": {
+        "definition": 3,
+        "code": 3,
+        "paragraph": 6,
+        "checklist": 4,
+        "list": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-S3Z17-kDEc2A9A92Y0bqi",
+      "number": 18,
+      "title": "Tool Qualification Guidance (DO-330)",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 16,
+      "contentTypes": {
+        "paragraph": 8,
+        "definition-list": 1,
+        "table": 2,
+        "checklist": 4,
+        "code": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-PAskKN4i1etyZhtOY5xtv",
+      "number": 19,
+      "title": "Mechanized Proof Templates",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 7,
+      "contentTypes": {
+        "paragraph": 1,
+        "heading": 3,
+        "code": 3
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-ojM0_ZLauOdjNuKK99Pg0",
+      "number": 20,
+      "title": "Per-Language INV-1..5 Implementation Checklists",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 12,
+      "contentTypes": {
+        "checklist": 11,
+        "paragraph": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-dIOSpm6loMFLin3AzkYRN",
+      "number": 21,
+      "title": "Compositional Semantics",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 13,
+      "contentTypes": {
+        "definition": 2,
+        "code": 4,
+        "paragraph": 3,
+        "theorem": 4
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-LUj58UniUYiDJ-BI2QMU3",
+      "number": 22,
+      "title": "Temporal Properties",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 17,
+      "contentTypes": {
+        "paragraph": 6,
+        "definition": 1,
+        "definition-list": 1,
+        "list": 2,
+        "rule": 7
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-ZBsFkK5bvDEL4m-rsfH17",
+      "number": 23,
+      "title": "Constraint Conflict Resolution",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 7,
+      "contentTypes": {
+        "paragraph": 2,
+        "definition": 2,
+        "definition-list": 1,
+        "list": 1,
+        "code": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-RBDT59WZE2xJyi9k5UFvY",
+      "number": 24,
+      "title": "Garbage Collection Proofs",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 11,
+      "contentTypes": {
+        "paragraph": 3,
+        "definition": 2,
+        "rule": 3,
+        "list": 2,
+        "theorem": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-rRDDwm1LZy_CFk7nC2L0k",
+      "number": 26,
+      "title": "Certification Objective Coverage Matrix",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 8,
+      "contentTypes": {
+        "paragraph": 4,
+        "admonition": 1,
+        "table": 3
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-Nei3FTlw11oOPZVBq920l",
+      "number": 27,
+      "title": "STPA/FMEA Integration Framework",
+      "directSubCount": 5,
+      "subCount": 5,
+      "contentItems": 25,
+      "contentTypes": {
+        "paragraph": 17,
+        "table": 2,
+        "code": 6
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-x6eVbGvoVfS9GNeqNkLUG",
+      "number": 28,
+      "title": "Formal Attenuation Properties",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 13,
+      "contentTypes": {
+        "paragraph": 3,
+        "definition": 6,
+        "admonition": 1,
+        "theorem": 1,
+        "diagram": 1,
+        "code": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-dM0e66FHuNRBmoEaMjfxF",
+      "number": 29,
+      "title": "Cross-Standard Traceability Matrix",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 8,
+      "contentTypes": {
+        "table": 4,
+        "paragraph": 4
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-F4EMqD3954zBnfEDnmQGj",
+      "number": 30,
+      "title": "Tier Boundary Formal Semantics",
+      "directSubCount": 2,
+      "subCount": 2,
+      "contentItems": 11,
+      "contentTypes": {
+        "paragraph": 5,
+        "definition": 2,
+        "code": 3,
+        "table": 1
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-FKg-HIOFmN1Oiyr_KJhnT",
+      "number": 12,
+      "title": "Summary",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 10,
+      "contentTypes": {
+        "paragraph": 4,
+        "heading": 4,
+        "list": 2
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-Ksy2-gPkkxdYKBYNqe76U",
+      "number": 31,
+      "title": "Glossary of Key Terms",
+      "directSubCount": 0,
+      "subCount": 0,
+      "contentItems": 19,
+      "contentTypes": {
+        "paragraph": 1,
+        "heading": 9,
+        "definition-list": 9
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    },
+    {
+      "id": "sec-syYS1lzON5CBCL1ZdsBul",
+      "number": 32,
+      "title": "Comprehensive Bibliography",
+      "directSubCount": 3,
+      "subCount": 3,
+      "contentItems": 12,
+      "contentTypes": {
+        "reference": 12
+      },
+      "defsCount": 0,
+      "defsKinds": {}
+    }
+  ]
+}

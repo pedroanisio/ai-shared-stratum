@@ -263,7 +263,7 @@
             },
             {
               "term": "blameChain ∈ Operation*",
-              "definition": "Causal chain of changes leading to violation (uses vector clocks from §2.1, §12)"
+              "definition": "Causal chain of changes leading to violation (uses vector clocks from referenceMap(\"sub-xYOy8xUJpcssgjNVmANNW\", \"§{{sectionNumber}}.1 Element\"), referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\"))"
             },
             {
               "term": "humanReadable ∈ NAME",

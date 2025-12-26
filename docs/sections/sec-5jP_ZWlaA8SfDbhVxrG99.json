@@ -10,8 +10,9 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "**Definition 14.1 (Verification State Machine)**"
-        },
+          "text": "**Definition reference:** referenceMap(\"sub-4vJaXL82mEBrXVULpKYBW\", {{sectionNumber}}.{{suffix}} ({{suffixName}}))"
+        }
+        ,
         {
           "type": "code",
           "language": "text",

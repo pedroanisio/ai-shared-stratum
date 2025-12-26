@@ -10,26 +10,26 @@
     },
     {
       "type": "paragraph",
-      "text": "This specification is organized in six logical parts across 30 sections. The recommended reading path depends on your role:"
+      "text": "This specification is organized in six logical parts across render(documentStats,\"totals.sections\") sections. The recommended reading path depends on your role:"
     },
     {
       "type": "definition-list",
       "items": [
         {
           "term": "**Formal Semanticists**",
-          "definition": "Read sequentially: §1–10 (Foundations) → §10–22 (Formal Theory) → §25 (Attenuation Properties)"
+          "definition": "Read sequentially: referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") – referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Xu_Ovl71oIhLU1kaCurK_\", \"§{{sectionNumber}}\") (Foundations) → §10–22 (Formal Theory) → §25 (Attenuation Properties)"
         },
         {
           "term": "**Language Implementers**",
-          "definition": "Read: §1–6 (Type System) → §7 (Operations) → §11 (Reference Implementation) → §18 (Language Checklists)"
+          "definition": "Read: referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\") (Type System) → referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") (Operations) → referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\") (Reference Implementation) → referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\") (Language Checklists)"
         },
         {
           "term": "**Safety/Certification Engineers**",
-          "definition": "Read: §1–4 (Foundations, Guarantees) → §15–16 (Certification) → §23–26 (Coverage, STPA, Attenuation, Traceability)"
+          "definition": "Read: referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") (Foundations, Guarantees) → §15–16 (Certification) → §23–26 (Coverage, STPA, Attenuation, Traceability)"
         },
         {
           "term": "**Integration Engineers**",
-          "definition": "Read: §2 (Abstract Syntax) → §8–9 (Domain Profiles, Extensions) → §12–14 (Concurrency, Binding, Schema Evolution)"
+          "definition": "**Read:** referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", §{{sectionNumber}} ({{sectionName}})) → referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\") (Domain Profiles, Extensions) → referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\") – referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") (Concurrency, Binding, Schema Evolution)"
         }
       ]
     },
@@ -40,11 +40,11 @@
     },
     {
       "type": "paragraph",
-      "text": "**PART I: Foundations (§1–6)**\nCore type system, abstract syntax, well-formedness, guarantees, and inference rules.\n\n**PART II: Operations (§7–9)**\nQuery, modification, domain profiles, and extensibility.\n\n**PART III: Formal Theory (§10–27)**\nTheorems, proofs, concurrency semantics, certification, and advanced properties.\n\n**APPENDICES (§28–30)**\nSummary, glossary, and bibliography."
+      "text": "**render(documentStats, \"parts.0.labelWithRange\")**\nCore type system, abstract syntax, well-formedness, guarantees, and inference rules.\n\n**render(documentStats, \"parts.1.labelWithRange\")**\nQuery, modification, domain profiles, and extensibility.\n\n**render(documentStats, \"parts.2.labelWithRange\")**\nTheorems, proofs, concurrency semantics, certification, and advanced properties.\n\n**render(documentStats, \"parts.5.labelWithRange\")**\nSummary, glossary, and bibliography."
     },
     {
       "type": "paragraph",
-      "text": "**Key Dependencies**\nSections 1–2 must be read before any others. Section 5 (Type System) is required for §6–7. Section 10 (Formal Properties) provides theoretical grounding for all subsequent sections."
+      "text": "**Key Dependencies**\nSections 1–2 must be read before any others. Section 5 (Type System) is required for referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\"). Section 10 (Formal Properties) provides theoretical grounding for all subsequent sections."
     },
     {
       "type": "heading",
@@ -227,28 +227,28 @@
       "type": "definition-list",
       "items": [
         {
-          "term": "**1. Data Structures** (§2.1-2.3)",
+          "term": "**1. Data Structures** (referenceMap(\"sub-xYOy8xUJpcssgjNVmANNW\", \"§{{sectionNumber}}.1 Element\") – referenceMap(\"sub-1PQdtQJCcUP4hsmjE7iJL\", \"§{{sectionNumber}}.2 Layer\") – referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\"))",
           "definition": "Element, Layer, Dependency — the core abstract syntax tree. Read: Definition 2.1 (Element), Definition 2.6 (Layer), Definition 2.11 (Dependency), Definition 2.8 (DEPTYPE enumeration)."
         },
         {
-          "term": "**2. Constraints** (§2.4)",
+          "term": "**2. Constraints** (referenceMap(\"sub-CyAf_GsK2z3HhpvlCgKlD\", \"§{{sectionNumber}}.4 Constraint\"))",
           "definition": "QF_LIA + QF_LRA + QF_UF constraint language per v2.4.4. Read: Definition 2.12 (Predicate Language), Definition 2.16 (Constraint), Theorem 2.1 (Decidability). Note: SMT-LIB 2.6 standard required for conformance."
         },
         {
-          "term": "**3. Well-Formedness** (§3)",
+          "term": "**3. Well-Formedness** (referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\"))",
           "definition": "Structural invariants that all specifications must satisfy. Read: All WF-rules including WF-ID, WF-LAYER, WF-ACYCLIC-HARD, WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION (added v2.4.4)."
         },
         {
-          "term": "**4. Six Guarantees** (§4.1-4.6)",
+          "term": "**4. Six Guarantees** (referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"))",
           "definition": "G1 (Traceability), G2 (Completeness), G3 (Consistency), G4 (Groundedness), G5 (Determinism), G6 (Coherence). These are the semantic properties that define a Valid specification. G7 (Explainability) is K1, not K0."
         },
         {
-          "term": "**5. Inference Rules** (§6)",
+          "term": "**5. Inference Rules** (referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"))",
           "definition": "Cascade computation (CASCADE-1, CASCADE-N, CASCADE-ATT), constraint satisfaction (CONSTR-SAT), trace computation (TRACE-ROOT, TRACE-STEP). These define the operational semantics."
         },
         {
-          "term": "**6. Core Operations** (§7.1-7.3)",
-          "definition": "validate(S) → violations, trace(e) → path, impact(S, δ) → affected elements. These are the three required Kernel operations. Note: validateIncremental (§7.1.1) is K3, not K0."
+          "term": "**6. Core Operations** (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"))",
+          "definition": "validate(S) → violations, trace(e) → path, impact(S, δ) → affected elements. These are the three required Kernel operations. Note: validateIncremental (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\").1) is K3, not K0."
         }
       ]
     },
@@ -274,7 +274,7 @@
         },
         {
           "term": "**Compositional**",
-          "definition": "Kernel(S₁ ⊕ S₂) = Kernel(S₁) ⊕ Kernel(S₂). Merging two specifications preserves all Kernel properties. This follows from the CRDT-based merge semantics (§12) but does not require understanding CRDTs for K0 conformance."
+          "definition": "Kernel(S₁ ⊕ S₂) = Kernel(S₁) ⊕ Kernel(S₂). Merging two specifications preserves all Kernel properties. This follows from the CRDT-based merge semantics (referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\")) but does not require understanding CRDTs for K0 conformance."
         }
       ]
     },
@@ -290,11 +290,11 @@
     {
       "type": "list",
       "items": [
-        "**Concurrency (§12-13)**: CRDTs, vector clocks, conflict resolution. Optional for single-user tools.",
+        "**Concurrency (referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\"))**: CRDTs, vector clocks, conflict resolution. Optional for single-user tools.",
         "**Certification (§15-18, §23-29)**: RTM, DO-178C/ISO 26262 mappings, STPA/FMEA. Only required for K2+ conformance.",
-        "**Advanced Operations (§7.4, §8-9)**: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential.",
-        "**Mechanized Proofs (§17, §19-22)**: TLA+, Coq, Lean templates. Helpful for verification but not required for implementation.",
-        "**G7 Explainability (§4.8)**: Unsat core generation. This is K1 (Certified-Aware), not K0."
+        "**Advanced Operations (§7.4, referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential.",
+        "**Mechanized Proofs (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\"), referenceMap(\"sec-PAskKN4i1etyZhtOY5xtv\", \"§{{sectionNumber}}\") – referenceMap(\"sec-ojM0_ZLauOdjNuKK99Pg0\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\") – referenceMap(\"sec-LUj58UniUYiDJ-BI2QMU3\", \"§{{sectionNumber}}\"))**: TLA+, Coq, Lean templates. Helpful for verification but not required for implementation.",
+        "**G7 Explainability (referenceMap(\"sub-Q_FIkGVXUuZIl6JAWPVwl\", \"§{{sectionNumber}}.8 Valid Specification\"))**: Unsat core generation. This is K1 (Certified-Aware), not K0."
       ]
     },
     {
@@ -311,12 +311,12 @@
       "items": [
         "§1.1-1.3: Primitive sets, notation (5 minutes)",
         "§1.4: This section (10 minutes)",
-        "§2.1-2.4: Element, Layer, Dependency, Constraint (30 minutes)",
-        "§3: Well-formedness conditions (15 minutes)",
-        "§4.1-4.6: The Six Guarantees G1-G6 (25 minutes)",
-        "§6: Inference rules for cascade, trace, constraints (20 minutes)",
-        "§7.1-7.3: validate(), trace(), impact() operations (15 minutes)",
-        "§10.1-10.3: Soundness, decidability, cascade termination theorems (10 minutes)"
+        "referenceMap(\"sub-xYOy8xUJpcssgjNVmANNW\", \"§{{sectionNumber}}.1 Element\") – referenceMap(\"sub-1PQdtQJCcUP4hsmjE7iJL\", \"§{{sectionNumber}}.2 Layer\") – referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\") – referenceMap(\"sub-CyAf_GsK2z3HhpvlCgKlD\", \"§{{sectionNumber}}.4 Constraint\"): Element, Layer, Dependency, Constraint (30 minutes)",
+        "referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\"): Well-formedness conditions (15 minutes)",
+        "referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"): The Six Guarantees G1-G6 (25 minutes)",
+        "referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"): Inference rules for cascade, trace, constraints (20 minutes)",
+        "referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"): validate(), trace(), impact() operations (15 minutes)",
+        "referenceMap(\"sub-OBU4duRRllB7_9IhbL-1N\", \"§{{sectionNumber}}.1 Soundness\") – referenceMap(\"sub-OB_3VjaM4yzhjgIYWx1_k\", \"§{{sectionNumber}}.2 Convergence\") – referenceMap(\"sub-kbjoG8RVDTc33BlKjcHtq\", \"§{{sectionNumber}}.3 Decidability\"): Soundness, decidability, cascade termination theorems (10 minutes)"
       ]
     },
     {
@@ -342,10 +342,10 @@
       "items": [
         "✓ Implement data structures: Specification, Element, Layer, Dependency, Constraint, Binding, CascadeRule",
         "✓ Implement constraint language: QF_LIA + QF_LRA + QF_UF (via SMT solver like Z3, CVC5, or Yices)",
-        "✓ Implement all WF-rules from §3 (including v2.4.4 additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)",
-        "✓ Implement guarantee checkers for G1-G6 (§4.1-4.6)",
-        "✓ Implement cascade computation per CASCADE-1, CASCADE-N rules (§6.3)",
-        "✓ Implement validate(S), trace(e), impact(S, δ) operations (§7.1-7.3)",
+        "✓ Implement all WF-rules from referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") (including v2.4.4 additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)",
+        "✓ Implement guarantee checkers for G1-G6 (referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"))",
+        "✓ Implement cascade computation per CASCADE-1, CASCADE-N rules (referenceMap(\"sub-5Xu8Vv_BHhTdzfCjtqDRo\", \"§{{sectionNumber}}.3 Cascade Computation\"))",
+        "✓ Implement validate(S), trace(e), impact(S, δ) operations (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"))",
         "✓ Pass Kernel test suite (if available from reference implementation)",
         "✓ Demonstrate purity: All operations return same output for same input",
         "✓ Demonstrate decidability: All operations terminate (no infinite loops)"
@@ -353,7 +353,7 @@
     },
     {
       "type": "paragraph",
-      "text": "**Optional but Recommended**: Implement Zod schemas (§11) for runtime validation, though note the schema drift warning from v2.4.4 (Zod schemas are v1.0 and lack v2.0+ fields like cascade_boundary, priority, actor, clock)."
+      "text": "**Optional but Recommended**: Implement Zod schemas (referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\")) for runtime validation, though note the schema drift warning from v2.4.4 (Zod schemas are v1.0 and lack v2.0+ fields like cascade_boundary, priority, actor, clock)."
     }
   ]
 }

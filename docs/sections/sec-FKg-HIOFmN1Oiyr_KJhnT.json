@@ -19,11 +19,11 @@
     {
       "type": "list",
       "items": [
-        "**Formal Foundations (§1-6)**: Type system, abstract syntax, well-formedness, and seven guarantees (G1-G7)",
-        "**Operations & Profiles (§7-9)**: Query operations, domain profiles, and extension mechanisms",
+        "**Formal Foundations (referenceMap(\"sec-XYQxS3DjhGgZ24R6PyyfR\", \"§{{sectionNumber}}\") – referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Jcn-W5ZXGpackkeeq-isa\", \"§{{sectionNumber}}\") – referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"))**: Type system, abstract syntax, well-formedness, and seven guarantees (G1-G7)",
+        "**Operations & Profiles (referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\") – referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Query operations, domain profiles, and extension mechanisms",
         "**Formal Theory (§10-27)**: Theorems, concurrency semantics, compositional properties, certification artifacts, and safety integration",
-        "**Implementation Support (§11, §17-18)**: Reference implementation, proof templates, and language checklists",
-        "**Safety Standards (§17-18, §26-29)**: DO-178C/DO-330 compliance, ISO 26262 coverage, STPA/FMEA integration, and cross-standard traceability"
+        "**Implementation Support (referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\"), referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"))**: Reference implementation, proof templates, and language checklists",
+        "**Safety Standards (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"), referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dM0e66FHuNRBmoEaMjfxF\", \"§{{sectionNumber}}\"))**: DO-178C/DO-330 compliance, ISO 26262 coverage, STPA/FMEA integration, and cross-standard traceability"
       ]
     },
     {
@@ -56,7 +56,7 @@
     },
     {
       "type": "paragraph",
-      "text": "The specification is organized in six logical parts:\n- **PART I: Foundations** (§1-6): Core type system, abstract syntax, well-formedness, guarantees, inference rules\n- **PART II: Operations** (§7-9): Query operations, domain profiles, extension mechanisms\n- **PART III: Formal Theory** (§10, §13-14, §16, §21-24, §28, §30): Theorems, proofs, concurrency, temporal properties, attenuation\n- **PART IV: Implementation** (§11, §19-20): Reference implementation, proof templates, checklists\n- **PART V: Certification** (§17-18, §26-27, §29): Certification artifacts, tool qualification, coverage matrices, STPA/FMEA, traceability\n- **PART VI: Appendices** (§12, §31, §32): Summary, glossary, bibliography"
+      "text": "render(documentStats, \"partsSummaryText\")"
     }
   ]
 }

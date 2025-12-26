@@ -1,0 +1,680 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vera.example.com/schemas/section-v1.json",
+  "title": "Document Section",
+  "description": "Section content node with optional children and typed content blocks",
+  "$ref": "#/$defs/section",
+  "$defs": {
+    "blockBase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional anchor ID for deep linking"
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suffix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "overview": {
+          "type": "string"
+        },
+        "defs": {
+          "type": "array",
+          "description": "Local definitions scoped to this section",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "value"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contentItem"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/section"
+          }
+        }
+      }
+    },
+    "contentItem": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/heading"
+        },
+        {
+          "$ref": "#/$defs/paragraph"
+        },
+        {
+          "$ref": "#/$defs/definitionList"
+        },
+        {
+          "$ref": "#/$defs/list"
+        },
+        {
+          "$ref": "#/$defs/admonition"
+        },
+        {
+          "$ref": "#/$defs/reference"
+        },
+        {
+          "$ref": "#/$defs/code"
+        },
+        {
+          "$ref": "#/$defs/definition"
+        },
+        {
+          "$ref": "#/$defs/rule"
+        },
+        {
+          "$ref": "#/$defs/theorem"
+        },
+        {
+          "$ref": "#/$defs/guarantee"
+        },
+        {
+          "$ref": "#/$defs/operation"
+        },
+        {
+          "$ref": "#/$defs/profile"
+        },
+        {
+          "$ref": "#/$defs/checklist"
+        },
+        {
+          "$ref": "#/$defs/table"
+        },
+        {
+          "$ref": "#/$defs/diagram"
+        },
+        {
+          "$ref": "#/$defs/figure"
+        }
+      ]
+    },
+    "heading": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "level",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "heading"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "text": {
+          "type": "string",
+          "description": "Plain text or Markdown inline formatting"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "paragraph": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "paragraph"
+        },
+        "text": {
+          "type": "string",
+          "description": "Plain text or Markdown inline formatting"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "definitionList": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "items"
+      ],
+      "properties": {
+        "type": {
+          "const": "definition-list"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "term",
+              "definition"
+            ],
+            "properties": {
+              "term": {
+                "type": "string"
+              },
+              "definition": {
+                "type": "string",
+                "description": "Plain text or Markdown inline formatting"
+              }
+            }
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "list": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "items"
+      ],
+      "properties": {
+        "type": {
+          "const": "list"
+        },
+        "ordered": {
+          "type": "boolean",
+          "default": false
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/list"
+              }
+            ]
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "admonition": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "level",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "admonition"
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "note",
+            "tip",
+            "info",
+            "warning",
+            "danger",
+            "caution",
+            "important"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "description": "Plain text or Markdown inline formatting"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "reference": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "key",
+        "citation"
+      ],
+      "properties": {
+        "type": {
+          "const": "reference"
+        },
+        "key": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "secondary",
+            "supplementary"
+          ],
+          "description": "Importance of this reference"
+        },
+        "citation": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "code": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "lines"
+      ],
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "language": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "highlight": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "definition": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "definition"
+        },
+        "label": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "rule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "formula"
+      ],
+      "properties": {
+        "type": {
+          "const": "rule"
+        },
+        "label": {
+          "type": "string"
+        },
+        "formula": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "theorem": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "formula"
+      ],
+      "properties": {
+        "type": {
+          "const": "theorem"
+        },
+        "label": {
+          "type": "string"
+        },
+        "formula": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "guarantee": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "formula",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "const": "guarantee"
+        },
+        "label": {
+          "type": "string"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "operation": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "signature",
+        "semantics"
+      ],
+      "properties": {
+        "type": {
+          "const": "operation"
+        },
+        "label": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "semantics": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "profile": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "layers"
+      ],
+      "properties": {
+        "type": {
+          "const": "profile"
+        },
+        "label": {
+          "type": "string"
+        },
+        "layers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "checklist": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "items"
+      ],
+      "properties": {
+        "type": {
+          "const": "checklist"
+        },
+        "label": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["text"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "checked": { "type": "boolean", "default": false }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "table": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "columns",
+        "rows"
+      ],
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "diagram": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "format",
+        "content"
+      ],
+      "properties": {
+        "type": {
+          "const": "diagram"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "mermaid",
+            "plantuml",
+            "dot",
+            "svg",
+            "ascii"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "figure": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/blockBase"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "type",
+        "src"
+      ],
+      "properties": {
+        "type": {
+          "const": "figure"
+        },
+        "src": {
+          "type": "string",
+          "description": "Image path or URI"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alt text for accessibility"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STRATUM Formal Specification - Graph</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+        background: #f7f5f2;
+        color: #1c1c1c;
+      }
+      body {
+        margin: 0;
+        padding: 40px 24px 60px;
+        min-height: 100vh;
+      }
+      body.fullscreen {
+        padding: 0;
+        background: #ffffff;
+      }
+      main {
+        max-width: 1600px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 28px;
+        border-radius: 16px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+      }
+      body.fullscreen main {
+        max-width: none;
+        margin: 0;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      h1 {
+        font-family: "IBM Plex Serif", "Georgia", serif;
+        margin: 0 0 0.6rem;
+      }
+      p {
+        margin: 0 0 1.4rem;
+        color: #4a453f;
+      }
+      .mermaid {
+        background: #fbfaf8;
+        border: 1px solid #e1ddd6;
+        border-radius: 12px;
+        padding: 16px;
+        overflow: hidden;
+        height: 560px;
+      }
+      .mermaid svg {
+        width: 100%;
+        height: 100%;
+      }
+      body.fullscreen .mermaid {
+        height: calc(100vh - 160px);
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        text-decoration: none;
+        color: #2c2a27;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .graph-toolbar {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin: 0 0 1rem;
+      }
+      .graph-btn {
+        border: 1px solid #d1ccc4;
+        background: #fff;
+        color: #2c2a27;
+        border-radius: 999px;
+        padding: 0.4rem 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .graph-btn:hover {
+        background: #f1ede6;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back-link" href="stratum-v.2.5.html">← Back to document</a>
+      <h1>STRATUM Formal Specification</h1>
+      <p>Section structure and part grouping.</p>
+      <div class="graph-toolbar">
+        <button class="graph-btn" type="button" data-action="zoom-in">Zoom In</button>
+        <button class="graph-btn" type="button" data-action="zoom-out">Zoom Out</button>
+        <button class="graph-btn" type="button" data-action="reset">Reset</button>
+        <button class="graph-btn" type="button" data-action="fullscreen">Full Screen</button>
+      </div>
+      <div class="mermaid">
+flowchart TD
+  part_01["PART 1 Foundations"]
+  sec_XYQxS3DjhGgZ24R6PyyfR["1 Foundations"]
+  part_01 --> sec_XYQxS3DjhGgZ24R6PyyfR
+  sec_ggoNjElo79ZXKuYjlF7mW["STRATUM in Action: Requirement Change Impact"]
+  part_01 --> sec_ggoNjElo79ZXKuYjlF7mW
+  sec_8qxwzRxMeEWqbne8C5K8l["2 Abstract Syntax"]
+  part_01 --> sec_8qxwzRxMeEWqbne8C5K8l
+  sec_A6gecSxlJYGPIDKvgzjsG["Policy [v2.5]"]
+  part_01 --> sec_A6gecSxlJYGPIDKvgzjsG
+  sec_pYrht_aqaJ5gENPPS98r_["3 Well-Formedness Conditions"]
+  part_01 --> sec_pYrht_aqaJ5gENPPS98r_
+  sec_taGb2W_Ks5lKWB8hcj3UY["4 Semantic Properties (The Seven Guarantees)"]
+  part_01 --> sec_taGb2W_Ks5lKWB8hcj3UY
+  sec_Jcn_W5ZXGpackkeeq_isa["5 Type System"]
+  part_01 --> sec_Jcn_W5ZXGpackkeeq_isa
+  sec_CwnDzo78GYBw57r1EI_R5["6 Inference Rules"]
+  part_01 --> sec_CwnDzo78GYBw57r1EI_R5
+  part_02["PART 2 Operations"]
+  sec_aBNKnM08R3W5pfjELaQas["7 Operations"]
+  part_02 --> sec_aBNKnM08R3W5pfjELaQas
+  sec_FzfSSWJ73nYlWnpzz3_B7["8 Domain Profiles"]
+  part_02 --> sec_FzfSSWJ73nYlWnpzz3_B7
+  sec_xEbsOCjQmAy1Uj_H6qRLr["9 Extension Mechanism"]
+  part_02 --> sec_xEbsOCjQmAy1Uj_H6qRLr
+  part_03["PART 3 Formal Theory"]
+  sec_Xu_Ovl71oIhLU1kaCurK_["10 Formal Properties and Theorems"]
+  part_03 --> sec_Xu_Ovl71oIhLU1kaCurK_
+  sec_aAgCXhEN9t0xxoeTpf0Qc["13 Concurrency Semantics"]
+  part_03 --> sec_aAgCXhEN9t0xxoeTpf0Qc
+  sec_5jP_ZWlaA8SfDbhVxrG99["14 Binding Verification Lifecycle"]
+  part_03 --> sec_5jP_ZWlaA8SfDbhVxrG99
+  sec_YFHOeAjN2dYDjDiTocSSI["16 Schema Evolution"]
+  part_03 --> sec_YFHOeAjN2dYDjDiTocSSI
+  sec_dIOSpm6loMFLin3AzkYRN["21 Compositional Semantics"]
+  part_03 --> sec_dIOSpm6loMFLin3AzkYRN
+  sec_LUj58UniUYiDJ_BI2QMU3["22 Temporal Properties"]
+  part_03 --> sec_LUj58UniUYiDJ_BI2QMU3
+  sec_ZBsFkK5bvDEL4m_rsfH17["23 Constraint Conflict Resolution"]
+  part_03 --> sec_ZBsFkK5bvDEL4m_rsfH17
+  sec_RBDT59WZE2xJyi9k5UFvY["24 Garbage Collection Proofs"]
+  part_03 --> sec_RBDT59WZE2xJyi9k5UFvY
+  sec_x6eVbGvoVfS9GNeqNkLUG["28 Formal Attenuation Properties"]
+  part_03 --> sec_x6eVbGvoVfS9GNeqNkLUG
+  sec_F4EMqD3954zBnfEDnmQGj["30 Tier Boundary Formal Semantics"]
+  part_03 --> sec_F4EMqD3954zBnfEDnmQGj
+  part_04["PART 4 Implementation"]
+  sec_TmlplXlhpu2gAP4_iKrgd["11 Reference Implementation"]
+  part_04 --> sec_TmlplXlhpu2gAP4_iKrgd
+  sec_PAskKN4i1etyZhtOY5xtv["19 Mechanized Proof Templates"]
+  part_04 --> sec_PAskKN4i1etyZhtOY5xtv
+  sec_ojM0_ZLauOdjNuKK99Pg0["20 Per-Language INV-1..5 Implementation Checklists"]
+  part_04 --> sec_ojM0_ZLauOdjNuKK99Pg0
+  part_05["PART 5 Certification"]
+  sec_z3nlCPJ5B1h7TUhEf25LL["17 Certification Artifacts"]
+  part_05 --> sec_z3nlCPJ5B1h7TUhEf25LL
+  sec_S3Z17_kDEc2A9A92Y0bqi["18 Tool Qualification Guidance (DO-330)"]
+  part_05 --> sec_S3Z17_kDEc2A9A92Y0bqi
+  sec_rRDDwm1LZy_CFk7nC2L0k["26 Certification Objective Coverage Matrix"]
+  part_05 --> sec_rRDDwm1LZy_CFk7nC2L0k
+  sec_Nei3FTlw11oOPZVBq920l["27 STPA/FMEA Integration Framework"]
+  part_05 --> sec_Nei3FTlw11oOPZVBq920l
+  sec_dM0e66FHuNRBmoEaMjfxF["29 Cross-Standard Traceability Matrix"]
+  part_05 --> sec_dM0e66FHuNRBmoEaMjfxF
+  part_06["PART 6 Appendices"]
+  sec_FKg_HIOFmN1Oiyr_KJhnT["12 Summary"]
+  part_06 --> sec_FKg_HIOFmN1Oiyr_KJhnT
+  sec_Ksy2_gPkkxdYKBYNqe76U["31 Glossary of Key Terms"]
+  part_06 --> sec_Ksy2_gPkkxdYKBYNqe76U
+  sec_syYS1lzON5CBCL1ZdsBul["32 Comprehensive Bibliography"]
+  part_06 --> sec_syYS1lzON5CBCL1ZdsBul
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+      if (window.mermaid && window.mermaid.initialize) {
+        window.mermaid.initialize({ startOnLoad: true, theme: "neutral" });
+      }
+    </script>
+    <script>
+      (function () {
+        var container = document.querySelector(".mermaid");
+        if (!container) return;
+
+        function initPanZoom() {
+          var svg = container.querySelector("svg");
+          if (!svg) return;
+          var viewBox = svg.getAttribute("viewBox");
+          if (!viewBox) {
+            var bbox = svg.getBBox();
+            svg.setAttribute("viewBox", [bbox.x, bbox.y, bbox.width, bbox.height].join(" "));
+          }
+          var vb = svg.getAttribute("viewBox").split(" ").map(Number);
+          var state = { x: vb[0], y: vb[1], w: vb[2], h: vb[3], dragging: false, lastX: 0, lastY: 0 };
+
+          function setViewBox() {
+            svg.setAttribute("viewBox", [state.x, state.y, state.w, state.h].join(" "));
+          }
+
+          function zoom(delta, centerX, centerY) {
+            var scale = delta > 0 ? 0.9 : 1.1;
+            var mx = centerX;
+            var my = centerY;
+            state.x = mx - (mx - state.x) * scale;
+            state.y = my - (my - state.y) * scale;
+            state.w *= scale;
+            state.h *= scale;
+            setViewBox();
+          }
+
+          container.addEventListener("wheel", function (event) {
+            event.preventDefault();
+            var rect = svg.getBoundingClientRect();
+            var mx = state.x + ((event.clientX - rect.left) / rect.width) * state.w;
+            var my = state.y + ((event.clientY - rect.top) / rect.height) * state.h;
+            zoom(event.deltaY, mx, my);
+          }, { passive: false });
+
+          container.addEventListener("pointerdown", function (event) {
+            state.dragging = true;
+            state.lastX = event.clientX;
+            state.lastY = event.clientY;
+            container.setPointerCapture(event.pointerId);
+          });
+
+          container.addEventListener("pointermove", function (event) {
+            if (!state.dragging) return;
+            var rect = svg.getBoundingClientRect();
+            var dx = (event.clientX - state.lastX) / rect.width * state.w;
+            var dy = (event.clientY - state.lastY) / rect.height * state.h;
+            state.x -= dx;
+            state.y -= dy;
+            state.lastX = event.clientX;
+            state.lastY = event.clientY;
+            setViewBox();
+          });
+
+          container.addEventListener("pointerup", function () {
+            state.dragging = false;
+          });
+          container.addEventListener("pointercancel", function () {
+            state.dragging = false;
+          });
+
+          document.querySelectorAll("[data-action]").forEach(function (button) {
+            button.addEventListener("click", function () {
+              var action = button.getAttribute("data-action");
+              if (action === "zoom-in") {
+                zoom(1, state.x + state.w / 2, state.y + state.h / 2);
+              } else if (action === "zoom-out") {
+                zoom(-1, state.x + state.w / 2, state.y + state.h / 2);
+              } else if (action === "reset") {
+                var vb = svg.getAttribute("viewBox").split(" ").map(Number);
+                state.x = vb[0];
+                state.y = vb[1];
+                state.w = vb[2];
+                state.h = vb[3];
+                setViewBox();
+              } else if (action === "fullscreen") {
+                document.body.classList.toggle("fullscreen");
+              }
+            });
+          });
+        }
+
+        if (window.mermaid) {
+          window.mermaid.initialize({ startOnLoad: true, theme: "neutral" });
+          window.mermaid.run().then(initPanZoom);
+        } else {
+          initPanZoom();
+        }
+      })();
+    </script>
+  </body>
+</html>

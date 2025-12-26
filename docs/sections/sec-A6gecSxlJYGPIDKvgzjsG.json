@@ -269,7 +269,7 @@
     },
     {
       "type": "paragraph",
-      "text": "**Policy Evaluation**: The operational implementation of `evaluatePolicies(S, violations)` follows Definitions 2.31-2.33 above. For validation integration, policies are evaluated after constraint checking per Operation 7.1 (validate). Policy conflict resolution uses priority ordering per §23 (same mechanism as Constraint priority)."
+      "text": "**Policy Evaluation**: The operational implementation of `evaluatePolicies(S, violations)` follows Definitions 2.31-2.33 above. For validation integration, policies are evaluated after constraint checking per Operation 7.1 (validate). Policy conflict resolution uses priority ordering per referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\") (same mechanism as Constraint priority)."
     },
     {
       "type": "admonition",

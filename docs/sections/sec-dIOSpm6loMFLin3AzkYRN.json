@@ -136,7 +136,7 @@
         },
         {
           "type": "paragraph",
-          "text": "**Rationale**: Compatibility ensures that merging two specifications does not introduce semantic conflicts that would violate well-formedness. Condition (1) prevents layer tier/order mismatches. Condition (2) prevents element type mismatches. Condition (3) ensures constraint conflicts can be resolved by priority ordering (per §23). Condition (4) prevents dependency cycles. Condition (5) ensures specifications have overlapping domains or are universal."
+          "text": "**Rationale**: Compatibility ensures that merging two specifications does not introduce semantic conflicts that would violate well-formedness. Condition (1) prevents layer tier/order mismatches. Condition (2) prevents element type mismatches. Condition (3) ensures constraint conflicts can be resolved by priority ordering (per referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\")). Condition (4) prevents dependency cycles. Condition (5) ensures specifications have overlapping domains or are universal."
         },
         {
           "type": "theorem",

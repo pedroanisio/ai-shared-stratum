@@ -148,11 +148,11 @@
             ],
             [
               "6.6: Specification of software safety requirements",
-              "✓ (§2-4)"
+              "✓ (referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") – referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\"))"
             ],
             [
               "6.7: Software architectural design",
-              "✓ (§3)"
+              "✓ (referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\"))"
             ],
             [
               "6.8: Software unit design and implementation",
@@ -160,7 +160,7 @@
             ],
             [
               "6.9: Software unit verification",
-              "✓ (§4,14)"
+              "✓ (referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\"),14)"
             ],
             [
               "6.10: Software integration and verification",
@@ -168,11 +168,11 @@
             ],
             [
               "6.11: Verification of software safety requirements",
-              "✓ (§4,14)"
+              "✓ (referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\"),14)"
             ],
             [
               "6.12: Software configuration management",
-              "✓ (§14)"
+              "✓ (referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\"))"
             ]
           ]
         },
@@ -189,15 +189,15 @@
           "rows": [
             [
               "9.5: Analyses of dependent failures",
-              "✓ (§27.4)"
+              "✓ (referenceMap(\"sub-EPEEV-LMbC30OWgru6QE9\", \"§{{sectionNumber}}.4 Dependent Failure Analysis\"))"
             ],
             [
               "9.7: Safety analyses (STPA)",
-              "✓ (§27.2)"
+              "✓ (referenceMap(\"sub-6dUUtiFofAXIXmUIpGmeF\", \"§{{sectionNumber}}.2 STPA Integration\"))"
             ],
             [
               "9.8: Safety analyses (FMEA/FTA)",
-              "✓ (§27.3)"
+              "✓ (referenceMap(\"sub-U84ZnWVaCvrh4Ir1xroli\", \"§{{sectionNumber}}.3 FMEA/FTA Integration\"))"
             ]
           ]
         }

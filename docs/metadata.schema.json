@@ -1,0 +1,614 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vera.example.com/schemas/document-metadata-v1.1.json",
+  "$comment": "Use $dynamicRef: '#metadata' in extending schemas to override this base schema via composition",
+  "$dynamicAnchor": "metadata",
+  "title": "Document Metadata Envelope",
+  "description": "Standardized metadata wrapper for documents, APIs, ML models, configurations, datasets, prompts, templates and other digital artifacts",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "id",
+    "title",
+    "version",
+    "namespace",
+    "meta",
+    "documentType",
+    "documentStruct",
+    "sections"
+  ],
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "description": "Unique persistent identifier. Recommended patterns: UUIDv4, URL-friendly slug, URN-style, or compound namespaced identifier",
+      "examples": [
+        "vera:doc:123e4567-e89b-12d3-a456-426614174000",
+        "finance/ledger/v1/core-accounting",
+        "model:llm:anthropic:claude-3.5-sonnet:20241022",
+        "urn:uuid:550e8400-e29b-41d4-a716-446655440000",
+        "prompt:customer-support:escalation:v2.1"
+      ]
+    },
+
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240,
+      "description": "Primary human-readable title"
+    },
+
+    "subtitle": {
+      "type": "string",
+      "maxLength": 360,
+      "description": "Optional secondary title, tagline, or marketing subtitle"
+    },
+
+    "version": {
+      "$ref": "#/$defs/semver",
+      "examples": [
+        "1.0.0",
+        "2.3.4",
+        "2.4.0-rc.3",
+        "3.1.2-beta.1+exp.sha.5114f85d",
+        "0.17.0-alpha.12"
+      ]
+    },
+
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)+$",
+      "minLength": 3,
+      "maxLength": 120,
+      "description": "Reverse-DNS style ownership/organization scope with at least two segments (e.g., 'com.example')",
+      "examples": [
+        "com.example.vera",
+        "org.openfinance",
+        "internal.hr",
+        "team.ml.research",
+        "ai.acme.corp"
+      ]
+    },
+
+    "aliases": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 320
+      },
+      "description": "Alternative identifiers this resource has been known under"
+    },
+
+    "dependencies": {
+      "type": "array",
+      "description": "Other artifacts this resource depends on or relates to",
+      "items": {
+        "type": "object",
+        "required": ["id", "relationship"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "Identifier of the related artifact"
+          },
+          "relationship": {
+            "type": "string",
+            "enum": ["requires", "extends", "replaces", "supersedes", "references", "implements"],
+            "description": "Nature of the dependency relationship"
+          },
+          "versionConstraint": {
+            "type": "string",
+            "description": "SemVer range or exact version (e.g., '^1.2.0', '>=2.0.0 <3.0.0', '1.5.2')"
+          },
+          "optional": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this dependency is optional"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "description": {
+      "type": "string",
+      "maxLength": 800,
+      "description": "Short plain-text summary (recommended: 1–4 sentences)"
+    },
+
+    "sections": {
+      "type": "array",
+      "description": "Section index used for TOC, numbering, and file refs",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^sec-[A-Za-z0-9_-]{21}$",
+            "description": "Section ID using prefix+nanoID (e.g., sec-9m4dW9oS5a-2nP4Y8kTqz)"
+          },
+          "number": { "type": "integer", "minimum": 1 },
+          "numbering": { "$ref": "#/$defs/numberingStyle" },
+          "title": { "type": "string", "minLength": 1 },
+          "contentRef": { "type": "string" },
+          "mediaType": {
+            "type": "string",
+            "description": "MIME type hint (e.g., 'application/json', 'text/markdown')"
+          }
+        },
+        "required": ["id", "title", "contentRef"]
+      }
+    },
+
+    "pages": {
+      "type": "array",
+      "description": "Physical page representations with layout metadata; use for print/PDF rendering and map content via section IDs",
+      "items": { "$ref": "#/$defs/page" }
+    },
+
+    "parts": {
+      "type": "array",
+      "description": "Parts can hold sections",
+      "items": { "type": "object" }
+    },
+
+    "chapters": {
+      "type": "array",
+      "description": "Chapters can hold sections",
+      "items": { "type": "object" }
+    },
+
+    "documentType": {
+      "type": "string",
+      "enum": ["book", "volume", "article", "paper"],
+      "description": "Top-level document classification"
+    },
+
+    "documentStruct": {
+      "type": "string",
+      "enum": ["flat", "chapters", "parts", "chapters-parts", "parts-chapters"],
+      "description": "Hierarchical document structure pattern (mutually exclusive)"
+    },
+
+    "numbering": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Document-wide numbering style defaults; containers can override",
+      "properties": {
+        "sections": { "$ref": "#/$defs/numberingStyle" },
+        "chapters": { "$ref": "#/$defs/numberingStyle" },
+        "parts": { "$ref": "#/$defs/numberingStyle" }
+      }
+    },
+
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["createdAt", "updatedAt"],
+
+      "properties": {
+        "createdAt": {
+          "$ref": "#/$defs/isoDateTime",
+          "description": "UTC timestamp of initial creation"
+        },
+
+        "updatedAt": {
+          "$ref": "#/$defs/isoDateTime",
+          "description": "UTC timestamp of last meaningful content change"
+        },
+
+        "generatedAt": {
+          "$ref": "#/$defs/isoDateTime",
+          "description": "When this metadata envelope was last generated/updated"
+        },
+
+        "expiresAt": {
+          "$ref": "#/$defs/isoDateTime",
+          "description": "UTC timestamp when this artifact expires. See expirationAction for behavior"
+        },
+
+        "expirationAction": {
+          "type": "string",
+          "enum": ["notify", "deprecate", "archive", "delete"],
+          "default": "notify",
+          "description": "Action to take when expiresAt is reached: notify (alert maintainers), deprecate (set lifecycle to deprecated), archive (set lifecycle to archived), delete (remove from active systems)"
+        },
+
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "proposed",
+            "active",
+            "deprecated",
+            "obsolete",
+            "archived",
+            "withdrawn"
+          ],
+          "default": "active",
+          "description": "Current lifecycle stage of the resource"
+        },
+
+        "authors": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/contact"
+          }
+        },
+
+        "maintainers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/contact"
+          },
+          "description": "Current people/teams responsible for maintenance"
+        },
+
+        "keywords": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "description": "Search and discovery terms for indexing and full-text search (e.g., 'machine-learning', 'time-series', 'REST API')"
+        },
+
+        "domains": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 2, "maxLength": 100 },
+          "description": "Business or functional domains this artifact belongs to (e.g., 'finance', 'healthcare', 'compliance', 'customer-support')"
+        },
+
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "description": "Short UI-friendly labels for filtering and categorization (e.g., 'internal', 'beta', 'priority-high')"
+        },
+
+        "abstract": {
+          "type": "string",
+          "description": "Long-form description / executive summary (Markdown supported)"
+        },
+
+        "source": {
+          "type": "string",
+          "format": "uri",
+          "description": "Primary source location as absolute URL (git, artifact registry, etc)"
+        },
+
+        "integrity": {
+          "type": "object",
+          "description": "Cryptographic hash for content verification",
+          "required": ["algorithm", "digest"],
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "enum": ["sha256", "sha384", "sha512"],
+              "description": "Hash algorithm used"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64,128}$",
+              "description": "Hexadecimal hash digest (64=SHA-256, 96=SHA-384, 128=SHA-512)"
+            }
+          },
+          "additionalProperties": false
+        },
+
+        "license": {
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "SPDX license identifier or simple name"
+            },
+            {
+              "$ref": "#/$defs/contact",
+              "description": "Custom/proprietary license with contact information"
+            }
+          ]
+        },
+
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["version", "date"],
+            "properties": {
+              "version": { "$ref": "#/$defs/semver" },
+              "date": { "$ref": "#/$defs/isoDate" },
+              "summary": { "type": "string" },
+              "changes": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+
+        "revisionHistory": {
+          "type": "array",
+          "description": "Fine-grained audit trail (useful for compliance)",
+          "items": {
+            "type": "object",
+            "required": ["date", "author", "description"],
+            "properties": {
+              "date": { "$ref": "#/$defs/isoDateTime" },
+              "author": { "type": "string" },
+              "section": {
+                "type": "string",
+                "description": "Affected module/file/section"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "addition",
+                  "modification",
+                  "deletion",
+                  "refactor",
+                  "fix",
+                  "breaking",
+                  "deprecation",
+                  "documentation",
+                  "security"
+                ]
+              },
+              "description": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": { "documentStruct": { "const": "flat" } },
+        "required": ["documentStruct"]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            { "required": ["chapters"] },
+            { "required": ["parts"] }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "documentStruct": { "const": "chapters" } },
+        "required": ["documentStruct"]
+      },
+      "then": {
+        "required": ["chapters"],
+        "not": { "required": ["parts"] },
+        "properties": {
+          "chapters": { "items": { "$ref": "#/$defs/chapterWithSections" } }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "documentStruct": { "const": "parts" } },
+        "required": ["documentStruct"]
+      },
+      "then": {
+        "required": ["parts"],
+        "not": { "required": ["chapters"] },
+        "properties": {
+          "parts": { "items": { "$ref": "#/$defs/partWithSections" } }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "documentStruct": { "const": "chapters-parts" } },
+        "required": ["documentStruct"]
+      },
+      "then": {
+        "required": ["chapters", "parts"],
+        "properties": {
+          "chapters": { "items": { "$ref": "#/$defs/chapterWithParts" } },
+          "parts": { "items": { "$ref": "#/$defs/partWithSections" } }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "documentStruct": { "const": "parts-chapters" } },
+        "required": ["documentStruct"]
+      },
+      "then": {
+        "required": ["chapters", "parts"],
+        "properties": {
+          "parts": { "items": { "$ref": "#/$defs/partWithChapters" } },
+          "chapters": { "items": { "$ref": "#/$defs/chapterWithSections" } }
+        }
+      }
+    }
+  ],
+
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+      "description": "Semantic Version 2.0.0 (with optional pre-release and build metadata)",
+      "examples": ["1.0.0", "2.3.4", "2.4.0-rc.3", "3.1.2-beta.1+exp.sha.5114f85d"]
+    },
+
+    "isoDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "examples": ["2025-12-26T14:35:12Z", "2024-10-17T08:22:00.123Z"]
+    },
+
+    "isoDate": {
+      "type": "string",
+      "format": "date",
+      "examples": ["2025-12-26", "2024-10-17"]
+    },
+
+    "contact": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "description": "Simple name/email/handle"
+        },
+        {
+          "type": "object",
+          "required": ["name"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+            "email": { "type": "string", "format": "email" },
+            "url": { "type": "string", "format": "uri" },
+            "orcid": { "type": "string", "pattern": "^\\d{4}-\\d{4}-\\d{4}-\\d{4}$" },
+            "handle": { "type": "string", "description": "GitHub/Twitter/etc handle" },
+            "organization": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "idRef": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to an entity ID (section, chapter, or part)"
+    },
+
+    "numberingStyle": {
+      "type": "string",
+      "enum": ["arabic", "roman-upper", "roman-lower", "alpha-upper", "alpha-lower"],
+      "description": "Rendering hint for numbering style"
+    },
+
+    "partWithSections": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "number": { "type": "integer", "minimum": 1 },
+        "numbering": { "$ref": "#/$defs/numberingStyle" },
+        "sections": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/idRef" }
+        }
+      },
+      "required": ["id", "sections"]
+    },
+
+    "partWithChapters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "number": { "type": "integer", "minimum": 1 },
+        "numbering": { "$ref": "#/$defs/numberingStyle" },
+        "chapters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/idRef" }
+        }
+      },
+      "required": ["id", "chapters"]
+    },
+
+    "chapterWithSections": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "number": { "type": "integer", "minimum": 1 },
+        "numbering": { "$ref": "#/$defs/numberingStyle" },
+        "sections": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/idRef" }
+        }
+      },
+      "required": ["id", "sections"]
+    },
+
+    "chapterWithParts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "number": { "type": "integer", "minimum": 1 },
+        "numbering": { "$ref": "#/$defs/numberingStyle" },
+        "parts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/idRef" }
+        }
+      },
+      "required": ["id", "parts"]
+    },
+
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "number": { "type": "integer", "minimum": 1 },
+        "contentRef": { "type": "string" },
+        "mediaType": {
+          "type": "string",
+          "description": "MIME type hint (e.g., 'application/json', 'text/markdown')"
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pageSize": {
+              "type": "string",
+              "enum": ["A3", "A4", "A5", "Letter", "Legal", "Tabloid"]
+            },
+            "margins": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["unit"],
+              "properties": {
+                "top": { "type": "number" },
+                "right": { "type": "number" },
+                "bottom": { "type": "number" },
+                "left": { "type": "number" },
+                "unit": { "type": "string", "enum": ["mm", "in"], "default": "mm" }
+              }
+            },
+            "footnotes": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": { "type": "boolean", "default": true },
+                "style": { "type": "string" },
+                "separator": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "required": ["id", "title", "contentRef"]
+    }
+  }
+}

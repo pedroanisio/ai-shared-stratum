@@ -23,12 +23,12 @@
             [
               "9.7: Dependent failure analysis",
               "✗ GAP",
-              "✓ ADDRESSED (§27.4)"
+              "✓ ADDRESSED (referenceMap(\"sub-EPEEV-LMbC30OWgru6QE9\", \"§{{sectionNumber}}.4 Dependent Failure Analysis\"))"
             ],
             [
               "9.8: Safety analyses (FMEA/FTA)",
               "✗ GAP",
-              "✓ ADDRESSED (§27.2-27.3)"
+              "✓ ADDRESSED (referenceMap(\"sub-6dUUtiFofAXIXmUIpGmeF\", \"§{{sectionNumber}}.2 STPA Integration\") – referenceMap(\"sub-U84ZnWVaCvrh4Ir1xroli\", \"§{{sectionNumber}}.3 FMEA/FTA Integration\"))"
             ]
           ]
         },
@@ -114,7 +114,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Algorithm 26.1 (STPA-to-STRATUM Constraint Derivation):\n\nFor each UCA identified:\n\n1. Extract safety constraint from UCA negation:\n   UCA: \"Brake command not provided when vehicle speed > 0 and obstacle ahead\"\n   SC:  \"Brake command MUST be provided when speed > 0 AND obstacle detected\"\n\n2. Map to STRATUM constraint:\n   {\n     type: 'SAFETY',\n     priority: 500,  // SAFETY level per §23\n     predicate: 'IF speed > 0 AND obstacle THEN brakeCommand = ACTIVE',\n     source: { type: 'STPA', ucaId: 'UCA-001', hazardId: 'H-003' }\n   }\n\n3. Verify formal property:\n   □(speed > 0 ∧ obstacle → ◇≤100ms brakeCommand = ACTIVE)\n\n4. Add to RTM with bidirectional traceability:\n   Hazard → UCA → Safety Constraint → STRATUM Constraint → Formal Property"
+          "text": "Algorithm 26.1 (STPA-to-STRATUM Constraint Derivation):\n\nFor each UCA identified:\n\n1. Extract safety constraint from UCA negation:\n   UCA: \"Brake command not provided when vehicle speed > 0 and obstacle ahead\"\n   SC:  \"Brake command MUST be provided when speed > 0 AND obstacle detected\"\n\n2. Map to STRATUM constraint:\n   {\n     type: 'SAFETY',\n     priority: 500,  // SAFETY level per referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\")\n     predicate: 'IF speed > 0 AND obstacle THEN brakeCommand = ACTIVE',\n     source: { type: 'STPA', ucaId: 'UCA-001', hazardId: 'H-003' }\n   }\n\n3. Verify formal property:\n   □(speed > 0 ∧ obstacle → ◇≤100ms brakeCommand = ACTIVE)\n\n4. Add to RTM with bidirectional traceability:\n   Hazard → UCA → Safety Constraint → STRATUM Constraint → Formal Property"
         }
       ],
       "suffix": "2"
@@ -214,7 +214,7 @@
         },
         {
           "type": "paragraph",
-          "text": "STRATUM integration:\n\n1. CCF analysis uses layer boundaries:\n   Elements in same layer share implementation → potential CCF\n   Elements in different tiers have architectural separation\n\n2. Cascade analysis uses dependency graph:\n   impactedElements(change) → identifies cascade paths\n   Attenuation function (§18) limits cascade propagation\n\n3. Common mode uses type hierarchy:\n   Elements of same type may share failure modes\n   Variant types (per §2.2) indicate potential common mode"
+          "text": "STRATUM integration:\n\n1. CCF analysis uses layer boundaries:\n   Elements in same layer share implementation → potential CCF\n   Elements in different tiers have architectural separation\n\n2. Cascade analysis uses dependency graph:\n   impactedElements(change) → identifies cascade paths\n   Attenuation function (referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\")) limits cascade propagation\n\n3. Common mode uses type hierarchy:\n   Elements of same type may share failure modes\n   Variant types (per referenceMap(\"sub-1PQdtQJCcUP4hsmjE7iJL\", \"§{{sectionNumber}}.2 Layer\")) indicate potential common mode"
         }
       ],
       "suffix": "4"

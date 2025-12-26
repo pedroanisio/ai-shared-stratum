@@ -34,7 +34,7 @@
             },
             {
               "term": "l ∈ ID",
-              "definition": "Layer identifier (membership) [IMMUTABLE - see §5.3] ⟹ Forward reference explained in Type System section"
+              "definition": "Layer identifier (membership) [IMMUTABLE - see referenceMap(\"sub-AE4RbWXOtuZuBmjZlLUcT\", \"§{{sectionNumber}}.3 Subtyping\")] ⟹ Forward reference explained in Type System section"
             },
             {
               "term": "π : NAME → VALUE",
@@ -49,7 +49,7 @@
         {
           "type": "admonition",
           "level": "critical",
-          "text": "CRITICAL INVARIANT [v2.0]: The layer component 'l' is IMMUTABLE after creation. This enables covariant subtyping in §5.3 while maintaining type soundness. To change an element's layer, delete and recreate with new layer assignment."
+          "text": "CRITICAL INVARIANT [v2.0]: The layer component 'l' is IMMUTABLE after creation. This enables covariant subtyping in referenceMap(\"sub-AE4RbWXOtuZuBmjZlLUcT\", \"§{{sectionNumber}}.3 Subtyping\") while maintaining type soundness. To change an element's layer, delete and recreate with new layer assignment."
         },
         {
           "type": "definition",
@@ -130,7 +130,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Refinement: tier(l₁) < tier(l₂) means l₂ REFINES l₁ (l₂ provides more concrete details implementing l₁'s abstractions). This is analogous to MDA's CIM → PIM → PSM progression. **Dependency arrows point FROM concrete TO abstract** (e.g., realization → logical, meaning concrete elements DEPEND ON abstract specifications). This is enforced by Coherence (G6): pos(src) ≥ pos(tgt). See §2.3 for dependency direction vs impact flow clarification."
+          "text": "Refinement: tier(l₁) < tier(l₂) means l₂ REFINES l₁ (l₂ provides more concrete details implementing l₁'s abstractions). This is analogous to MDA's CIM → PIM → PSM progression. **Dependency arrows point FROM concrete TO abstract** (e.g., realization → logical, meaning concrete elements DEPEND ON abstract specifications). This is enforced by Coherence (G6): pos(src) ≥ pos(tgt). See referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\") for dependency direction vs impact flow clarification."
         },
         {
           "type": "diagram",
@@ -279,7 +279,7 @@
         {
           "type": "admonition",
           "level": "important",
-          "text": "**Dependency Direction vs Impact Flow Semantics [v2.4.4 Clarification]**\n\nDependencies have TWO distinct directional semantics:\n\n**1. Structural Direction (src → tgt)**: The dependency arrow shows WHO depends ON WHOM.\n- `d.src → d.tgt` means \"src depends on tgt\" (src is dependent, tgt is dependee)\n- `realizes`: concrete_impl → abstract_spec (impl depends on spec)\n- `requires`: component_A → component_B (A depends on B)\n- Coherence (G6): `pos(d.src) ≥ pos(d.tgt)` (dependent ≥ dependee in concreteness)\n\n**2. Impact Flow**: CASCADE walks deps where `d.src.elem = changed_element`, propagates to `d.tgt`.\n- When element e changes, impact flows TO elements e depends on\n- Example: Component C realizes Spec S → dependency `C → S`\n  - If C changes: cascade finds `d.src=C`, propagates impact to S ✓\n  - If S changes: cascade finds deps `d.src=S` (none of type realizes), no auto-propagation to C\n- This prevents circular cascades while maintaining traceability\n\n**Reconciling 'changes cascade down'**: This phrase in §4.6 means Coherence prevents upward structural dependencies (abstract layers don't depend on concrete). Impact flows along dependency arrows (dependent → dependee), which by G6 is always same-tier or concrete→abstract."
+          "text": "**Dependency Direction vs Impact Flow Semantics [v2.4.4 Clarification]**\n\nDependencies have TWO distinct directional semantics:\n\n**1. Structural Direction (src → tgt)**: The dependency arrow shows WHO depends ON WHOM.\n- `d.src → d.tgt` means \"src depends on tgt\" (src is dependent, tgt is dependee)\n- `realizes`: concrete_impl → abstract_spec (impl depends on spec)\n- `requires`: component_A → component_B (A depends on B)\n- Coherence (G6): `pos(d.src) ≥ pos(d.tgt)` (dependent ≥ dependee in concreteness)\n\n**2. Impact Flow**: CASCADE walks deps where `d.src.elem = changed_element`, propagates to `d.tgt`.\n- When element e changes, impact flows TO elements e depends on\n- Example: Component C realizes Spec S → dependency `C → S`\n  - If C changes: cascade finds `d.src=C`, propagates impact to S ✓\n  - If S changes: cascade finds deps `d.src=S` (none of type realizes), no auto-propagation to C\n- This prevents circular cascades while maintaining traceability\n\n**Reconciling 'changes cascade down'**: This phrase in referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\") means Coherence prevents upward structural dependencies (abstract layers don't depend on concrete). Impact flows along dependency arrows (dependent → dependee), which by G6 is always same-tier or concrete→abstract."
         },
         {
           "type": "paragraph",
@@ -355,7 +355,7 @@
         },
         {
           "type": "paragraph",
-          "text": "**Finite Set Cardinality Semantics**: The `count(S, pred)` operator is defined for FINITE element sets only. Given a finite set S ⊆ E and predicate pred : E → Bool, `count(S, pred) = |{e ∈ S | pred(e)}|`. This is decidable because all specifications have finite E, L, D, C sets per §3 (WF-ID ensures finite identifiers)."
+          "text": "**Finite Set Cardinality Semantics**: The `count(S, pred)` operator is defined for FINITE element sets only. Given a finite set S ⊆ E and predicate pred : E → Bool, `count(S, pred) = |{e ∈ S | pred(e)}|`. This is decidable because all specifications have finite E, L, D, C sets per referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") (WF-ID ensures finite identifiers)."
         },
         {
           "type": "admonition",
@@ -540,7 +540,7 @@
         },
         {
           "type": "paragraph",
-          "text": "**Example Constraint**: Feature test coverage (§4.2 completeness example) encoded in SMT-LIB 2.6:"
+          "text": "**Example Constraint**: Feature test coverage (referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") completeness example) encoded in SMT-LIB 2.6:"
         },
         {
           "type": "code",

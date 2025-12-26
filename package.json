@@ -1,0 +1,19 @@
+{
+  "name": "ai-shared-stratum",
+  "private": true,
+  "scripts": {
+    "build:html": "tsx scripts/build-html.ts",
+    "build:graph": "tsx scripts/build-graph.ts",
+    "build:stats": "tsx scripts/document-stats.ts",
+    "apply:section-refs": "tsx scripts/apply-section-refs.ts",
+    "list:section-refs": "tsx scripts/list-section-refs.ts",
+    "validate:schema": "tsx scripts/validate.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

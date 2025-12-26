@@ -143,7 +143,7 @@
         },
         {
           "type": "checklist",
-          "label": "1. TOOL REQUIREMENTS (DO-330 §4.2)",
+          "label": "1. TOOL REQUIREMENTS (DO-330 referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\"))",
           "items": [
             "Functional requirements documented",
             "Performance requirements documented",
@@ -153,7 +153,7 @@
         },
         {
           "type": "checklist",
-          "label": "2. TOOL DESIGN (DO-330 §4.3)",
+          "label": "2. TOOL DESIGN (DO-330 referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\"))",
           "items": [
             "Architecture documented",
             "Low-level design documented",
@@ -162,7 +162,7 @@
         },
         {
           "type": "checklist",
-          "label": "3. TOOL VERIFICATION (DO-330 §4.4)",
+          "label": "3. TOOL VERIFICATION (DO-330 referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\"))",
           "items": [
             "Reviews per requirements",
             "Test cases traceable to requirements",
@@ -172,7 +172,7 @@
         },
         {
           "type": "checklist",
-          "label": "4. TOOL QUALIFICATION DATA (DO-330 §4.5)",
+          "label": "4. TOOL QUALIFICATION DATA (DO-330 referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\"))",
           "items": [
             "Tool Qualification Plan",
             "Tool Requirements",

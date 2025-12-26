@@ -47,7 +47,7 @@
     },
     {
       "type": "paragraph",
-      "text": "STRATUM's `impact(S, change)` operation traverses dependencies using the polarity table (v2.5 §2.3). Dependency direction per v2.4.4 §2.3: structural arrows point concrete → abstract, but CASCADE walks from changed element along dep arrows."
+      "text": "STRATUM's `impact(S, change)` operation traverses dependencies using the polarity table (v2.5 referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\")). Dependency direction per v2.4.4 referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\"): structural arrows point concrete → abstract, but CASCADE walks from changed element along dep arrows."
     },
     {
       "type": "code",
@@ -83,7 +83,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Per §6.3 CASCADE-ATT and v2.5 policy table, impact severity attenuates across tier boundaries:"
+      "text": "Per referenceMap(\"sub-5Xu8Vv_BHhTdzfCjtqDRo\", \"§{{sectionNumber}}.3 Cascade Computation\") CASCADE-ATT and v2.5 policy table, impact severity attenuates across tier boundaries:"
     },
     {
       "type": "code",
@@ -143,7 +143,7 @@
     {
       "type": "admonition",
       "level": "important",
-      "text": "**G7 Guarantee** (v2.5 §4.8): Every unsat core is **irreducible** (subset-minimal). This means: ∀c ∈ core: SAT(core \\ {c}). Deleting any single constraint makes the core satisfiable, proving minimality. This is NOT the same as minimum-size (cardinality-minimal), which is NP-hard. Z3's deletion-based MUS extraction provides irreducibility in O(n × SMT) where n = |core|."
+      "text": "**G7 Guarantee** (v2.5 referenceMap(\"sub-Q_FIkGVXUuZIl6JAWPVwl\", \"§{{sectionNumber}}.8 Valid Specification\")): Every unsat core is **irreducible** (subset-minimal). This means: ∀c ∈ core: SAT(core \\ {c}). Deleting any single constraint makes the core satisfiable, proving minimality. This is NOT the same as minimum-size (cardinality-minimal), which is NP-hard. Z3's deletion-based MUS extraction provides irreducibility in O(n × SMT) where n = |core|."
     },
     {
       "type": "heading",
@@ -199,7 +199,7 @@
       "items": [
         "**RTM Delta** (§15.1): 3 rows updated (REQ-042 → Design-001, Module-017, Test-089), 2 rows flagged as incomplete",
         "**GSN Delta** (v2.5 §15.6): G-TIMING argument node needs update (new sub-goal for 100ms verification)",
-        "**Checklist** (§18): DAL-B checklist (12 DO-178C objectives apply to this change)",
+        "**Checklist** (referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\")): DAL-B checklist (12 DO-178C objectives apply to this change)",
         "**CI Trigger**: Run test suite subset: TC-089, TC-091, TC-103 (timing-related tests)"
       ]
     },
@@ -243,7 +243,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Final step: Export tamper-evident certification package per v2.5 §13.4 (Cryptographic Evidence Attestation) and §11.2 (SEF - STRATUM Exchange Format)."
+      "text": "Final step: Export tamper-evident certification package per v2.5 referenceMap(\"sub-rpCOBO3mGT4XORPhF2Soz\", \"§{{sectionNumber}}.4 CRDT Verification\") (Cryptographic Evidence Attestation) and §11.2 (SEF - STRATUM Exchange Format)."
     },
     {
       "type": "code",
@@ -283,7 +283,7 @@
     {
       "type": "admonition",
       "level": "note",
-      "text": "**Threat Model** (v2.5 §13.4.1): The hash chain defends against post-hoc tampering, evidence replay, and out-of-order insertion. It does NOT defend against compromised signing keys (requires external PKI) or collusion of all actors (requires Byzantine fault tolerance). These are explicitly out-of-scope per v2.5 design."
+      "text": "**Threat Model** (v2.5 referenceMap(\"sub-rpCOBO3mGT4XORPhF2Soz\", \"§{{sectionNumber}}.4 CRDT Verification\").1): The hash chain defends against post-hoc tampering, evidence replay, and out-of-order insertion. It does NOT defend against compromised signing keys (requires external PKI) or collusion of all actors (requires Byzantine fault tolerance). These are explicitly out-of-scope per v2.5 design."
     },
     {
       "type": "heading",
@@ -321,15 +321,15 @@
       "type": "definition-list",
       "items": [
         {
-          "term": "**Dependency Direction Semantics** (v2.4.4 §2.3)",
+          "term": "**Dependency Direction Semantics** (v2.4.4 referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\"))",
           "definition": "Structural direction (concrete → abstract) vs impact flow (CASCADE walks from changed element). realizes has backward impact despite forward structural arrow."
         },
         {
-          "term": "**Polarity-Aware Cascade** (v2.5 §2.3)",
+          "term": "**Polarity-Aware Cascade** (v2.5 referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\"))",
           "definition": "Normative policy table determines cascadeBehavior: realizes=attenuate, traces_to=block, validates=block, constrains=attenuate."
         },
         {
-          "term": "**G7 Explainability** (v2.5 §4.8)",
+          "term": "**G7 Explainability** (v2.5 referenceMap(\"sub-Q_FIkGVXUuZIl6JAWPVwl\", \"§{{sectionNumber}}.8 Valid Specification\"))",
           "definition": "Irreducible unsat cores (subset-minimal, not cardinality-minimal). Every constraint in core is essential. Deletion-based MUS extraction per [Z3-Cores]."
         },
         {
@@ -337,7 +337,7 @@
           "definition": "Declarative remediation workflows. Policies trigger on integrityLevel, guarantee violations, severity. Actions include required reviewers, evidence types, blocking behavior."
         },
         {
-          "term": "**Cryptographic Attestation** (v2.5 §13.4)",
+          "term": "**Cryptographic Attestation** (v2.5 referenceMap(\"sub-rpCOBO3mGT4XORPhF2Soz\", \"§{{sectionNumber}}.4 CRDT Verification\"))",
           "definition": "Tamper-evident evidence chains with SHA-256 hash linking, JWS signatures per RFC-7515, vector clock temporal ordering. Threat model explicitly documented."
         },
         {
