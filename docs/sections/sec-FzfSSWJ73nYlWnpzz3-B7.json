@@ -11,7 +11,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\").1 (Domain Profile)",
-          "text": "A Domain Profile P is a tuple:\n\nP ::= ⟨id, name, layers, depTypes, constraintCats, bindingTypes, cascades⟩"
+          "text": "A Domain Profile P is a tuple:\n\nP ::= ⟨id, name, layers, depTypes, constraintCats, bindingTypes, cascades⟩",
+          "id": "def-Sigds_6TwGw"
         },
         {
           "type": "paragraph",
@@ -53,7 +54,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\").2 (Profile Satisfaction)",
-          "text": "S satisfies P (written S : P) iff:\n• S.domain = P.id\n• ∀ l ∈ S.L. l conforms to some layer definition in P.layers\n• ∀ d ∈ S.D. d.δ ∈ P.depTypes\n• ∀ c ∈ S.C. c.cat ∈ P.constraintCats\n• ∀ b ∈ S.B. b.concrete.type ∈ P.bindingTypes"
+          "text": "S satisfies P (written S : P) iff:\n• S.domain = P.id\n• ∀ l ∈ S.L. l conforms to some layer definition in P.layers\n• ∀ d ∈ S.D. d.δ ∈ P.depTypes\n• ∀ c ∈ S.C. c.cat ∈ P.constraintCats\n• ∀ b ∈ S.B. b.concrete.type ∈ P.bindingTypes",
+          "id": "def-cY_XsrgiTfQ"
         }
       ],
       "suffix": "1"

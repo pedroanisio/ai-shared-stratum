@@ -11,7 +11,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\").1 (Specification Composition)",
-          "text": "Given specifications S₁ and S₂, their composition S₁ + S₂ is defined as:"
+          "text": "Given specifications S₁ and S₂, their composition S₁ + S₂ is defined as:",
+          "id": "def-2rBn872Um2M"
         },
         {
           "type": "code",
@@ -103,7 +104,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\").4 (Compatible Specifications)",
-          "text": "Two specifications S₁ and S₂ are compatible (Compatible(S₁, S₂)) if and only if:"
+          "text": "Two specifications S₁ and S₂ are compatible (Compatible(S₁, S₂)) if and only if:",
+          "id": "def-LA3tJ2ujx4s"
         },
         {
           "type": "code",

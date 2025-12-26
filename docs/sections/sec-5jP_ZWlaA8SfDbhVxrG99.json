@@ -37,7 +37,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").2 (State Transitions)",
-          "text": "transition : VERIFICATION × EVENT → VERIFICATION"
+          "text": "transition : VERIFICATION × EVENT → VERIFICATION",
+          "id": "def-wC9qfrV_xao"
         },
         {
           "type": "code",
@@ -63,12 +64,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").3 (Evidence Record)",
-          "text": "evidence ::= ⟨\n  id: ID,\n  type: EVIDENCE_TYPE,\n  timestamp: TIME,\n  binding_id: ID,\n  result: 𝔹,\n  confidence: [0, 1],           -- Confidence score\n  details: VALUE,               -- Type-specific details\n  expires_at: TIME*             -- Optional expiration\n⟩\n\nEVIDENCE_TYPE = {\n  test_result,        -- Automated test execution\n  static_analysis,    -- Code analysis tool output\n  type_check,         -- Type system verification\n  manual_review,      -- Human review attestation\n  audit_log,          -- Audit trail entry\n  trace_verification, -- Traceability check\n  coverage_report     -- Test coverage data\n}"
+          "text": "evidence ::= ⟨\n  id: ID,\n  type: EVIDENCE_TYPE,\n  timestamp: TIME,\n  binding_id: ID,\n  result: 𝔹,\n  confidence: [0, 1],           -- Confidence score\n  details: VALUE,               -- Type-specific details\n  expires_at: TIME*             -- Optional expiration\n⟩\n\nEVIDENCE_TYPE = {\n  test_result,        -- Automated test execution\n  static_analysis,    -- Code analysis tool output\n  type_check,         -- Type system verification\n  manual_review,      -- Human review attestation\n  audit_log,          -- Audit trail entry\n  trace_verification, -- Traceability check\n  coverage_report     -- Test coverage data\n}",
+          "id": "def-PK16ZK3UHAk"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").4 (Verification Decision)",
-          "text": "verify : Binding × List<Evidence> → VERIFICATION"
+          "text": "verify : Binding × List<Evidence> → VERIFICATION",
+          "id": "def-KiZS7SQX18k"
         },
         {
           "type": "code",
@@ -87,7 +90,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\").5 (Staleness Detection)",
-          "text": "isStale : Binding → 𝔹\n\nisStale(b) =\n  b.verification = verified ∧\n  (b.concrete.hash ≠ currentHash(b.concrete.uri) ∨\n   ∃ e ∈ evidence(b). expired(e))"
+          "text": "isStale : Binding → 𝔹\n\nisStale(b) =\n  b.verification = verified ∧\n  (b.concrete.hash ≠ currentHash(b.concrete.uri) ∨\n   ∃ e ∈ evidence(b). expired(e))",
+          "id": "def-ckZfbbEMKz0"
         }
       ],
       "suffix": "2"

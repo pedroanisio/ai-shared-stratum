@@ -11,12 +11,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").1 (Root Element)",
-          "text": "root(e) ≡ layer(e).tier = motivation ∧ ¬∃d ∈ D. d.tgt.elem = e.id ∧ d.δ = traces_to"
+          "text": "root(e) ≡ layer(e).tier = motivation ∧ ¬∃d ∈ D. d.tgt.elem = e.id ∧ d.δ = traces_to",
+          "id": "def-pvGj6gjFtuI"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").2 (Trace Path)",
-          "text": "tracePath(e) = shortest path from e to some e' where root(e') following traces_to dependencies from target to source (impl → requirement)"
+          "text": "tracePath(e) = shortest path from e to some e' where root(e') following traces_to dependencies from target to source (impl → requirement)",
+          "id": "def-cloH22TGs_k"
         },
         {
           "type": "guarantee",
@@ -39,12 +41,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").3 (Constraint Satisfaction)",
-          "text": "S ⊨ c ≡ c.φ(elements(S), dependencies(S)) = ⊤"
+          "text": "S ⊨ c ≡ c.φ(elements(S), dependencies(S)) = ⊤",
+          "id": "def-EhPHueVALWs"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").4 (Error Constraints)",
-          "text": "ErrorConstraints(S) = {c ∈ constraints(S) | c.sev = error}"
+          "text": "ErrorConstraints(S) = {c ∈ constraints(S) | c.sev = error}",
+          "id": "def-WjI32zYI4uY"
         },
         {
           "type": "guarantee",
@@ -79,12 +83,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").5 (Contradiction)",
-          "text": "contradiction(e₁, e₂) ≡ ∃ property p.\n  e₁.π(p) is defined ∧ e₂.π(p) is defined ∧\n  e₁.π(p) ≠ e₂.π(p) ∧ shouldMatch(e₁, e₂, p)"
+          "text": "contradiction(e₁, e₂) ≡ ∃ property p.\n  e₁.π(p) is defined ∧ e₂.π(p) is defined ∧\n  e₁.π(p) ≠ e₂.π(p) ∧ shouldMatch(e₁, e₂, p)",
+          "id": "def-bNvMe3y7FO4"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").6 (Should Match)",
-          "text": "shouldMatch(e₁, e₂, p) ≡ ∃ c ∈ C. c.cat = consistency ∧ c specifies e₁.p must equal e₂.p"
+          "text": "shouldMatch(e₁, e₂, p) ≡ ∃ c ∈ C. c.cat = consistency ∧ c specifies e₁.p must equal e₂.p",
+          "id": "def-9J3vkcyQMV4"
         },
         {
           "type": "guarantee",
@@ -119,12 +125,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").7 (Leaf Element)",
-          "text": "leaf(e) ≡ layer(e).tier = grounding"
+          "text": "leaf(e) ≡ layer(e).tier = grounding",
+          "id": "def-w2hpvUu37v0"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").8 (Bound Element)",
-          "text": "bound(e) ≡ ∃ b ∈ B. b.abstract.elem = e.id"
+          "text": "bound(e) ≡ ∃ b ∈ B. b.abstract.elem = e.id",
+          "id": "def-H42yTmjdvhM"
         },
         {
           "type": "guarantee",
@@ -160,12 +168,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").9 (Change)",
-          "text": "δ ::= ⟨element: ID, changeType: CHANGE, details: VALUE⟩"
+          "text": "δ ::= ⟨element: ID, changeType: CHANGE, details: VALUE⟩",
+          "id": "def-2pzpYRfy1QM"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").10 (Impact)",
-          "text": "impact(S, δ) = ⋃ {cascade(S, elem(δ), δ.changeType, r) | r ∈ R, r.trigger matches δ}"
+          "text": "impact(S, δ) = ⋃ {cascade(S, elem(δ), δ.changeType, r) | r ∈ R, r.trigger matches δ}",
+          "id": "def-OeKkKip9IF8"
         },
         {
           "type": "guarantee",
@@ -201,7 +211,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").11 (Layer Respecting)",
-          "text": "layerRespecting(d) ≡ let l_s = layer(src(d)), l_t = layer(tgt(d)) in\n  pos(l_s) ≥ pos(l_t) ∨ d.δ = traces_to"
+          "text": "layerRespecting(d) ≡ let l_s = layer(src(d)), l_t = layer(tgt(d)) in\n  pos(l_s) ≥ pos(l_t) ∨ d.δ = traces_to",
+          "id": "def-8hSSk2iFvyc"
         },
         {
           "type": "guarantee",
@@ -244,7 +255,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").12 (Explanation)",
-          "text": "explanation ::= ⟨violatedGuarantee, unsatCore, blameChain, humanReadable, suggestedFix?⟩"
+          "text": "explanation ::= ⟨violatedGuarantee, unsatCore, blameChain, humanReadable, suggestedFix?⟩",
+          "id": "def-HLFhuhKgrZE"
         },
         {
           "type": "paragraph",
@@ -309,7 +321,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-taGb2W-Ks5lKWB8hcj3UY\", \"§{{sectionNumber}}\").13 (Valid Specification)",
-          "text": "Valid(S) ≡ WellFormed(S) ∧\n           Traceable(S) ∧       -- G1\n           Complete(S) ∧        -- G2\n           Consistent(S) ∧      -- G3\n           Grounded(S) ∧        -- G4\n           Deterministic(S) ∧   -- G5\n           Coherent(S) ∧        -- G6\n           Explainable(S)       -- G7"
+          "text": "Valid(S) ≡ WellFormed(S) ∧\n           Traceable(S) ∧       -- G1\n           Complete(S) ∧        -- G2\n           Consistent(S) ∧      -- G3\n           Grounded(S) ∧        -- G4\n           Deterministic(S) ∧   -- G5\n           Coherent(S) ∧        -- G6\n           Explainable(S)       -- G7",
+          "id": "def-JyLj52Ka6Q4"
         },
         {
           "type": "paragraph",

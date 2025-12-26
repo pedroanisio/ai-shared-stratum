@@ -10,7 +10,8 @@
     {
       "type": "definition",
       "label": "Definition referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\").28 (Policy)",
-      "text": "p ::= ⟨id, name, appliesTo, actions, priority⟩"
+      "text": "p ::= ⟨id, name, appliesTo, actions, priority⟩",
+      "id": "def-DmK17MbbUNM"
     },
     {
       "type": "paragraph",
@@ -44,7 +45,8 @@
     {
       "type": "definition",
       "label": "Definition referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\").29 (Policy Trigger)",
-      "text": "appliesTo ::= ⟨constraintCategories?, guarantees?, integrityLevels?, severities?⟩"
+      "text": "appliesTo ::= ⟨constraintCategories?, guarantees?, integrityLevels?, severities?⟩",
+      "id": "def--_p3Sc_GA0U"
     },
     {
       "type": "paragraph",
@@ -74,7 +76,8 @@
     {
       "type": "definition",
       "label": "Definition referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\").30 (Policy Actions)",
-      "text": "actions ::= ⟨suggestedFixes?, requiredReviewers?, requiredEvidenceTypes?, minimumEvidenceCount?, blockingBehavior, notificationChannels?⟩"
+      "text": "actions ::= ⟨suggestedFixes?, requiredReviewers?, requiredEvidenceTypes?, minimumEvidenceCount?, blockingBehavior, notificationChannels?⟩",
+      "id": "def-NAAYXSg6VPo"
     },
     {
       "type": "paragraph",
@@ -190,7 +193,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\").31 (Policy Evaluation Semantics)",
-          "text": "evaluatePolicies : Spec × P(Violation) → P(PolicyAction)"
+          "text": "evaluatePolicies : Spec × P(Violation) → P(PolicyAction)",
+          "id": "def-nVlqg7LXdD0"
         },
         {
           "type": "paragraph",
@@ -220,7 +224,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\").32 (Policy Conflict Resolution)",
-          "text": "When multiple policies trigger with conflicting blockingBehavior, resolve via priority:"
+          "text": "When multiple policies trigger with conflicting blockingBehavior, resolve via priority:",
+          "id": "def-Hz45bbMyz4c"
         },
         {
           "type": "code",
@@ -256,7 +261,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\").33 (Policy Merge Semantics)",
-          "text": "When composing specifications S₁ ⊕ S₂, policies merge with override semantics:"
+          "text": "When composing specifications S₁ ⊕ S₂, policies merge with override semantics:",
+          "id": "def-cQ_oN2B7JTg"
         },
         {
           "type": "code",

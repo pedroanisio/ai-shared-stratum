@@ -44,10 +44,16 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
+              "id",
               "key",
               "value"
             ],
             "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Stable identifier for cross-section references"
+              },
               "key": {
                 "type": "string"
               },
@@ -370,12 +376,18 @@
       "type": "object",
       "required": [
         "type",
+        "id",
         "label",
         "text"
       ],
       "properties": {
         "type": {
           "const": "definition"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier for cross-section references"
         },
         "label": {
           "type": "string"

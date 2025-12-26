@@ -15,7 +15,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-LUj58UniUYiDJ-BI2QMU3\", \"§{{sectionNumber}}\").1 (Temporal Operators - TLA+ Style)",
-          "text": "Given state predicate P and action predicate A:"
+          "text": "Given state predicate P and action predicate A:",
+          "id": "def-GZqkpEEBECs"
         },
         {
           "type": "definition-list",

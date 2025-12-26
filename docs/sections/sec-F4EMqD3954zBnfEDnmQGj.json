@@ -15,7 +15,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-F4EMqD3954zBnfEDnmQGj\", \"§{{sectionNumber}}\").1 (Sort Hierarchy)",
-          "text": "Each tier defines a sort (type universe) with explicit mappings:"
+          "text": "Each tier defines a sort (type universe) with explicit mappings:",
+          "id": "def-3_xSe7i-L3Y"
         },
         {
           "type": "code",
@@ -40,7 +41,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-F4EMqD3954zBnfEDnmQGj\", \"§{{sectionNumber}}\").2 (Sort Inclusion)",
-          "text": "Lower tiers may reference higher tiers (dependencies flow downward):\n\n  Sort_Low ⊇ Sort_Medium ⊇ Sort_High ⊇ Sort_Critical\n\nInterpretation: Low-tier code may call high-tier functions, but not vice versa. This enforces the \"no upward dependencies\" invariant architecturally."
+          "text": "Lower tiers may reference higher tiers (dependencies flow downward):\n\n  Sort_Low ⊇ Sort_Medium ⊇ Sort_High ⊇ Sort_Critical\n\nInterpretation: Low-tier code may call high-tier functions, but not vice versa. This enforces the \"no upward dependencies\" invariant architecturally.",
+          "id": "def-1JyragCH-Pw"
         },
         {
           "type": "paragraph",

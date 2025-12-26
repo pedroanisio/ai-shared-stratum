@@ -15,32 +15,38 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\").1 (Attenuation Function - Formal)",
-          "text": "attenuate : Impact × Layer × Layer → Impact\n\nSignature:\n  attenuate(impact: Impact, source: Layer, target: Layer): Impact\n\nWhere Impact = { severity: ℕ, scope: Set<ElementID>, energy: ℕ }"
+          "text": "attenuate : Impact × Layer × Layer → Impact\n\nSignature:\n  attenuate(impact: Impact, source: Layer, target: Layer): Impact\n\nWhere Impact = { severity: ℕ, scope: Set<ElementID>, energy: ℕ }",
+          "id": "def-Jr385Pq1t2Q"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\").2 (Monotonicity - Required)",
-          "text": "∀ impact₁, impact₂, source, target:\n  impact₁.energy ≤ impact₂.energy\n  ⇒ attenuate(impact₁, source, target).energy\n     ≤ attenuate(impact₂, source, target).energy\n\n(Larger inputs produce at-most-larger outputs; no amplification inversions)"
+          "text": "∀ impact₁, impact₂, source, target:\n  impact₁.energy ≤ impact₂.energy\n  ⇒ attenuate(impact₁, source, target).energy\n     ≤ attenuate(impact₂, source, target).energy\n\n(Larger inputs produce at-most-larger outputs; no amplification inversions)",
+          "id": "def-wqF-hxH9khI"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\").3 (Strict Reduction - Required)",
-          "text": "∀ impact, source, target where source ≠ target:\n  attenuate(impact, source, target).energy < impact.energy\n\n(Crossing a layer boundary ALWAYS reduces energy; required for termination)"
+          "text": "∀ impact, source, target where source ≠ target:\n  attenuate(impact, source, target).energy < impact.energy\n\n(Crossing a layer boundary ALWAYS reduces energy; required for termination)",
+          "id": "def-x9C6a_WfP0c"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\").4 (BIBO Stability - Required)",
-          "text": "BIBO = Bounded Input, Bounded Output\n\n∀ impact, source, target:\n  impact.energy ≤ MAX_ENERGY\n  ⇒ attenuate(impact, source, target).energy ≤ MAX_ENERGY\n\n(Bounded inputs produce bounded outputs; required for safety analysis)"
+          "text": "BIBO = Bounded Input, Bounded Output\n\n∀ impact, source, target:\n  impact.energy ≤ MAX_ENERGY\n  ⇒ attenuate(impact, source, target).energy ≤ MAX_ENERGY\n\n(Bounded inputs produce bounded outputs; required for safety analysis)",
+          "id": "def-uBGxojbLc-A"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\").5 (Default Tier Attenuation Factor)",
-          "text": "The DEFAULT attenuation function for K0 conformance is exponential decay:\n\nγ(tier_diff) = 2^(-tier_diff)  for tier_diff > 0\nγ(0) = 1                        for same-tier (no attenuation)\n\nExample:\n  Tier 3 → Tier 2: γ = 0.5 (halved)\n  Tier 3 → Tier 1: γ = 0.25 (quartered)\n  Tier 3 → Tier 0: γ = 0.125 (eighth)\n\n**Alternative Attenuation Functions**: Domain profiles MAY define custom attenuation functions iff they satisfy Definitions 28.2-28.4 (Monotonicity, Strict Reduction, BIBO Stability). K0 implementations MUST support the default exponential decay. K2+ implementations MAY support custom functions."
+          "text": "The DEFAULT attenuation function for K0 conformance is exponential decay:\n\nγ(tier_diff) = 2^(-tier_diff)  for tier_diff > 0\nγ(0) = 1                        for same-tier (no attenuation)\n\nExample:\n  Tier 3 → Tier 2: γ = 0.5 (halved)\n  Tier 3 → Tier 1: γ = 0.25 (quartered)\n  Tier 3 → Tier 0: γ = 0.125 (eighth)\n\n**Alternative Attenuation Functions**: Domain profiles MAY define custom attenuation functions iff they satisfy Definitions 28.2-28.4 (Monotonicity, Strict Reduction, BIBO Stability). K0 implementations MUST support the default exponential decay. K2+ implementations MAY support custom functions.",
+          "id": "def-FxzF_j1M6eM"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\").6 (Attenuation Function Type)",
-          "text": "ATTENUATION_FUNCTION = { f : ℕ → [0,1] | satisfies(f, {Monotonic, StrictReduction, BIBOStable}) }\n\nwhere:\n  Monotonic(f) ≡ ∀ n₁, n₂. n₁ ≤ n₂ ⇒ f(n₁) ≥ f(n₂)\n  StrictReduction(f) ≡ ∀ n > 0. f(n) < 1\n  BIBOStable(f) ≡ ∀ n. f(n) ∈ [0, 1]\n\n**Example Alternative Functions**:\n  • Linear: γ(n) = max(0, 1 - 0.25×n)  [satisfies all properties for n ≤ 4]\n  • Logarithmic: γ(n) = 1 / (1 + log₂(1+n))  [satisfies all properties]\n  • Step: γ(0)=1, γ(1)=0.5, γ(n≥2)=0.1  [satisfies all properties]"
+          "text": "ATTENUATION_FUNCTION = { f : ℕ → [0,1] | satisfies(f, {Monotonic, StrictReduction, BIBOStable}) }\n\nwhere:\n  Monotonic(f) ≡ ∀ n₁, n₂. n₁ ≤ n₂ ⇒ f(n₁) ≥ f(n₂)\n  StrictReduction(f) ≡ ∀ n > 0. f(n) < 1\n  BIBOStable(f) ≡ ∀ n. f(n) ∈ [0, 1]\n\n**Example Alternative Functions**:\n  • Linear: γ(n) = max(0, 1 - 0.25×n)  [satisfies all properties for n ≤ 4]\n  • Logarithmic: γ(n) = 1 / (1 + log₂(1+n))  [satisfies all properties]\n  • Step: γ(0)=1, γ(1)=0.5, γ(n≥2)=0.1  [satisfies all properties]",
+          "id": "def-hYEPM4DAykg"
         },
         {
           "type": "admonition",

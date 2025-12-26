@@ -731,6 +731,56 @@ export function buildDocumentStats(index: IndexFile, sections: { entry: IndexSec
   };
 }
 
+type DefinitionEntry = {
+  id?: string;
+  label: string;
+  text?: string;
+  source: "content" | "defs";
+};
+
+function extractDefinitions(section: SectionNode): DefinitionEntry[] {
+  const entries: DefinitionEntry[] = [];
+
+  const collectFromNode = (node: SectionNode): void => {
+    const defs = Array.isArray(node.defs) ? node.defs : [];
+    for (const entry of defs) {
+      if (!entry || typeof entry !== "object") continue;
+      const record = entry as Record<string, unknown>;
+      const label = typeof record.key === "string" ? record.key : "";
+      if (!label) continue;
+      entries.push({
+        id: typeof record.id === "string" ? record.id : undefined,
+        label,
+        text: typeof record.value === "string" ? record.value : undefined,
+        source: "defs",
+      });
+    }
+
+    const contentItems = Array.isArray(node.content) ? node.content : [];
+    for (const item of contentItems) {
+      if (!item || typeof item !== "object") continue;
+      const record = item as Record<string, unknown>;
+      if (record.type !== "definition") continue;
+      const label = typeof record.label === "string" ? record.label : "";
+      if (!label) continue;
+      entries.push({
+        id: typeof record.id === "string" ? record.id : undefined,
+        label,
+        text: typeof record.text === "string" ? record.text : undefined,
+        source: "content",
+      });
+    }
+
+    const children = Array.isArray(node.children) ? node.children : [];
+    for (const child of children) {
+      collectFromNode(child);
+    }
+  };
+
+  collectFromNode(section);
+  return entries;
+}
+
 async function main(): Promise<void> {
   const indexRaw = await readFile(INDEX_PATH, "utf-8");
   const index = JSON.parse(indexRaw) as IndexFile;
@@ -785,14 +835,17 @@ async function main(): Promise<void> {
 
   const coverHtml = renderCover(index);
   const sectionInfo = index.sections.reduce((acc, entry) => {
+    const section = sectionMap.get(entry.id)?.section;
+    const definitions = section ? extractDefinitions(section) : [];
     acc[entry.id] = {
       id: entry.id,
       number: entry.number,
       title: entry.title,
       contentRef: entry.contentRef,
+      definitions,
     };
     return acc;
-  }, {} as Record<string, { id: string; number?: number; title?: string; contentRef: string }>);
+  }, {} as Record<string, { id: string; number?: number; title?: string; contentRef: string; definitions: DefinitionEntry[] }>);
 
   const html = `<!doctype html>
 <html lang="en">
@@ -1279,6 +1332,35 @@ async function main(): Promise<void> {
         margin: 0.4rem 0;
         font-size: 0.95rem;
       }
+      .inspect-defs {
+        margin-top: 0.8rem;
+        border-top: 1px solid var(--border);
+        padding-top: 0.8rem;
+      }
+      .inspect-defs h4 {
+        margin: 0 0 0.6rem;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+      .inspect-defs ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.4rem;
+      }
+      .inspect-defs li {
+        background: #f7f4ee;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.5rem 0.7rem;
+      }
+      .inspect-defs code {
+        background: transparent;
+        padding: 0;
+      }
       .inspect-meta {
         font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
         font-size: 0.85rem;
@@ -1567,6 +1649,7 @@ async function main(): Promise<void> {
       <p id="inspect-title">No section detected</p>
       <p id="inspect-root"></p>
       <div class="inspect-meta" id="inspect-meta"></div>
+      <div class="inspect-defs" id="inspect-defs"></div>
       <div class="inspect-actions">
         <button class="inspect-copy" id="inspect-copy" type="button">Copy</button>
       </div>
@@ -1853,6 +1936,7 @@ async function main(): Promise<void> {
         var inspectTitle = document.getElementById("inspect-title");
         var inspectRoot = document.getElementById("inspect-root");
         var inspectMeta = document.getElementById("inspect-meta");
+        var inspectDefs = document.getElementById("inspect-defs");
         var inspectCopy = document.getElementById("inspect-copy");
 
         function getActiveHeading() {
@@ -1875,6 +1959,9 @@ async function main(): Promise<void> {
             inspectTitle.textContent = "No section detected";
             inspectRoot.textContent = "";
             inspectMeta.textContent = "";
+            if (inspectDefs) {
+              inspectDefs.innerHTML = "";
+            }
             return;
           }
           var rootId = active.getAttribute("data-root-section") || active.id;
@@ -1894,6 +1981,19 @@ async function main(): Promise<void> {
             (section ? "Content file: docs/sections/" + section.contentRef + "\\n" : "") +
             "Anchor: " + window.location.pathname.split("/").pop() + "#" + active.id + "\\n" +
             "Scroll: " + percent + "%";
+          if (inspectDefs) {
+            var defs = section && Array.isArray(section.definitions) ? section.definitions : [];
+            if (defs.length === 0) {
+              inspectDefs.innerHTML = "";
+            } else {
+              var list = defs.map(function (def) {
+                var label = def.label || "Definition";
+                var id = def.id ? "<code>" + def.id + "</code> " : "";
+                return "<li>" + id + label + "</li>";
+              }).join("");
+              inspectDefs.innerHTML = "<h4>Definitions</h4><ul>" + list + "</ul>";
+            }
+          }
         }
 
         if (inspectToggle) {

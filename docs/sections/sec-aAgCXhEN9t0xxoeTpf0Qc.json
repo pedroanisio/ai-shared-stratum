@@ -15,17 +15,20 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\").1 (Operation)",
-          "text": "op ::= ⟨id, actor, clock, type, payload⟩\n\nOP_TYPE = {\n  add_element(e),\n  remove_element(eid),\n  update_property(eid, prop, value),\n  add_dependency(d),\n  remove_dependency(did),\n  add_constraint(c),\n  update_binding(b)\n}"
+          "text": "op ::= ⟨id, actor, clock, type, payload⟩\n\nOP_TYPE = {\n  add_element(e),\n  remove_element(eid),\n  update_property(eid, prop, value),\n  add_dependency(d),\n  remove_dependency(did),\n  add_constraint(c),\n  update_binding(b)\n}",
+          "id": "def-l6I3FzuZo_I"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\").2 (Causality)",
-          "text": "op₁ → op₂ (op₁ causally precedes op₂) iff:\n  op₁.clock < op₂.clock\n\nop₁ ∥ op₂ (op₁ concurrent with op₂) iff:\n  ¬(op₁ → op₂) ∧ ¬(op₂ → op₁)"
+          "text": "op₁ → op₂ (op₁ causally precedes op₂) iff:\n  op₁.clock < op₂.clock\n\nop₁ ∥ op₂ (op₁ concurrent with op₂) iff:\n  ¬(op₁ → op₂) ∧ ¬(op₂ → op₁)",
+          "id": "def-UgTyf3i66_E"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\").3 (Operation Semantics)",
-          "text": "apply : Specification × Operation → Specification"
+          "text": "apply : Specification × Operation → Specification",
+          "id": "def-D3pbJiIIfxA"
         },
         {
           "type": "code",
@@ -62,12 +65,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\").4 (Replica State)",
-          "text": "A replica R is a pair (S, seen) where:\n  S: current specification state\n  seen: set of operation IDs that have been applied"
+          "text": "A replica R is a pair (S, seen) where:\n  S: current specification state\n  seen: set of operation IDs that have been applied",
+          "id": "def-KbBFztoCqGU"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\").5 (Synchronization)",
-          "text": "sync : Replica × Replica → Replica × Replica"
+          "text": "sync : Replica × Replica → Replica × Replica",
+          "id": "def-yz2Z1jDIcn4"
         },
         {
           "type": "code",

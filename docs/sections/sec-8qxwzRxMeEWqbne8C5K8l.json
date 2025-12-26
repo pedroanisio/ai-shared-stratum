@@ -15,7 +15,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").1 (Element)",
-          "text": "e ::= ⟨id, τ, l, π, μ⟩"
+          "text": "e ::= ⟨id, τ, l, π, μ⟩",
+          "id": "def-T4L6L5evbDw"
         },
         {
           "type": "paragraph",
@@ -54,7 +55,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").2 (Metadata)",
-          "text": "METADATA = ⟨created: TIME, updated: TIME, version: VersionVector, status: STATUS, actor: ACTOR, clock: CLOCK⟩"
+          "text": "METADATA = ⟨created: TIME, updated: TIME, version: VersionVector, status: STATUS, actor: ACTOR, clock: CLOCK⟩",
+          "id": "def-5d8-a5C_kwE"
         },
         {
           "type": "paragraph",
@@ -63,7 +65,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").3 (Version Vector)",
-          "text": "VersionVector = ACTOR → ℕ"
+          "text": "VersionVector = ACTOR → ℕ",
+          "id": "def-CbgdW7C_3jE"
         },
         {
           "type": "paragraph",
@@ -96,7 +99,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").4 (Tier)",
-          "text": "TIER = {motivation, logical, realization, grounding}"
+          "text": "TIER = {motivation, logical, realization, grounding}",
+          "id": "def-PY9bZLEm74s"
         },
         {
           "type": "paragraph",
@@ -105,7 +109,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").5 (Tier Semantics)",
-          "text": "The tier ordering represents REFINEMENT direction:"
+          "text": "The tier ordering represents REFINEMENT direction:",
+          "id": "def-y_45kLHjzQ0"
         },
         {
           "type": "definition-list",
@@ -142,7 +147,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").6 (Layer)",
-          "text": "l ::= ⟨id, name, tier, order, Q, T, deps⟩"
+          "text": "l ::= ⟨id, name, tier, order, Q, T, deps⟩",
+          "id": "def-mLE2OrujDhw"
         },
         {
           "type": "paragraph",
@@ -184,7 +190,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").7 (Layer Position)",
-          "text": "pos(l) = ⟨l.tier, l.order⟩"
+          "text": "pos(l) = ⟨l.tier, l.order⟩",
+          "id": "def-Ye7QUWBBO70"
         },
         {
           "type": "paragraph",
@@ -205,12 +212,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").8 (Dependency Type)",
-          "text": "DEPTYPE = {realizes, requires, produces, consumes, constrains, validates, traces_to}"
+          "text": "DEPTYPE = {realizes, requires, produces, consumes, constrains, validates, traces_to}",
+          "id": "def-6gYeom2TSiw"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").9 (Strength)",
-          "text": "STRENGTH = {hard, soft}"
+          "text": "STRENGTH = {hard, soft}",
+          "id": "def-chxdfDvqFFE"
         },
         {
           "type": "paragraph",
@@ -232,12 +241,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\")",
-          "text": "CARDINALITY = {one_to_one, one_to_many, many_to_one, many_to_many}"
+          "text": "CARDINALITY = {one_to_one, one_to_many, many_to_one, many_to_many}",
+          "id": "def-q917O4z1SY4"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\")",
-          "text": "d ::= ⟨id, src, tgt, δ, σ, κ, cascade_boundary⟩"
+          "text": "d ::= ⟨id, src, tgt, δ, σ, κ, cascade_boundary⟩",
+          "id": "def-G_QtalU83h0"
         },
         {
           "type": "paragraph",
@@ -411,22 +422,26 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").13 (Constraint Category)",
-          "text": "CATEGORY = {existence, uniqueness, completeness, consistency, validity, dependency, ordering, coverage, alignment, boundary}"
+          "text": "CATEGORY = {existence, uniqueness, completeness, consistency, validity, dependency, ordering, coverage, alignment, boundary}",
+          "id": "def-eI6VtVGGmKE"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").14 (Severity)",
-          "text": "SEVERITY = {error, warning, info}"
+          "text": "SEVERITY = {error, warning, info}",
+          "id": "def-wwD5uy_0QRQ"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").15 (Scope)",
-          "text": "scope ::= ⟨srcLayer: ID*, srcType: TYPE*, tgtLayer: ID*, tgtType: TYPE*⟩"
+          "text": "scope ::= ⟨srcLayer: ID*, srcType: TYPE*, tgtLayer: ID*, tgtType: TYPE*⟩",
+          "id": "def-59F3mSecDY4"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").16 (Constraint)",
-          "text": "c ::= ⟨id, name, scope, cat, sev, φ, msg, priority⟩"
+          "text": "c ::= ⟨id, name, scope, cat, sev, φ, msg, priority⟩",
+          "id": "def-SMTjjaoF0z0"
         },
         {
           "type": "paragraph",
@@ -472,12 +487,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").17 (Constraint Satisfaction)",
-          "text": "S ⊨ c iff c.φ(elements(S), dependencies(S)) = ⊤"
+          "text": "S ⊨ c iff c.φ(elements(S), dependencies(S)) = ⊤",
+          "id": "def-oscHbtLaVVg"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").18 (Constraint Conflict)",
-          "text": "conflict(c₁, c₂) iff unsat(c₁.φ ∧ c₂.φ)"
+          "text": "conflict(c₁, c₂) iff unsat(c₁.φ ∧ c₂.φ)",
+          "id": "def-i7x7JR6-XI0"
         },
         {
           "type": "heading",
@@ -592,12 +609,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").19 (Binding Completeness)",
-          "text": "COMPLETENESS = {complete, partial, stub}"
+          "text": "COMPLETENESS = {complete, partial, stub}",
+          "id": "def-md_TEzbWJcQ"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").20 (Verification State)",
-          "text": "VERIFICATION = {unverified, pending, verified, failed, stale}"
+          "text": "VERIFICATION = {unverified, pending, verified, failed, stale}",
+          "id": "def-q2ayR9t3uVU"
         },
         {
           "type": "paragraph",
@@ -617,7 +636,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").21 (Artifact Reference)",
-          "text": "artifact ::= ⟨type: ARTIFACT_TYPE, uri: URI, hash: HASH, verified_at: TIME*⟩"
+          "text": "artifact ::= ⟨type: ARTIFACT_TYPE, uri: URI, hash: HASH, verified_at: TIME*⟩",
+          "id": "def-UP6MIyHlOYo"
         },
         {
           "type": "paragraph",
@@ -626,7 +646,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").22 (Binding)",
-          "text": "b ::= ⟨id, abstract, concrete, completeness, verification, evidence⟩"
+          "text": "b ::= ⟨id, abstract, concrete, completeness, verification, evidence⟩",
+          "id": "def-OZkAc1ML7BY"
         },
         {
           "type": "paragraph",
@@ -664,7 +685,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").23 (Evidence)",
-          "text": "evidence ::= ⟨type: EVIDENCE_TYPE, timestamp: TIME, result: 𝔹, details: VALUE⟩"
+          "text": "evidence ::= ⟨type: EVIDENCE_TYPE, timestamp: TIME, result: 𝔹, details: VALUE⟩",
+          "id": "def-5pCzJw1iUiE"
         },
         {
           "type": "paragraph",
@@ -685,12 +707,14 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").24 (Change Type)",
-          "text": "CHANGE = {create, update, delete, deprecate}"
+          "text": "CHANGE = {create, update, delete, deprecate}",
+          "id": "def-1A2Vi61CSxY"
         },
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").25 (Impact Level)",
-          "text": "IMPACT = {⊥, cosmetic, degraded, breaking}"
+          "text": "IMPACT = {⊥, cosmetic, degraded, breaking}",
+          "id": "def-3lOAMIIKTBY"
         },
         {
           "type": "paragraph",
@@ -703,7 +727,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").26 (Cascade Rule)",
-          "text": "r ::= ⟨id, trigger, propagation, effect⟩"
+          "text": "r ::= ⟨id, trigger, propagation, effect⟩",
+          "id": "def-K9OQXapvlLA"
         },
         {
           "type": "paragraph",
@@ -740,7 +765,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").27 (Specification)",
-          "text": "S ::= ⟨id, name, domain, version, L, E, D, C, B, R, H⟩"
+          "text": "S ::= ⟨id, name, domain, version, L, E, D, C, B, R, H⟩",
+          "id": "def-nAFYA3uHdZE"
         },
         {
           "type": "paragraph",
@@ -798,7 +824,8 @@
         {
           "type": "definition",
           "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").28 (History)",
-          "text": "H = List<Operation>; Operation = ⟨op_id: ID, actor: ACTOR, clock: CLOCK, type: OP_TYPE, payload⟩"
+          "text": "H = List<Operation>; Operation = ⟨op_id: ID, actor: ACTOR, clock: CLOCK, type: OP_TYPE, payload⟩",
+          "id": "def-6m-y2Pa0kqU"
         },
         {
           "type": "paragraph",
