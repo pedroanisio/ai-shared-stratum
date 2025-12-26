@@ -71,7 +71,7 @@
         },
         {
           "type": "paragraph",
-          "text": "**Dependency Traversal** (v2.4.4 semantics):"
+          "text": "**Dependency Traversal**:"
         },
         {
           "type": "list",

@@ -370,7 +370,7 @@
             },
             {
               "term": "**3. Well-Formedness** (§3)",
-              "definition": "Structural invariants that all specifications must satisfy. Read: All WF-rules including WF-ID, WF-LAYER, WF-ACYCLIC-HARD, WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION (added v2.4.4)."
+              "definition": "Structural invariants that all specifications must satisfy. Read: All WF-rules including WF-ID, WF-LAYER, WF-ACYCLIC-HARD, WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION."
             },
             {
               "term": "**4. Six Guarantees** (§4.1-4.6)",

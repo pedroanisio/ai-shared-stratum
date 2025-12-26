@@ -14,7 +14,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").1 (Element)",
+          "label": "(Element)",
           "text": "e ::= ⟨id, τ, l, π, μ⟩",
           "id": "def-T4L6L5evbDw"
         },
@@ -54,7 +54,7 @@
         },
         {
           "type": "definition",
-          "label": "Definition referenceMap(\"sec-8qxwzRxMeEWqbne8C5K8l\", \"§{{sectionNumber}}\").2 (Metadata)",
+          "label": "(Metadata)",
           "text": "METADATA = ⟨created: TIME, updated: TIME, version: VersionVector, status: STATUS, actor: ACTOR, clock: CLOCK⟩",
           "id": "def-5d8-a5C_kwE"
         },
@@ -290,7 +290,7 @@
         {
           "type": "admonition",
           "level": "important",
-          "text": "**Dependency Direction vs Impact Flow Semantics [v2.4.4 Clarification]**\n\nDependencies have TWO distinct directional semantics:\n\n**1. Structural Direction (src → tgt)**: The dependency arrow shows WHO depends ON WHOM.\n- `d.src → d.tgt` means \"src depends on tgt\" (src is dependent, tgt is dependee)\n- `realizes`: concrete_impl → abstract_spec (impl depends on spec)\n- `requires`: component_A → component_B (A depends on B)\n- Coherence (G6): `pos(d.src) ≥ pos(d.tgt)` (dependent ≥ dependee in concreteness)\n\n**2. Impact Flow**: CASCADE walks deps where `d.src.elem = changed_element`, propagates to `d.tgt`.\n- When element e changes, impact flows TO elements e depends on\n- Example: Component C realizes Spec S → dependency `C → S`\n  - If C changes: cascade finds `d.src=C`, propagates impact to S ✓\n  - If S changes: cascade finds deps `d.src=S` (none of type realizes), no auto-propagation to C\n- This prevents circular cascades while maintaining traceability\n\n**Reconciling 'changes cascade down'**: This phrase in referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\") means Coherence prevents upward structural dependencies (abstract layers don't depend on concrete). Impact flows along dependency arrows (dependent → dependee), which by G6 is always same-tier or concrete→abstract."
+          "text": "**Dependency Direction vs Impact Flow Semantics**\n\nDependencies have TWO distinct directional semantics:\n\n**1. Structural Direction (src → tgt)**: The dependency arrow shows WHO depends ON WHOM.\n- `d.src → d.tgt` means \"src depends on tgt\" (src is dependent, tgt is dependee)\n- `realizes`: concrete_impl → abstract_spec (impl depends on spec)\n- `requires`: component_A → component_B (A depends on B)\n- Coherence (G6): `pos(d.src) ≥ pos(d.tgt)` (dependent ≥ dependee in concreteness)\n\n**2. Impact Flow**: CASCADE walks deps where `d.src.elem = changed_element`, propagates to `d.tgt`.\n- When element e changes, impact flows TO elements e depends on\n- Example: Component C realizes Spec S → dependency `C → S`\n  - If C changes: cascade finds `d.src=C`, propagates impact to S ✓\n  - If S changes: cascade finds deps `d.src=S` (none of type realizes), no auto-propagation to C\n- This prevents circular cascades while maintaining traceability\n\n**Reconciling 'changes cascade down'**: This phrase in referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\") means Coherence prevents upward structural dependencies (abstract layers don't depend on concrete). Impact flows along dependency arrows (dependent → dependee), which by G6 is always same-tier or concrete→abstract."
         },
         {
           "type": "paragraph",

@@ -199,7 +199,7 @@
             },
             {
               "term": "**2. Constraints** (referenceMap(\"sub-CyAf_GsK2z3HhpvlCgKlD\", \"§{{sectionNumber}}.4 Constraint\"))",
-              "definition": "QF_LIA + QF_LRA + QF_UF constraint language per v2.4.4. Read: Definition 2.12 (Predicate Language), Definition 2.16 (Constraint), Theorem 2.1 (Decidability). Note: SMT-LIB 2.6 standard required for conformance."
+              "definition": "QF_LIA + QF_LRA + QF_UF constraint language. Read: Definition 2.12 (Predicate Language), Definition 2.16 (Constraint), Theorem 2.1 (Decidability). Note: SMT-LIB 2.6 standard required for conformance."
             },
             {
               "term": "**3. Well-Formedness** (referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\"))",
@@ -309,7 +309,7 @@
           "items": [
             "✓ Implement data structures: Specification, Element, Layer, Dependency, Constraint, Binding, CascadeRule",
             "✓ Implement constraint language: QF_LIA + QF_LRA + QF_UF (via SMT solver like Z3, CVC5, or Yices)",
-            "✓ Implement all WF-rules from referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") (including v2.4.4 additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)",
+            "✓ Implement all WF-rules from referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") (including additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)",
             "✓ Implement guarantee checkers for G1-G6 (referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"))",
             "✓ Implement cascade computation per CASCADE-1, CASCADE-N rules (referenceMap(\"sub-5Xu8Vv_BHhTdzfCjtqDRo\", \"§{{sectionNumber}}.3 Cascade Computation\"))",
             "✓ Implement validate(S), trace(e), impact(S, δ) operations (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"))",

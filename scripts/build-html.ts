@@ -147,6 +147,338 @@ export function renderInlineWithRefs(input: string): string {
   });
 }
 
+export function applyReferenceMapLatex(text: string): string {
+  return text.replace(/referenceMap\(\"([^\"]+)\"\s*,\s*([^\)]*)\)/g, (match, id, template) => {
+    const ref = REFERENCE_MAP.get(id);
+    if (!ref) return match;
+    let tpl = template.trim();
+    if ((tpl.startsWith("\"") && tpl.endsWith("\"")) || (tpl.startsWith("'") && tpl.endsWith("'"))) {
+      tpl = tpl.slice(1, -1);
+    }
+    return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (placeholder, key) => {
+      return (ref as Record<string, string>)[key] ?? placeholder;
+    });
+  });
+}
+
+export function escapeLatex(input: string): string {
+  return input
+    .replace(/\\/g, "\\textbackslash{}")
+    .replace(/([{}$&%#_])/g, "\\$1")
+    .replace(/\^/g, "\\textasciicircum{}")
+    .replace(/~/g, "\\textasciitilde{}");
+}
+
+export function renderLatexInline(input: string): string {
+  const processed = applyReferenceMapLatex(applyRenderTemplates(input));
+  const escaped = escapeLatex(processed);
+  const bold = escaped.replace(/\*\*(.+?)\*\*/g, "\\textbf{$1}");
+  const code = bold.replace(/`([^`]+)`/g, "\\texttt{$1}");
+  return code;
+}
+
+export function renderLatexTextBlocks(text: string): string {
+  const fenceRegex = /```(\w+)?\n([\s\S]*?)```/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  const parts: string[] = [];
+
+  while ((match = fenceRegex.exec(text)) !== null) {
+    const before = text.slice(lastIndex, match.index);
+    if (before.trim()) {
+      parts.push(`${renderLatexInline(before.replace(/\n+/g, " "))}\n`);
+    }
+
+    const code = match[2] || "";
+    parts.push(`\\begin{verbatim}\n${code}\n\\end{verbatim}\n`);
+    lastIndex = fenceRegex.lastIndex;
+  }
+
+  const remaining = text.slice(lastIndex);
+  if (remaining.trim()) {
+    parts.push(`${renderLatexInline(remaining.replace(/\n+/g, " "))}\n`);
+  }
+
+  return parts.join("\n");
+}
+
+export function renderLatexContent(items: ContentItem[] | undefined): string {
+  if (!items || items.length === 0) return "";
+  return items
+    .map((item) => {
+      switch (item.type) {
+        case "heading": {
+          const level = Math.min(6, Math.max(1, item.level));
+          const title = renderLatexInline(item.text);
+          if (level <= 2) return `\\subsection{${title}}`;
+          if (level === 3) return `\\subsubsection{${title}}`;
+          if (level === 4) return `\\paragraph{${title}}`;
+          return `\\subparagraph{${title}}`;
+        }
+        case "paragraph":
+          return renderLatexTextBlocks(item.text);
+        case "definition-list": {
+          const items = item.items
+            .map((entry) => `\\item[${renderLatexInline(entry.term)}] ${renderLatexTextBlocks(entry.definition)}`)
+            .join("\n");
+          return `\\begin{description}\n${items}\n\\end{description}`;
+        }
+        case "list": {
+          const items = item.items
+            .map((entry) => (typeof entry === "string" ? `\\item ${renderLatexTextBlocks(entry)}` : ""))
+            .join("\n");
+          return `\\begin{itemize}\n${items}\n\\end{itemize}`;
+        }
+        case "admonition": {
+          const label = item.level.toUpperCase();
+          return `\\begin{quote}\\textbf{${escapeLatex(label)}:} ${renderLatexInline(item.text)}\\end{quote}`;
+        }
+        case "reference": {
+          const key = renderLatexInline(item.key);
+          const citation = renderLatexInline(item.citation);
+          const rating = item.rating ? ` (${renderLatexInline(item.rating)})` : "";
+          const use = item.use ? `\\\\${renderLatexInline(item.use)}` : "";
+          return `\\begin{quote}\\textbf{${key}}${rating}\\\\${citation}${use}\\end{quote}`;
+        }
+        case "code": {
+          const lines = Array.isArray((item as { lines?: string[] }).lines)
+            ? (item as { lines: string[] }).lines.join("\n")
+            : "";
+          return `\\begin{verbatim}\n${lines}\n\\end{verbatim}`;
+        }
+        case "definition":
+        case "rule":
+        case "theorem":
+        case "guarantee":
+        case "operation": {
+          const label = renderLatexInline((item as { label?: string }).label ?? "");
+          const bodyKey = item.type === "definition" ? "text" : item.type === "operation" ? "semantics" : "formula";
+          const bodyValue = (item as Record<string, unknown>)[bodyKey];
+          const body = typeof bodyValue === "string" ? renderLatexTextBlocks(bodyValue) : "";
+          return `\\begin{quote}\\textbf{${label}}\\\\${body}\\end{quote}`;
+        }
+        case "profile": {
+          const label = renderLatexInline((item as { label?: string }).label ?? "");
+          const layers = (item as { layers?: Record<string, unknown> }).layers || {};
+          const layerBlocks = Object.entries(layers)
+            .map(([key, values]) => {
+              const items = Array.isArray(values)
+                ? values.map((val) => `\\item ${renderLatexInline(String(val))}`).join("\n")
+                : "";
+              return `\\item[${renderLatexInline(key)}] \\begin{itemize}\n${items}\n\\end{itemize}`;
+            })
+            .join("\n");
+          return `\\begin{description}\n\\item[${label}] \\begin{description}\n${layerBlocks}\n\\end{description}\n\\end{description}`;
+        }
+        case "checklist": {
+          const label = renderLatexInline((item as { label?: string }).label ?? "");
+          const items = ((item as { items?: string[] }).items || [])
+            .map((entry) => `\\item ${renderLatexInline(String(entry))}`)
+            .join("\n");
+          return `\\begin{quote}\\textbf{${label}}\\\\\\begin{itemize}\n${items}\n\\end{itemize}\\end{quote}`;
+        }
+        case "table": {
+          const columns = Array.isArray((item as { columns?: string[] }).columns)
+            ? (item as { columns: string[] }).columns
+            : [];
+          const rows = Array.isArray((item as { rows?: string[][] }).rows)
+            ? (item as { rows: string[][] }).rows
+            : [];
+          const colSpec = columns.map(() => "l").join(" | ");
+          const head = columns.map((col) => renderLatexInline(String(col))).join(" & ");
+          const body = rows
+            .map((row) => row.map((cell) => renderLatexInline(String(cell))).join(" & "))
+            .join(" \\\\\n");
+          return `\\begin{longtable}{${colSpec}}\n${head} \\\\\n\\hline\n${body}\n\\end{longtable}`;
+        }
+        case "diagram": {
+          const content = (item as { content?: string }).content ? String((item as { content: string }).content) : "";
+          return `\\begin{verbatim}\n${content}\n\\end{verbatim}`;
+        }
+        default:
+          return "";
+      }
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+export function renderLatexSection(
+  node: SectionNode,
+  number: string | undefined,
+  level: number
+): string {
+  const label = number ? `${number} ${node.title ?? ""}`.trim() : node.title ?? "";
+  const title = renderLatexInline(label);
+  const headingLevel = Math.min(6, Math.max(2, level));
+  const safeLabel = node.id.replace(/[^a-zA-Z0-9:-]+/g, "-");
+  let heading = "";
+  if (headingLevel === 2) heading = `\\section{${title}}\\label{${safeLabel}}`;
+  else if (headingLevel === 3) heading = `\\subsection{${title}}\\label{${safeLabel}}`;
+  else if (headingLevel === 4) heading = `\\subsubsection{${title}}\\label{${safeLabel}}`;
+  else if (headingLevel === 5) heading = `\\paragraph{${title}}\\label{${safeLabel}}`;
+  else heading = `\\subparagraph{${title}}\\label{${safeLabel}}`;
+
+  const overview = node.overview ? `${renderLatexInline(node.overview)}\n` : "";
+  const defs = renderDefinitionEntriesLatex(node.defs);
+  const content = renderLatexContent(node.content);
+  const children = (node.children || [])
+    .map((child) => {
+      const childNumber = number && child.suffix ? `${number}.${child.suffix}` : undefined;
+      return renderLatexSection(child, childNumber, headingLevel + 1);
+    })
+    .join("\n\n");
+
+  return [heading, overview, defs, content, children].filter(Boolean).join("\n\n");
+}
+
+export function renderDefinitionEntriesLatex(defs: unknown[] | undefined): string {
+  if (!defs || defs.length === 0) return "";
+  const items = defs
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return "";
+      const record = entry as Record<string, unknown>;
+      const key = typeof record.key === "string" ? record.key : "";
+      const value = typeof record.value === "string" ? record.value : "";
+      if (!key && !value) return "";
+      return `\\item[${renderLatexInline(key)}] ${renderLatexTextBlocks(value)}`;
+    })
+    .filter(Boolean)
+    .join("\n");
+  return `\\begin{description}\n${items}\n\\end{description}`;
+}
+
+export function buildLatexDocument(index: IndexFile, sections: { entry: IndexSection; section: SectionNode }[]): string {
+  const title = index.title ? renderLatexInline(index.title) : "Document";
+  const subtitle = index.subtitle ? renderLatexInline(index.subtitle) : "";
+  const authors = Array.isArray(index.meta?.authors) ? renderLatexInline(index.meta?.authors.join(", ")) : "";
+  const date = index.meta?.generatedAt ? renderLatexInline(index.meta.generatedAt) : "";
+
+  const body =
+    index.parts && index.parts.length > 0
+      ? renderPartsContentLatex(index.parts, sections)
+      : sections
+          .map(({ entry, section }) => renderLatexSection(section, entry.number?.toString(), 2))
+          .join("\n\n");
+  const cover = buildLatexCover(index);
+  const definitions = buildDefinitionsSectionLatex(sections);
+
+  const subtitleLine = subtitle ? `\\\\${subtitle}` : "";
+  const authorLine = authors ? `\\author{${authors}}` : "";
+  const dateLine = date ? `\\date{${date}}` : "\\date{}";
+
+  return [
+    "\\documentclass{article}",
+    "\\usepackage[utf8]{inputenc}",
+    "\\usepackage[T1]{fontenc}",
+    "\\usepackage{geometry}",
+    "\\usepackage{hyperref}",
+    "\\usepackage{longtable}",
+    "\\usepackage{graphicx}",
+    "\\usepackage{enumitem}",
+    "\\usepackage{amsmath}",
+    "\\usepackage{amssymb}",
+    "\\geometry{margin=1in}",
+    "\\begin{document}",
+    `\\title{${title}${subtitleLine}}`,
+    authorLine,
+    dateLine,
+    "\\maketitle",
+    cover,
+    body,
+    definitions,
+    "\\end{document}",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function renderPartsContentLatex(
+  parts: IndexPart[],
+  sections: { entry: IndexSection; section: SectionNode }[]
+): string {
+  const sectionMap = new Map(sections.map(({ entry, section }) => [entry.id, { entry, section }]));
+  const used = new Set<string>();
+  const partsContent = parts
+    .map((part) => {
+      const label = formatPartLabelWithRange(part, new Map(sections.map(({ entry }) => [entry.id, entry])));
+      const partHeading = `\\section*{${renderLatexInline(label)}}`;
+      const partSections = part.sections
+        .map((sectionId) => {
+          used.add(sectionId);
+          const entry = sectionMap.get(sectionId)?.entry;
+          const section = sectionMap.get(sectionId)?.section;
+          if (!entry || !section) return "";
+          return renderLatexSection(section, entry.number?.toString(), 2);
+        })
+        .join("\n\n");
+      return [partHeading, partSections].filter(Boolean).join("\n\n");
+    })
+    .join("\n\n");
+
+  const remaining = sections.filter(({ entry }) => !used.has(entry.id));
+  if (remaining.length === 0) return partsContent;
+  const extra = remaining
+    .map(({ entry, section }) => renderLatexSection(section, entry.number?.toString(), 2))
+    .join("\n\n");
+  return [partsContent, "\\section*{Other Sections}", extra].filter(Boolean).join("\n\n");
+}
+
+function buildLatexCover(index: IndexFile): string {
+  const abstractText = index.meta?.abstract
+    ? renderLatexTextBlocks(String(index.meta.abstract))
+    : "";
+  const details = [
+    ["Version", index.version],
+    ["Namespace", index.namespace],
+    ["Document Type", index.documentType],
+    ["Structure", index.documentStruct],
+    ["Created", index.meta?.createdAt],
+    ["Updated", index.meta?.updatedAt],
+    ["Generated", index.meta?.generatedAt],
+    ["Authors", Array.isArray(index.meta?.authors) ? index.meta?.authors.join(", ") : undefined],
+    ["Domains", Array.isArray(index.meta?.domains) ? index.meta?.domains.join(", ") : undefined],
+    ["Keywords", Array.isArray(index.meta?.keywords) ? index.meta?.keywords.join(", ") : undefined],
+  ].filter((row) => row[1]);
+
+  const metaLines = details
+    .map(([label, value]) => `\\item[${escapeLatex(String(label))}] ${renderLatexInline(String(value))}`)
+    .join("\n");
+
+  const metaBlock = metaLines ? `\\section*{Document Metadata}\n\\begin{description}\n${metaLines}\n\\end{description}` : "";
+  const abstractBlock = abstractText
+    ? `\\section*{Abstract}\n${abstractText}`
+    : "";
+
+  return [metaBlock, abstractBlock].filter(Boolean).join("\n\n");
+}
+
+function buildDefinitionsSectionLatex(
+  sections: { entry: IndexSection; section: SectionNode }[]
+): string {
+  const allDefs: Array<DefinitionEntry & { rootId: string; rootNumber?: string | number; rootTitle?: string }> = [];
+  for (const { entry, section } of sections) {
+    const defs = extractDefinitions(section, entry.id, entry.number);
+    defs.forEach((def) => {
+      allDefs.push({
+        ...def,
+        rootId: entry.id,
+        rootNumber: entry.number,
+        rootTitle: entry.title,
+      });
+    });
+  }
+  if (allDefs.length === 0) return "";
+  const items = allDefs
+    .map((def) => {
+      const label = renderLatexInline(def.label);
+      const origin = def.rootTitle ? renderLatexInline(def.rootTitle) : "";
+      return `\\item ${label}${origin ? ` (${origin})` : ""}`;
+    })
+    .join("\n");
+  return `\\section*{Definitions}\n\\begin{itemize}\n${items}\n\\end{itemize}`;
+}
+
 export function renderTextBlocks(text: string): string {
   const fenceRegex = /```(\w+)?\n([\s\S]*?)```/g;
   let lastIndex = 0;
@@ -178,7 +510,14 @@ export function renderTextBlocks(text: string): string {
   return parts.join("\n");
 }
 
-export function renderContent(items: ContentItem[] | undefined): string {
+export function renderContent(
+  items: ContentItem[] | undefined,
+  context?: {
+    rootSectionId?: string;
+    rootSectionNumber?: string | number;
+    definitionCounters?: Map<string, number>;
+  }
+): string {
   if (!items || items.length === 0) return "";
   return items
     .map((item) => {
@@ -227,9 +566,26 @@ export function renderContent(items: ContentItem[] | undefined): string {
           return `<pre><code${language}>${escapeHtml(lines)}</code></pre>`;
         }
         case "definition": {
-          const label = renderInlineWithRefs((item as { label?: string }).label ?? "");
+          const labelRaw = (item as { label?: string }).label ?? "";
+          const title = extractDefinitionTitle(labelRaw);
+          let labelText = labelRaw;
+          const rootSectionId = context?.rootSectionId ?? "";
+          const rootSectionNumber = context?.rootSectionNumber;
+          const counters = context?.definitionCounters;
+          if (rootSectionId && counters) {
+            const next = (counters.get(rootSectionId) ?? 0) + 1;
+            counters.set(rootSectionId, next);
+            labelText = formatDefinitionLabel(rootSectionId, rootSectionNumber, next, title);
+          }
+          const label = renderInlineWithRefs(labelText);
           const body = (item as { text?: string }).text ? renderTextBlocks((item as { text: string }).text) : "";
-          return `<div class="definition"><p><strong>${label}</strong></p>${body}</div>`;
+          const defId = (item as { id?: string }).id ? ` id="${escapeHtml((item as { id: string }).id)}"` : "";
+          const anchor = (item as { id?: string }).id
+            ? `<a class="anchor" href="#${escapeHtml(
+                (item as { id: string }).id
+              )}" aria-label="Definition link">#</a>`
+            : "";
+          return `<div class="definition"${defId}><p class="definition-title"><strong>${label}</strong>${anchor}</p>${body}</div>`;
         }
         case "rule": {
           const label = renderInlineWithRefs((item as { label?: string }).label ?? "");
@@ -417,11 +773,12 @@ export function renderCover(index: IndexFile): string {
             <h1 class="cover-title">${title}</h1>
             ${subtitle ? `<p class="cover-subtitle">${subtitle}</p>` : ""}
             ${description ? `<p class="cover-description">${description}</p>` : ""}
-            <div class="cover-links">
-              <a class="cover-link" href="document-graph.html">View Document Graph</a>
-              <a class="cover-link" href="document-graph-3d.html">View 3D Graph</a>
-            </div>
+          <div class="cover-links">
+            <a class="cover-link" href="document-graph.html">View Document Graph</a>
+            <a class="cover-link" href="document-graph-3d.html">View 3D Graph</a>
+            <button class="cover-link" id="export-latex" type="button">Export LaTeX</button>
           </div>
+        </div>
           <div class="cover-body">
             ${metaRows ? `<div class="cover-meta">${metaRows}</div>` : ""}
             ${abstractText ? `<div class="cover-abstract"><h2>Abstract</h2>${abstractText}</div>` : ""}
@@ -494,7 +851,9 @@ export function renderSection(
   node: SectionNode,
   number: string | undefined,
   level: number,
-  rootSectionId: string
+  rootSectionId: string,
+  rootSectionNumber: string | number | undefined,
+  definitionCounters: Map<string, number>
 ): string {
   const headingLevel = Math.min(6, Math.max(2, level));
   const label = number ? `${number} ${node.title ?? ""}`.trim() : node.title ?? "";
@@ -506,11 +865,15 @@ export function renderSection(
     : "";
   const overview = node.overview ? `<p>${renderInlineWithRefs(node.overview)}</p>` : "";
   const defs = renderDefinitionEntries(node.defs);
-  const content = renderContent(node.content);
+  const content = renderContent(node.content, {
+    rootSectionId,
+    rootSectionNumber,
+    definitionCounters,
+  });
   const children = (node.children || [])
     .map((child) => {
       const childNumber = number && child.suffix ? `${number}.${child.suffix}` : undefined;
-      return renderSection(child, childNumber, headingLevel + 1, rootSectionId);
+      return renderSection(child, childNumber, headingLevel + 1, rootSectionId, rootSectionNumber, definitionCounters);
     })
     .join("\n");
 
@@ -562,7 +925,8 @@ export function renderTOC(index: IndexFile): string {
       .join("");
   }
 
-  return `<nav class="toc"><div class="toc-header"><div class="toc-title"><h2>Contents</h2><input class="toc-search" type="search" placeholder="Filter sections" aria-label="Filter table of contents" /></div><button class="toc-toggle" type="button">Switch side</button></div><ul>${items}</ul></nav>`;
+  const definitionsEntry = `<li class="toc-part"><span>References</span><ul><li><a href="#definitions">Definitions</a></li></ul></li>`;
+  return `<nav class="toc"><div class="toc-header"><div class="toc-title"><h2>Contents</h2><input class="toc-search" type="search" placeholder="Filter sections" aria-label="Filter table of contents" /></div><button class="toc-toggle" type="button">Switch side</button></div><ul>${items}${definitionsEntry}</ul></nav>`;
 }
 
 export function renderPartsContent(
@@ -581,7 +945,7 @@ export function renderPartsContent(
           if (!entry || !section) {
             return "";
           }
-      return renderSection(section, entry.number, 3, entry.id);
+      return renderSection(section, entry.number, 3, entry.id, entry.number, new Map());
         })
         .join("\n");
       const partHeading = `<h2 id="${escapeHtml(part.id)}">${renderInline(label)}<a class="anchor" href="#${escapeHtml(
@@ -601,7 +965,7 @@ export function renderPartsContent(
       const entry = sectionMap.get(id)?.entry;
       const section = sectionMap.get(id)?.section;
       if (!entry || !section) return "";
-      return renderSection(section, entry.number, 2, entry.id);
+      return renderSection(section, entry.number, 2, entry.id, entry.number, new Map());
     })
     .join("\n");
   return `${partsHtml}\n<section class="part"><h2>Other Sections</h2>\n${extraSections}</section>`;
@@ -734,12 +1098,53 @@ export function buildDocumentStats(index: IndexFile, sections: { entry: IndexSec
 type DefinitionEntry = {
   id?: string;
   label: string;
+  labelHtml?: string;
   text?: string;
   source: "content" | "defs";
 };
 
-function extractDefinitions(section: SectionNode): DefinitionEntry[] {
+function extractDefinitionTitle(label: string): string {
+  const match = label.match(/\(([^)]+)\)\s*$/);
+  if (match) return match[1].trim();
+  return label.replace(/^Definition\s+/i, "").trim();
+}
+
+function slugifyDefinitionLabel(label: string): string {
+  return label
+    .replace(/[^a-zA-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_{2,}/g, "_")
+    .toUpperCase();
+}
+
+function formatDefinitionNumber(value: string | number | undefined): string {
+  if (value === undefined || value === null) return "";
+  const asNumber = Number(value);
+  if (Number.isFinite(asNumber)) {
+    return asNumber < 10 ? `0${asNumber}` : String(asNumber);
+  }
+  return String(value);
+}
+
+function formatDefinitionLabel(
+  rootSectionId: string,
+  sectionNumber: string | number | undefined,
+  index: number,
+  title: string
+): string {
+  const sectionText = formatDefinitionNumber(sectionNumber);
+  const suffix = `DEF-${formatDefinitionNumber(index)}`;
+  const label = slugifyDefinitionLabel(title ? title : "Definition");
+  return `DEF: §${sectionText}-${suffix}-${label}`;
+}
+
+function extractDefinitions(
+  section: SectionNode,
+  rootSectionId: string,
+  rootSectionNumber: string | number | undefined
+): DefinitionEntry[] {
   const entries: DefinitionEntry[] = [];
+  let definitionIndex = 0;
 
   const collectFromNode = (node: SectionNode): void => {
     const defs = Array.isArray(node.defs) ? node.defs : [];
@@ -751,6 +1156,7 @@ function extractDefinitions(section: SectionNode): DefinitionEntry[] {
       entries.push({
         id: typeof record.id === "string" ? record.id : undefined,
         label,
+        labelHtml: renderInlineWithRefs(label),
         text: typeof record.value === "string" ? record.value : undefined,
         source: "defs",
       });
@@ -763,9 +1169,18 @@ function extractDefinitions(section: SectionNode): DefinitionEntry[] {
       if (record.type !== "definition") continue;
       const label = typeof record.label === "string" ? record.label : "";
       if (!label) continue;
+      definitionIndex += 1;
+      const title = extractDefinitionTitle(label);
+      const numberedLabel = formatDefinitionLabel(
+        rootSectionId,
+        rootSectionNumber,
+        definitionIndex,
+        title
+      );
       entries.push({
         id: typeof record.id === "string" ? record.id : undefined,
-        label,
+        label: numberedLabel,
+        labelHtml: renderInlineWithRefs(numberedLabel),
         text: typeof record.text === "string" ? record.text : undefined,
         source: "content",
       });
@@ -779,6 +1194,58 @@ function extractDefinitions(section: SectionNode): DefinitionEntry[] {
 
   collectFromNode(section);
   return entries;
+}
+
+function buildDefinitionsSection(
+  sections: { entry: IndexSection; section: SectionNode }[]
+): string {
+  const allDefs: Array<
+    DefinitionEntry & { rootId: string; rootNumber?: string | number; rootTitle?: string }
+  > = [];
+
+  for (const { entry, section } of sections) {
+    const defs = extractDefinitions(section, entry.id, entry.number);
+    defs.forEach((def) => {
+      allDefs.push({
+        ...def,
+        rootId: entry.id,
+        rootNumber: entry.number,
+        rootTitle: entry.title,
+      });
+    });
+  }
+
+  if (allDefs.length === 0) {
+    return "";
+  }
+
+  const items = allDefs
+    .map((def) => {
+      const label = def.labelHtml || def.label || "Definition";
+      const anchor = def.id ? `#${escapeHtml(def.id)}` : `#${escapeHtml(def.rootId)}`;
+      const sectionRef = def.rootId
+        ? renderInlineWithRefs(`referenceMap("${def.rootId}", "§{{sectionNumber}}")`)
+        : "";
+      const sectionTitle = def.rootTitle ? renderInlineWithRefs(def.rootTitle) : "";
+      const origin = sectionRef || sectionTitle ? `<span class="def-origin">${sectionRef} ${sectionTitle}</span>` : "";
+      return `<li><a href="${anchor}">${label}</a>${origin}</li>`;
+    })
+    .join("");
+
+  return `
+      <section class="definitions-index">
+        <h2 id="definitions">Definitions<a class="anchor" href="#definitions">#</a></h2>
+        <ul>${items}</ul>
+      </section>
+    `;
+}
+
+function makeExportFilename(title: string | undefined): string {
+  const base = (title ?? "document")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return `${base || "document"}.tex`;
 }
 
 async function main(): Promise<void> {
@@ -829,14 +1296,14 @@ async function main(): Promise<void> {
       ? renderPartsContent(index.parts, sectionMap)
       : sections
           .map(({ entry, section }) => {
-            return renderSection(section, entry.number, 2, entry.id);
+      return renderSection(section, entry.number, 2, entry.id, entry.number, new Map());
           })
           .join("\n");
 
   const coverHtml = renderCover(index);
   const sectionInfo = index.sections.reduce((acc, entry) => {
     const section = sectionMap.get(entry.id)?.section;
-    const definitions = section ? extractDefinitions(section) : [];
+    const definitions = section ? extractDefinitions(section, entry.id, entry.number) : [];
     acc[entry.id] = {
       id: entry.id,
       number: entry.number,
@@ -846,6 +1313,11 @@ async function main(): Promise<void> {
     };
     return acc;
   }, {} as Record<string, { id: string; number?: number; title?: string; contentRef: string; definitions: DefinitionEntry[] }>);
+
+  const definitionsHtml = buildDefinitionsSection(sections);
+
+  const latexContent = buildLatexDocument(index, sections);
+  const latexFilename = makeExportFilename(index.title);
 
   const html = `<!doctype html>
 <html lang="en">
@@ -1099,6 +1571,55 @@ async function main(): Promise<void> {
         margin: 0.8rem 0;
         border-radius: 12px;
       }
+      .definition-title {
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+        word-break: break-word;
+      }
+      .definitions-index {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+      }
+      .definitions-index ul {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+        display: grid;
+        gap: 0.6rem;
+      }
+      .definitions-index li {
+        background: var(--soft);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.6rem 0.8rem;
+      }
+      .definitions-index a {
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .definitions-index a:hover {
+        text-decoration: underline;
+      }
+      .def-origin {
+        display: block;
+        margin-top: 0.3rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .definition .anchor {
+        font-size: 0.85em;
+        color: #9c9488;
+        text-decoration: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .definition:hover .anchor {
+        opacity: 1;
+      }
       .profile-layer + .profile-layer {
         margin-top: 0.8rem;
       }
@@ -1182,12 +1703,26 @@ async function main(): Promise<void> {
       }
       .toc li {
         break-inside: avoid;
-        margin: 0.4rem 0;
+        margin: 0.35rem 0;
+      }
+      .toc li a {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        padding: 0.18rem 0.4rem;
+        border-radius: 8px;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+      .toc li a:hover {
+        background: rgba(31, 107, 90, 0.12);
+        text-decoration: none;
       }
       .toc-part > span {
         display: block;
         font-weight: 600;
         margin-top: 0.6rem;
+        color: var(--muted);
+        letter-spacing: 0.02em;
       }
       .toc-hidden {
         display: none;
@@ -1290,8 +1825,8 @@ async function main(): Promise<void> {
       }
       .inspect-modal {
         position: fixed;
-        right: 24px;
-        top: 180px;
+        right: clamp(16px, 3vw, 32px);
+        top: 96px;
         width: min(360px, calc(100vw - 48px));
         background: var(--surface-strong);
         border: 1px solid var(--border);
@@ -1300,6 +1835,8 @@ async function main(): Promise<void> {
         padding: 1rem 1.2rem;
         display: none;
         z-index: 41;
+        max-height: calc(100vh - 140px);
+        overflow: hidden;
       }
       .inspect-modal.active {
         display: block;
@@ -1332,6 +1869,11 @@ async function main(): Promise<void> {
         margin: 0.4rem 0;
         font-size: 0.95rem;
       }
+      .inspect-content {
+        max-height: calc(100vh - 240px);
+        overflow: auto;
+        padding-right: 0.4rem;
+      }
       .inspect-defs {
         margin-top: 0.8rem;
         border-top: 1px solid var(--border);
@@ -1350,6 +1892,9 @@ async function main(): Promise<void> {
         margin: 0;
         display: grid;
         gap: 0.4rem;
+        max-height: 240px;
+        overflow: auto;
+        padding-right: 0.2rem;
       }
       .inspect-defs li {
         background: #f7f4ee;
@@ -1445,6 +1990,8 @@ async function main(): Promise<void> {
       .toc a.active {
         color: var(--accent);
         font-weight: 600;
+        background: rgba(31, 107, 90, 0.12);
+        border-radius: 8px;
       }
       html {
         scroll-behavior: smooth;
@@ -1522,6 +2069,15 @@ async function main(): Promise<void> {
         overflow: auto;
         box-shadow: 0 12px 40px rgba(19, 16, 12, 0.18);
         transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      body.toc-floating .toc::before {
+        content: "Outline";
+        display: block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
       }
       body.toc-right.toc-floating .toc {
         right: 24px;
@@ -1622,6 +2178,12 @@ async function main(): Promise<void> {
           right: 16px;
           width: auto;
         }
+        .inspect-modal {
+          right: 16px;
+          left: 16px;
+          width: auto;
+          top: 96px;
+        }
       }
       @media print {
         .cover {
@@ -1646,21 +2208,26 @@ async function main(): Promise<void> {
         <h3>Context Inspector</h3>
         <button class="inspect-close" id="inspect-close" type="button" aria-label="Close">&times;</button>
       </div>
-      <p id="inspect-title">No section detected</p>
-      <p id="inspect-root"></p>
-      <div class="inspect-meta" id="inspect-meta"></div>
-      <div class="inspect-defs" id="inspect-defs"></div>
-      <div class="inspect-actions">
-        <button class="inspect-copy" id="inspect-copy" type="button">Copy</button>
+      <div class="inspect-content">
+        <p id="inspect-title">No section detected</p>
+        <p id="inspect-root"></p>
+        <div class="inspect-meta" id="inspect-meta"></div>
+        <div class="inspect-defs" id="inspect-defs"></div>
+        <div class="inspect-actions">
+          <button class="inspect-copy" id="inspect-copy" type="button">Copy</button>
+        </div>
       </div>
     </div>
     <main>
       ${coverHtml}
       ${renderTOC(index)}
       ${sectionsHtml}
+      ${definitionsHtml}
     </main>
     <script>
       var SECTION_INFO = ${JSON.stringify(sectionInfo)};
+      var LATEX_CONTENT = ${JSON.stringify(latexContent)};
+      var LATEX_FILENAME = ${JSON.stringify(latexFilename)};
       (function () {
         var threshold = 360;
         var positionKey = "toc-position";
@@ -1801,6 +2368,25 @@ async function main(): Promise<void> {
 
         window.addEventListener("scroll", updateBreadcrumb, { passive: true });
         updateBreadcrumb();
+      })();
+
+      (function () {
+        var exportBtn = document.getElementById("export-latex");
+        if (!exportBtn) return;
+        exportBtn.addEventListener("click", function () {
+          if (!LATEX_CONTENT) return;
+          var blob = new Blob([LATEX_CONTENT], { type: "application/x-latex" });
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          link.href = url;
+          link.download = LATEX_FILENAME || "document.tex";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setTimeout(function () {
+            URL.revokeObjectURL(url);
+          }, 1000);
+        });
       })();
 
       // Progress bar
@@ -1987,9 +2573,10 @@ async function main(): Promise<void> {
               inspectDefs.innerHTML = "";
             } else {
               var list = defs.map(function (def) {
-                var label = def.label || "Definition";
+                var label = def.labelHtml || def.label || "Definition";
                 var id = def.id ? "<code>" + def.id + "</code> " : "";
-                return "<li>" + id + label + "</li>";
+                var link = def.id ? "<a href=\\\"#" + def.id + "\\\">" + label + "</a>" : label;
+                return "<li>" + id + link + "</li>";
               }).join("");
               inspectDefs.innerHTML = "<h4>Definitions</h4><ul>" + list + "</ul>";
             }
