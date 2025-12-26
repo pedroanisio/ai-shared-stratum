@@ -283,7 +283,7 @@
             },
             {
               "term": "suggestedFix ∈ Operation?",
-              "definition": "Optional: automated remediation per Policy (§2.8)"
+              "definition": "Optional: automated remediation per Policy (referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\"))"
             }
           ]
         },

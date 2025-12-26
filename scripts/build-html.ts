@@ -88,6 +88,7 @@ let REFERENCE_MAP = new Map<
   }
 >();
 let TEMPLATE_CONTEXT: Record<string, unknown> = {};
+let DEF_LINK_MAP = new Map<string, string>();
 
 export function escapeHtml(input: string): string {
   return input
@@ -139,10 +140,35 @@ export function applyReferenceMap(text: string): string {
   });
 }
 
+export function applyDefinitionLinks(text: string): string {
+  const withLegacy = text.replace(
+    /Definition\s+§?(\d+)\.(\d+)(?:\s*\([^)]+\))?/g,
+    (match, sectionNumber, defIndex) => {
+      const key = `${Number(sectionNumber)}.${Number(defIndex)}`;
+      const defId = DEF_LINK_MAP.get(key);
+      if (!defId) return match;
+      return `[[DEF|${defId}|${match}]]`;
+    }
+  );
+
+  return withLegacy.replace(
+    /DEF:\s*§(\d+)-DEF-(\d+)-[A-Z0-9_]+/g,
+    (match, sectionNumber, defIndex) => {
+      const key = `${Number(sectionNumber)}.${Number(defIndex)}`;
+      const defId = DEF_LINK_MAP.get(key);
+      if (!defId) return match;
+      return `[[DEF|${defId}|${match}]]`;
+    }
+  );
+}
+
 export function renderInlineWithRefs(input: string): string {
-  const withMarkers = applyReferenceMap(applyRenderTemplates(input));
+  const withMarkers = applyDefinitionLinks(applyReferenceMap(applyRenderTemplates(input)));
   const rendered = renderInline(withMarkers);
-  return rendered.replace(/\[\[REF\|([^|]+)\|([\s\S]*?)\]\]/g, (match, id, content) => {
+  const withDefLinks = rendered.replace(/\[\[DEF\|([^|]+)\|([\s\S]*?)\]\]/g, (match, id, content) => {
+    return `<a class="ref-link" href="#${escapeHtml(id)}">${content}</a>`;
+  });
+  return withDefLinks.replace(/\[\[REF\|([^|]+)\|([\s\S]*?)\]\]/g, (match, id, content) => {
     return `<a class="ref-link" href="#${escapeHtml(id)}">${content}</a>`;
   });
 }
@@ -537,10 +563,20 @@ export function renderContent(
                 )}</dd>`
             )
             .join("")}</dl>`;
-        case "list":
-          return `<ul>${item.items
-            .map((entry) => `<li>${renderTextBlocks(entry)}</li>`)
-            .join("")}</ul>`;
+        case "list": {
+          const listItem = item as { ordered?: boolean; items: (string | ContentItem)[] };
+          const tag = listItem.ordered ? "ol" : "ul";
+          const renderListItem = (entry: string | ContentItem): string => {
+            if (typeof entry === "string") {
+              return `<li>${renderTextBlocks(entry)}</li>`;
+            }
+            if (entry && typeof entry === "object" && entry.type === "list") {
+              return `<li>${renderContent([entry], context)}</li>`;
+            }
+            return "";
+          };
+          return `<${tag}>${listItem.items.map(renderListItem).join("")}</${tag}>`;
+        }
         case "admonition":
           return `<div class="admonition admonition-${escapeHtml(
             item.level
@@ -557,13 +593,25 @@ export function renderContent(
             item.use ? `<p><em>${renderInlineWithRefs(item.use)}</em></p>` : ""
           }</div>`;
         case "code": {
-          const lines = Array.isArray((item as { lines?: string[] }).lines)
-            ? (item as { lines: string[] }).lines.join("\n")
+          const codeItem = item as { lines?: string[]; language?: string; highlight?: number[]; filename?: string; caption?: string };
+          const highlightSet = new Set(codeItem.highlight || []);
+          const linesHtml = (codeItem.lines || [])
+            .map((line, i) => {
+              const lineNum = i + 1;
+              const cls = highlightSet.has(lineNum) ? ' class="highlight"' : "";
+              return `<span${cls}>${escapeHtml(line)}</span>`;
+            })
+            .join("\n");
+          const language = codeItem.language
+            ? ` class="language-${escapeHtml(codeItem.language)}"`
             : "";
-          const language = (item as { language?: string }).language
-            ? ` class="language-${escapeHtml((item as { language: string }).language)}"`
+          const filenameHeader = codeItem.filename
+            ? `<div class="code-filename">${escapeHtml(codeItem.filename)}</div>`
             : "";
-          return `<pre><code${language}>${escapeHtml(lines)}</code></pre>`;
+          const caption = codeItem.caption
+            ? `<figcaption>${renderInlineWithRefs(codeItem.caption)}</figcaption>`
+            : "";
+          return `<figure class="code-block">${filenameHeader}<pre><code${language}>${linesHtml}</code></pre>${caption}</figure>`;
         }
         case "definition": {
           const labelRaw = (item as { label?: string }).label ?? "";
@@ -638,12 +686,12 @@ export function renderContent(
           return `<div class="checklist"><p><strong>${label}</strong></p><ul>${itemsHtml}</ul></div>`;
         }
         case "table": {
-          const columns = Array.isArray((item as { columns?: string[] }).columns)
-            ? (item as { columns: string[] }).columns
-            : [];
-          const rows = Array.isArray((item as { rows?: string[][] }).rows)
-            ? (item as { rows: string[][] }).rows
-            : [];
+          const tableItem = item as { columns?: string[]; rows?: string[][]; caption?: string };
+          const columns = Array.isArray(tableItem.columns) ? tableItem.columns : [];
+          const rows = Array.isArray(tableItem.rows) ? tableItem.rows : [];
+          const caption = tableItem.caption
+            ? `<caption>${renderInlineWithRefs(tableItem.caption)}</caption>`
+            : "";
           const head = columns
             .map((col) => `<th>${renderInlineWithRefs(String(col))}</th>`)
             .join("");
@@ -655,7 +703,7 @@ export function renderContent(
                 .join("")}</tr>`;
             })
             .join("");
-          return `<div class="table"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+          return `<div class="table"><table>${caption}<thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
         }
         case "diagram": {
           const format = String((item as { format?: string }).format || "").toLowerCase();
@@ -1256,9 +1304,14 @@ async function main(): Promise<void> {
   const sections = await Promise.all(
     index.sections.map(async (entry) => {
       const sectionPath = path.join(SECTIONS_DIR, entry.contentRef);
-      const sectionRaw = await readFile(sectionPath, "utf-8");
-      const section = JSON.parse(sectionRaw) as SectionNode;
-      return { entry, section };
+      try {
+        const sectionRaw = await readFile(sectionPath, "utf-8");
+        const section = JSON.parse(sectionRaw) as SectionNode;
+        return { entry, section };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new Error(`Failed to load section "${entry.contentRef}": ${message}`);
+      }
     })
   );
 
@@ -1286,6 +1339,30 @@ async function main(): Promise<void> {
       }
     };
     walk(section);
+  }
+
+  DEF_LINK_MAP = new Map();
+  for (const { entry, section } of sections) {
+    if (entry.number === undefined) continue;
+    let defIndex = 0;
+    const walkDefs = (node: SectionNode): void => {
+      const items = Array.isArray(node.content) ? node.content : [];
+      for (const item of items) {
+        if (!item || typeof item !== "object") continue;
+        const record = item as Record<string, unknown>;
+        if (record.type !== "definition") continue;
+        defIndex += 1;
+        const id = typeof record.id === "string" ? record.id : "";
+        if (id) {
+          DEF_LINK_MAP.set(`${entry.number}.${defIndex}`, id);
+        }
+      }
+      const children = Array.isArray(node.children) ? node.children : [];
+      for (const child of children) {
+        walkDefs(child);
+      }
+    };
+    walkDefs(section);
   }
 
   const sectionMap = new Map(
@@ -1319,12 +1396,21 @@ async function main(): Promise<void> {
   const latexContent = buildLatexDocument(index, sections);
   const latexFilename = makeExportFilename(index.title);
 
+  // Check if any section contains mermaid diagrams
+  const hasMermaid = sections.some(({ section }) =>
+    JSON.stringify(section).includes('"format":"mermaid"')
+  );
+  const mermaidScript = hasMermaid
+    ? '<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>'
+    : "";
+
   const html = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(docTitle)}</title>
+    ${mermaidScript}
     <style>
       :root {
         color-scheme: light;
@@ -1533,6 +1619,31 @@ async function main(): Promise<void> {
         padding: 0;
         display: block;
         white-space: pre;
+      }
+      pre code span.highlight {
+        background: rgba(255, 243, 205, 0.8);
+        display: block;
+        margin: 0 -1rem;
+        padding: 0 1rem;
+        border-left: 3px solid #c77a1c;
+      }
+      .code-block {
+        margin: 1rem 0;
+      }
+      .code-block pre {
+        margin: 0;
+      }
+      .code-filename {
+        font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+        font-size: 0.85rem;
+        color: var(--muted);
+        background: #e9e5df;
+        padding: 0.4rem 1rem;
+        border-radius: 10px 10px 0 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .code-filename + pre {
+        border-radius: 0 0 10px 10px;
       }
       .diagram {
         background: #e7f2ef;

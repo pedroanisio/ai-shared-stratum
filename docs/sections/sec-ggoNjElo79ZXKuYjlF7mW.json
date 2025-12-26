@@ -167,7 +167,7 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "STRATUM v2.5 adds **Policy System** (§2.8, §7.5) for automated remediation workflows. Policies trigger based on violation characteristics."
+          "text": "STRATUM v2.5 adds **Policy System** (referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\")) for automated remediation workflows. Policies trigger based on violation characteristics."
         },
         {
           "type": "code",
@@ -216,7 +216,7 @@
           "type": "list",
           "items": [
             "**RTM Delta** (referenceMap(\"sub-4vJaXL82mEBrXVULpKYBW\", \"§{{sectionNumber}}.1 Verification State Machine\")): 3 rows updated (REQ-042 → Design-001, Module-017, Test-089), 2 rows flagged as incomplete",
-            "**GSN Delta** (v2.5 §15.6): G-TIMING argument node needs update (new sub-goal for 100ms verification)",
+            "**GSN Delta** (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\")): G-TIMING argument node needs update (new sub-goal for 100ms verification)",
             "**Checklist** (referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\")): DAL-B checklist (12 DO-178C objectives apply to this change)",
             "**CI Trigger**: Run test suite subset: TC-089, TC-091, TC-103 (timing-related tests)"
           ]
@@ -363,7 +363,7 @@
               "definition": "Irreducible unsat cores (subset-minimal, not cardinality-minimal). Every constraint in core is essential. Deletion-based MUS extraction per [Z3-Cores]."
             },
             {
-              "term": "**Policy System** (v2.5 §2.8, §7.5)",
+              "term": "**Policy System** (v2.5 referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§{{sectionNumber}}\"))",
               "definition": "Declarative remediation workflows. Policies trigger on integrityLevel, guarantee violations, severity. Actions include required reviewers, evidence types, blocking behavior."
             },
             {

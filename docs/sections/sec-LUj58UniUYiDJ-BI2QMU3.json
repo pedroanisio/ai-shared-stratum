@@ -48,8 +48,10 @@
           ]
         },
         {
-          "type": "paragraph",
-          "text": "**Definition 22.2 (STRATUM Temporal Vocabulary)**"
+          "type": "definition",
+          "label": "(STRATUM Temporal Vocabulary)",
+          "text": "State and action predicates are defined below.",
+          "id": "def-SLUdQHFOdgs"
         },
         {
           "type": "paragraph",

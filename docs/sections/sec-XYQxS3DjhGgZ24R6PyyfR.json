@@ -179,7 +179,7 @@
         {
           "type": "admonition",
           "level": "note",
-          "text": "**Conformance Level K0 (Kernel-Conformant)**: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per §0.4."
+          "text": "**Conformance Level K0 (Kernel-Conformant)**: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4\", \"§{{sectionNumber}}.4 Structure Overview\")."
         },
         {
           "type": "heading",
@@ -259,7 +259,7 @@
           "items": [
             "**Concurrency (referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\"))**: CRDTs, vector clocks, conflict resolution. Optional for single-user tools.",
             "**Certification (referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") – referenceMap(\"sec-YFHOeAjN2dYDjDiTocSSI\", \"§{{sectionNumber}}\") – referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"), referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\") – referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dM0e66FHuNRBmoEaMjfxF\", \"§{{sectionNumber}}\") – referenceMap(\"sec-F4EMqD3954zBnfEDnmQGj\", \"§{{sectionNumber}}\"))**: RTM, DO-178C/ISO 26262 mappings, STPA/FMEA. Only required for K2+ conformance.",
-            "**Advanced Operations (§7.4, referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential.",
+            "**Advanced Operations (referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\"), referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential.",
             "**Mechanized Proofs (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\"), referenceMap(\"sec-PAskKN4i1etyZhtOY5xtv\", \"§{{sectionNumber}}\") – referenceMap(\"sec-ojM0_ZLauOdjNuKK99Pg0\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\") – referenceMap(\"sec-LUj58UniUYiDJ-BI2QMU3\", \"§{{sectionNumber}}\"))**: TLA+, Coq, Lean templates. Helpful for verification but not required for implementation.",
             "**G7 Explainability (referenceMap(\"sub-Q_FIkGVXUuZIl6JAWPVwl\", \"§{{sectionNumber}}.8 Valid Specification\"))**: Unsat core generation. This is K1 (Certified-Aware), not K0."
           ]
@@ -293,7 +293,7 @@
         {
           "type": "admonition",
           "level": "important",
-          "text": "**Kernel Boundary Enforcement**: Some sections are explicitly marked **non-Kernel**. Artifact Adapters (§7.4) introduce `effectful: true` to mark I/O-performing components that violate Kernel purity. These adapters emit Operation lists that the Kernel consumes deterministically, maintaining the pure/effectful boundary."
+          "text": "**Kernel Boundary Enforcement**: Some sections are explicitly marked **non-Kernel**. Artifact Adapters (referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\")) introduce `effectful: true` to mark I/O-performing components that violate Kernel purity. These adapters emit Operation lists that the Kernel consumes deterministically, maintaining the pure/effectful boundary."
         },
         {
           "type": "heading",

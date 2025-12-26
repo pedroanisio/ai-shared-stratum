@@ -502,8 +502,10 @@
           "text": "Normative SMT-LIB 2.6 Encoding"
         },
         {
-          "type": "paragraph",
-          "text": "**Definition 2.19 (SMT-LIB 2.6 Constraint Encoding)**: The following SMT-LIB 2.6 preamble defines the normative encoding for STRATUM constraints. Implementations MUST use this exact logic declaration and sort/function signatures for K0 conformance."
+          "type": "definition",
+          "label": "(SMT-LIB 2.6 Constraint Encoding)",
+          "text": "The following SMT-LIB 2.6 preamble defines the normative encoding for STRATUM constraints. Implementations MUST use this exact logic declaration and sort/function signatures for K0 conformance.",
+          "id": "def-V5KF4HYiQcg"
         },
         {
           "type": "code",
