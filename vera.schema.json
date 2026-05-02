@@ -1,0 +1,1157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vera-editor.dev/schemas/vera.schema.json",
+  "title": "VERA Document Schema",
+  "description": "JSON Schema for VERA (Verified Entity Representation Architecture) documents",
+  "type": "object",
+  "required": ["documentId", "entities"],
+  "properties": {
+    "documentId": {
+      "$ref": "#/$defs/documentId"
+    },
+    "frontmatter": {
+      "$ref": "#/$defs/frontmatter"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entity"
+      }
+    }
+  },
+  "$defs": {
+    "documentId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{21}$",
+      "description": "NanoID, 21 characters, globally unique document identifier"
+    },
+    "localId": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 12,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "description": "Local identifier, 6-12 chars, unique within document. Cannot start with _synth_"
+    },
+    "alias": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Human-readable slug in lowercase kebab-case"
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "start": { "$ref": "#/$defs/point" },
+        "end": { "$ref": "#/$defs/point" }
+      },
+      "required": ["start", "end"]
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 },
+        "offset": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["line", "column"]
+    },
+    "frontmatter": {
+      "type": "object",
+      "properties": {
+        "documentId": { "$ref": "#/$defs/documentId" },
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "created": { "type": "string", "format": "date-time" },
+        "modified": { "type": "string", "format": "date-time" },
+        "provenance": { "$ref": "#/$defs/documentProvenance" }
+      },
+      "additionalProperties": true
+    },
+    "documentProvenance": {
+      "type": "object",
+      "description": "Layer 1: Document-level provenance",
+      "properties": {
+        "source": {
+          "type": "object",
+          "properties": {
+            "type": { "$ref": "#/$defs/enums/sourceType" },
+            "path": { "type": "string" },
+            "sha256": { "type": "string" },
+            "accessed": { "type": "string", "format": "date" },
+            "bibliographicRef": { "type": "string" }
+          },
+          "required": ["type"]
+        },
+        "extraction": {
+          "type": "object",
+          "properties": {
+            "method": { "$ref": "#/$defs/enums/extractionMethod" },
+            "pipeline": { "type": "string" },
+            "model": { "type": "string" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "date": { "type": "string", "format": "date" }
+          },
+          "required": ["method"]
+        },
+        "review": {
+          "type": "object",
+          "properties": {
+            "status": { "$ref": "#/$defs/enums/reviewStatus" },
+            "reviewer": { "type": "string" },
+            "date": { "type": "string", "format": "date" }
+          },
+          "required": ["status"]
+        }
+      }
+    },
+    "commonAttributes": {
+      "type": "object",
+      "description": "Attributes available on all entities (Layer 2 provenance + metadata)",
+      "properties": {
+        "alias": { "$ref": "#/$defs/alias" },
+        "tags": { "type": "string", "description": "Comma-separated categorization tags" },
+        "note": { "type": "string", "description": "Single-line internal note (not rendered)" },
+        "refs": { "type": "string", "description": "Comma-separated reference targets" },
+        "placeholder": { "type": "boolean", "description": "Marker for expected but unextracted entities" },
+        "sourceLoc": { "type": "string", "description": "Location in source: p.42, §3.2, PT14M30S" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1, "description": "Extraction confidence 0.0-1.0" },
+        "verified": { "type": "boolean", "description": "Human verification flag" },
+        "derivedFrom": { "type": "string", "description": "Reference to source entity" }
+      },
+      "additionalProperties": true
+    },
+    "entity": {
+      "type": "object",
+      "description": "A VERA entity (content block, definition, or supporting directive)",
+      "oneOf": [
+        { "$ref": "#/$defs/contentBlocks/section_block" },
+        { "$ref": "#/$defs/contentBlocks/figure_block" },
+        { "$ref": "#/$defs/contentBlocks/table_block" },
+        { "$ref": "#/$defs/contentBlocks/result_block" },
+        { "$ref": "#/$defs/contentBlocks/diagram_block" },
+        { "$ref": "#/$defs/contentBlocks/code_block" },
+        { "$ref": "#/$defs/contentBlocks/comparison_block" },
+        { "$ref": "#/$defs/contentBlocks/abstract_block" },
+        { "$ref": "#/$defs/contentBlocks/theorem_block" },
+        { "$ref": "#/$defs/contentBlocks/proof_block" },
+        { "$ref": "#/$defs/contentBlocks/guarantee_block" },
+        { "$ref": "#/$defs/contentBlocks/operation_block" },
+        { "$ref": "#/$defs/contentBlocks/example_block" },
+        { "$ref": "#/$defs/contentBlocks/exercise_block" },
+        { "$ref": "#/$defs/contentBlocks/profile_block" },
+        { "$ref": "#/$defs/contentBlocks/admonition_block" },
+        { "$ref": "#/$defs/contentBlocks/quote_block" },
+        { "$ref": "#/$defs/contentBlocks/dialogue_block" },
+        { "$ref": "#/$defs/contentBlocks/verse_block" },
+        { "$ref": "#/$defs/contentBlocks/letter_block" },
+        { "$ref": "#/$defs/contentBlocks/timeline_block" },
+        { "$ref": "#/$defs/contentBlocks/para" },
+        { "$ref": "#/$defs/contentBlocks/definition" },
+        { "$ref": "#/$defs/definitions/type_def" },
+        { "$ref": "#/$defs/definitions/enum_def" },
+        { "$ref": "#/$defs/definitions/function_def" },
+        { "$ref": "#/$defs/definitions/predicate_def" },
+        { "$ref": "#/$defs/definitions/notation_def" },
+        { "$ref": "#/$defs/definitions/term_def" },
+        { "$ref": "#/$defs/definitions/axiom_def" },
+        { "$ref": "#/$defs/definitions/rule_def" },
+        { "$ref": "#/$defs/definitions/grammar_def" },
+        { "$ref": "#/$defs/definitions/judgment_def" },
+        { "$ref": "#/$defs/definitions/reference_def" },
+        { "$ref": "#/$defs/supporting/proof_step" },
+        { "$ref": "#/$defs/supporting/event" },
+        { "$ref": "#/$defs/supporting/hint" }
+      ]
+    },
+    "baseEntity": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "containerDirective" },
+        "localId": { "$ref": "#/$defs/localId" },
+        "position": { "$ref": "#/$defs/position" },
+        "data": { "type": "object", "additionalProperties": true },
+        "children": { "type": "array", "items": { "type": "object" } }
+      },
+      "required": ["type", "localId", "attributes", "children"]
+    },
+    "enums": {
+      "sourceType": {
+        "type": "string",
+        "enum": ["pdf", "url", "book", "video", "audio", "manual"]
+      },
+      "extractionMethod": {
+        "type": "string",
+        "enum": ["manual", "ocr", "llm", "transcription", "hybrid"]
+      },
+      "reviewStatus": {
+        "type": "string",
+        "enum": ["none", "partial", "complete"]
+      },
+      "diagramNotation": {
+        "type": "string",
+        "description": "Diagram notation type. Can be predefined or custom:*",
+        "oneOf": [
+          { "enum": ["mermaid", "graphviz", "plantuml", "d2", "tikz"] },
+          { "pattern": "^custom:.+$" }
+        ]
+      },
+      "admonitionKind": {
+        "type": "string",
+        "enum": ["note", "warning", "tip", "important", "caution"]
+      },
+      "theoremKind": {
+        "type": "string",
+        "enum": ["theorem", "lemma", "corollary", "proposition"]
+      },
+      "totality": {
+        "type": "string",
+        "enum": ["total", "partial"]
+      },
+      "refType": {
+        "type": "string",
+        "enum": ["article", "book", "inproceedings", "thesis", "misc", "online"]
+      },
+      "proofMethod": {
+        "type": "string",
+        "enum": ["direct", "contradiction", "induction", "construction", "cases", "contrapositive"]
+      },
+      "difficulty": {
+        "type": "string",
+        "enum": ["beginner", "intermediate", "advanced"]
+      },
+      "cardinality": {
+        "type": "string",
+        "enum": ["!", "?", "*", "+"],
+        "description": "Slot cardinality: ! (required), ? (optional), * (zero+), + (one+)"
+      },
+      "numberingStyle": {
+        "type": "string",
+        "enum": ["numeric", "alpha", "ALPHA", "roman", "ROMAN", "none"]
+      }
+    },
+    "contentBlocks": {
+      "section_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "section_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string" },
+                      "numbering": { "$ref": "#/$defs/enums/numberingStyle" }
+                    },
+                    "required": ["title"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "figure_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "figure_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "src": { "type": "string" },
+                      "alt": { "type": "string" },
+                      "page": { "type": "integer" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "table_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "table_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "alignments": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "result_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "result_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "metric": { "type": "string" },
+                      "value": { "type": "string" },
+                      "task": { "type": "string" },
+                      "baseline": { "type": "string" },
+                      "unit": { "type": "string" },
+                      "variance": { "type": "string" },
+                      "confInterval": { "type": "string" },
+                      "n": { "type": "integer" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "diagram_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "diagram_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "notation": { "$ref": "#/$defs/enums/diagramNotation" },
+                      "alt": { "type": "string", "minLength": 1 }
+                    },
+                    "required": ["notation", "alt"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "code_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "code_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "language": { "type": "string", "minLength": 1 },
+                      "executable": { "type": "boolean" },
+                      "runCount": { "type": "integer" }
+                    },
+                    "required": ["language"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "comparison_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "comparison_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "subjects": { "type": "string", "minLength": 1 },
+                      "winner": { "type": "string" }
+                    },
+                    "required": ["subjects"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "abstract_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "abstract_block" },
+              "attributes": { "$ref": "#/$defs/commonAttributes" }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "theorem_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "theorem_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "variant": { "$ref": "#/$defs/enums/theoremKind" },
+                      "label": { "type": "string" }
+                    },
+                    "required": ["variant"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "proof_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "proof_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "of": { "type": "string" },
+                      "standalone": { "type": "boolean" },
+                      "method": { "$ref": "#/$defs/enums/proofMethod" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "guarantee_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "guarantee_block" },
+              "attributes": { "$ref": "#/$defs/commonAttributes" }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "operation_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "operation_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "signature": { "type": "string" },
+                      "method": { "type": "string" },
+                      "path": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "example_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "example_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "difficulty": { "$ref": "#/$defs/enums/difficulty" },
+                      "topics": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "exercise_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "exercise_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "difficulty": { "$ref": "#/$defs/enums/difficulty" },
+                      "points": { "type": "integer" },
+                      "topics": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "profile_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "profile_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string", "minLength": 1 }
+                    },
+                    "required": ["name"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "admonition_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "admonition_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "variant": { "$ref": "#/$defs/enums/admonitionKind" },
+                      "title": { "type": "string" }
+                    },
+                    "required": ["variant"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "quote_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "quote_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "speaker": { "type": "string" },
+                      "source": { "type": "string" },
+                      "date": { "type": "string" },
+                      "url": { "type": "string", "format": "uri" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "dialogue_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "dialogue_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "speaker": { "type": "string", "minLength": 1 }
+                    },
+                    "required": ["speaker"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "verse_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "verse_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string" },
+                      "attribution": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "letter_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "letter_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "date": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "timeline_block": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "timeline_block" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string" },
+                      "start": { "type": "string" },
+                      "end": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "para": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "para" },
+              "attributes": { "$ref": "#/$defs/commonAttributes" }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "definition": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "definition" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "term": { "type": "string", "minLength": 1 },
+                      "statement": { "type": "string", "minLength": 1 }
+                    },
+                    "required": ["term", "statement"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      }
+    },
+    "definitions": {
+      "type_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "type_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "syntax": { "type": "string" },
+                      "params": { "type": "string" },
+                      "extends": { "type": "string" }
+                    },
+                    "required": ["defName"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "enum_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "enum_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 }
+                    },
+                    "required": ["defName"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "function_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "function_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "signature": { "type": "string", "minLength": 1 },
+                      "totality": { "$ref": "#/$defs/enums/totality" }
+                    },
+                    "required": ["defName", "signature"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "predicate_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "predicate_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "signature": { "type": "string", "minLength": 1 },
+                      "formula": { "type": "string" }
+                    },
+                    "required": ["defName", "signature"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "notation_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "notation_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "symbol": { "type": "string", "minLength": 1 },
+                      "latex": { "type": "string" },
+                      "meaning": { "type": "string" }
+                    },
+                    "required": ["symbol"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "term_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "term_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "abbrev": { "type": "string" },
+                      "plural": { "type": "string" }
+                    },
+                    "required": ["defName"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "axiom_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "axiom_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "statement": { "type": "string", "minLength": 1 },
+                      "formula": { "type": "string" }
+                    },
+                    "required": ["defName", "statement"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "rule_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "rule_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "label": { "type": "string" }
+                    },
+                    "required": ["defName"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "grammar_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "grammar_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "startSymbol": { "type": "string" }
+                    },
+                    "required": ["defName"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "judgment_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "judgment_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "defName": { "type": "string", "minLength": 1 },
+                      "form": { "type": "string", "minLength": 1 }
+                    },
+                    "required": ["defName", "form"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "reference_def": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "reference_def" },
+              "attributes": {
+                "allOf": [
+                  { "$ref": "#/$defs/commonAttributes" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "citeKey": { "type": "string", "minLength": 1 },
+                      "type": { "$ref": "#/$defs/enums/refType" },
+                      "authors": { "type": "string" },
+                      "editors": { "type": "string" },
+                      "title": { "type": "string" },
+                      "venue": { "type": "string" },
+                      "publisher": { "type": "string" },
+                      "year": { "type": "integer" },
+                      "volume": { "type": "string" },
+                      "issue": { "type": "string" },
+                      "pages": { "type": "string" },
+                      "url": { "type": "string", "format": "uri" },
+                      "doi": { "type": "string" },
+                      "arxiv": { "type": "string" },
+                      "isbn": { "type": "string" },
+                      "accessed": { "type": "string" },
+                      "raw": { "type": "string" }
+                    },
+                    "required": ["citeKey"]
+                  }
+                ]
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      }
+    },
+    "supporting": {
+      "proof_step": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "proof_step" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "method": { "$ref": "#/$defs/enums/proofMethod" },
+                  "justification": { "type": "string" }
+                },
+                "additionalProperties": true
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "event": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "event" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "date": { "type": "string", "minLength": 1 },
+                  "label": { "type": "string" },
+                  "end": { "type": "string" }
+                },
+                "required": ["date"],
+                "additionalProperties": true
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "hint": {
+        "allOf": [
+          { "$ref": "#/$defs/baseEntity" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "const": "hint" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "level": { "type": "integer" }
+                },
+                "additionalProperties": true
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      }
+    },
+    "legacyAliases": {
+      "description": "Legacy and variant entity names that map to canonical types",
+      "type": "string",
+      "enum": [
+        "para",
+        "section",
+        "theorem",
+        "lemma",
+        "corollary",
+        "proposition",
+        "definition",
+        "abstract",
+        "proof",
+        "example",
+        "exercise",
+        "quote",
+        "note",
+        "warning",
+        "tip",
+        "important",
+        "caution"
+      ]
+    }
+  }
+}

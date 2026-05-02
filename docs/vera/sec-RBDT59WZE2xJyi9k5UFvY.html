@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Garbage Collection Proofs</title>
+    <style>
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  color: #1f1b16;
+  background: #f5f2ec;
+  --bg: #f5f2ec;
+  --surface: #fffdf9;
+  --surface-strong: #ffffff;
+  --ink: #1f1b16;
+  --muted: #6b6257;
+  --accent: #1f6b5a;
+  --accent-2: #c1552c;
+  --border: #e1ddd6;
+  --shadow: rgba(19, 16, 12, 0.12);
+  --code-bg: #f1ede6;
+  --soft: #fbfaf8;
+  --highlight: rgba(31, 107, 90, 0.12);
+}
+body {
+  margin: 0;
+  padding: 56px 24px 96px;
+  color: var(--ink);
+  background: var(--bg);
+  position: relative;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(31, 107, 90, 0.14), transparent 55%),
+    radial-gradient(circle at 85% 15%, rgba(193, 85, 44, 0.14), transparent 50%),
+    linear-gradient(180deg, #fff7ec 0%, #f5f2ec 55%, #f2eee6 100%);
+  z-index: -2;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(transparent 94%, rgba(0, 0, 0, 0.03) 95%),
+    linear-gradient(90deg, transparent 94%, rgba(0, 0, 0, 0.03) 95%);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--surface-strong);
+  padding: 36px;
+  border-radius: 20px;
+  box-shadow: 0 32px 90px rgba(19, 16, 12, 0.12);
+  position: relative;
+  animation: riseIn 0.6s ease-out;
+}
+.cover {
+  margin: 0 0 3rem;
+  padding: 28px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fdf6ea 0%, #e6f3ee 55%, #faefe7 100%);
+  animation: riseIn 0.7s ease-out;
+}
+.cover-surface {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 14px 36px rgba(19, 16, 12, 0.12);
+}
+.cover-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+.cover-title {
+  font-size: 2.8rem;
+  margin: 0 0 0.5rem;
+  font-family: "IBM Plex Serif", Georgia, serif;
+}
+.cover-subtitle {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin: 0 0 0.8rem;
+}
+.cover-description {
+  font-size: 1rem;
+  margin: 0 0 1.4rem;
+  max-width: 60ch;
+  color: #4a453f;
+}
+.cover-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.cover-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  background: var(--surface-strong);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cover-link:hover {
+  background: #f1ede6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(31, 27, 22, 0.12);
+}
+.cover-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 2fr;
+  gap: 2rem;
+}
+.cover-meta {
+  display: grid;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+}
+.cover-meta-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.6rem;
+  color: #3c3731;
+}
+.cover-meta-row span:first-child {
+  font-weight: 600;
+  color: #3f3a34;
+}
+.cover-abstract h2 {
+  margin-top: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Serif", "Georgia", serif;
+  margin: 1.6em 0 0.4em;
+  color: #2c2a27;
+}
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.9rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.2rem; }
+p { margin: 0.6em 0; }
+section { margin-bottom: 2rem; }
+section.part > section + section {
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent 10%, #e1ddd6 30%, #e1ddd6 70%, transparent 90%) 1;
+  padding-top: 3rem;
+  margin-top: 2.5rem;
+  position: relative;
+}
+section.part > section + section::before {
+  content: "§";
+  position: absolute;
+  top: -0.7em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-strong);
+  padding: 0 0.8rem;
+  color: #c1bbb3;
+  font-size: 1.1rem;
+}
+section.part > section > h3 {
+  border-left: 4px solid var(--accent);
+  padding-left: 1rem;
+  margin-left: -1rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+dl { margin: 1rem 0; }
+dt { font-weight: 600; margin-top: 0.6rem; }
+dd { margin-left: 1rem; margin-bottom: 0.4rem; }
+code {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: var(--code-bg);
+  padding: 0 0.2em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+pre code {
+  background: transparent;
+  padding: 0;
+  display: block;
+  white-space: pre;
+}
+pre code span.highlight {
+  background: rgba(255, 243, 205, 0.8);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  border-left: 3px solid #c77a1c;
+}
+.code-block {
+  margin: 1rem 0;
+}
+.code-block pre {
+  margin: 0;
+}
+.code-filename {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: #e9e5df;
+  padding: 0.4rem 1rem;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid var(--border);
+}
+.code-filename + pre {
+  border-radius: 0 0 10px 10px;
+}
+.diagram {
+  background: #e7f2ef;
+  border-left: 4px solid var(--accent);
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  white-space: pre;
+}
+ul, ol { padding-left: 1.4rem; margin: 0.5em 0; }
+li { margin: 0.3em 0; }
+.admonition {
+  border-left: 4px solid #c77a1c;
+  background: #fff4e1;
+  padding: 0.8rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+.admonition-note { border-left-color: var(--accent); background: #e7f2ef; }
+.admonition-warning { border-left-color: #c77a1c; background: #fff4e1; }
+.admonition-important { border-left-color: #b24729; background: #ffebe6; }
+.admonition-tip { border-left-color: #2c5282; background: #e6f0ff; }
+.reference {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+}
+.definition,
+.rule,
+.theorem,
+.guarantee,
+.operation,
+.profile,
+.checklist,
+.table {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  border-radius: 12px;
+}
+.definition { border-left: 4px solid var(--accent); }
+.rule { border-left: 4px solid #9c5b1c; }
+.theorem { border-left: 4px solid #9b2c4a; background: #fef5f7; }
+.proof { border-left: 4px solid #6b46c1; background: #f9f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.example { border-left: 4px solid #2c5282; background: #f0f5ff; }
+.exercise { border-left: 4px solid #c77a1c; background: #fff8f0; }
+.definition-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  word-break: break-word;
+  margin: 0 0 0.5rem;
+}
+.rule-description { color: var(--muted); font-size: 0.95rem; }
+.proof-end { text-align: right; color: var(--muted); margin: 0.5rem 0 0; }
+.definitions-index {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.definitions-index ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.definitions-index li {
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+}
+.definitions-index a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+.definitions-index a:hover {
+  text-decoration: underline;
+}
+.def-origin {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.definition .anchor {
+  font-size: 0.85em;
+  color: #9c9488;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.definition:hover .anchor {
+  opacity: 1;
+}
+.profile-layer + .profile-layer {
+  margin-top: 0.8rem;
+}
+figure {
+  margin: 1rem 0;
+}
+figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: #5b564f;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+th {
+  background: #f1ede6;
+}
+.toc {
+  background: var(--soft);
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  border-radius: 16px;
+  margin: 1.5rem 0 2rem;
+  max-width: 380px;
+  box-shadow: 0 16px 40px rgba(19, 16, 12, 0.08);
+}
+.toc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.toc-title {
+  flex: 1;
+}
+.toc-toggle {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.toc-search {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-top: 0.4rem;
+}
+.toc-search:focus {
+  outline: 2px solid rgba(31, 107, 90, 0.2);
+  border-color: var(--accent);
+}
+.toc h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  border: none;
+}
+.toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0 0;
+}
+.toc ul ul {
+  padding-left: 1rem;
+  margin-top: 0.4rem;
+}
+.toc li {
+  break-inside: avoid;
+  margin: 0.35rem 0;
+}
+.toc li a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.18rem 0.4rem;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+  color: var(--ink);
+  text-decoration: none;
+}
+.toc li a:hover {
+  background: rgba(31, 107, 90, 0.12);
+  text-decoration: none;
+}
+.toc-part > span {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.toc-hidden {
+  display: none;
+}
+.def-stack {
+  display: grid;
+  gap: 1rem;
+  margin: 1.4rem 0;
+}
+.def-block {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+}
+.def-header {
+  display: flex;
+  gap: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.def-block h4 {
+  margin: 0.4rem 0 0.6rem;
+}
+.def-list ul {
+  margin: 0.4rem 0 0.8rem;
+}
+.def-proof h5 {
+  margin: 1rem 0 0.4rem;
+}
+.def-code {
+  margin: 0.6rem 0;
+}
+.def-code-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.def-code pre {
+  margin: 0;
+}
+.def-kv {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: 0;
+  margin: 0;
+}
+.def-kv dt {
+  font-weight: 600;
+  color: #3c3731;
+  padding: 0.4rem 0.8rem 0.4rem 0;
+  border-right: 2px solid var(--border);
+}
+.def-kv dd {
+  margin: 0;
+  padding: 0.4rem 0 0.4rem 0.8rem;
+}
+.def-kind {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  background: #e9e5df;
+}
+.def-kind-enum {
+  background: #e7f2ef;
+  color: #1f6b5a;
+}
+.def-kind-type {
+  background: #e6eef8;
+  color: #2c5282;
+}
+.def-kind-rule {
+  background: #fef3e2;
+  color: #9c5b1c;
+}
+.def-kind-function {
+  background: #f0e7f6;
+  color: #6b46c1;
+}
+.def-kind-theorem {
+  background: #fce8ec;
+  color: #9b2c4a;
+}
+.def-category {
+  background: #f1ede6;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+.def-section {
+  color: #9c9488;
+  font-size: 0.7rem;
+}
+.def-enum-values ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+}
+.def-enum-values li {
+  background: #e7f2ef;
+  color: #1f6b5a;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.85rem;
+}
+.def-compatible ul {
+  list-style: none;
+  padding: 0;
+}
+.def-compatible li::before {
+  content: "+";
+  color: #1f6b5a;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.def-breaking ul {
+  list-style: none;
+  padding: 0;
+}
+.def-breaking li::before {
+  content: "!";
+  color: #b24729;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.def-block.def-enum {
+  border-left: 4px solid #1f6b5a;
+}
+.def-block.def-type {
+  border-left: 4px solid #2c5282;
+}
+.def-block.def-rule {
+  border-left: 4px solid #9c5b1c;
+}
+.def-block.def-function {
+  border-left: 4px solid #6b46c1;
+}
+.def-block.def-theorem {
+  border-left: 4px solid #9b2c4a;
+}
+.definition-list {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  gap: 0;
+  margin: 1.4rem 0;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.definition-list dt,
+.definition-list dd {
+  padding: 0.8rem 1rem;
+  margin: 0;
+  border-bottom: 1px solid #e9e5df;
+}
+.definition-list dt {
+  font-weight: 600;
+  color: #3c3731;
+  background: rgba(241, 237, 230, 0.5);
+  border-right: 1px solid #e9e5df;
+}
+.definition-list dd {
+  color: #4a453f;
+}
+.definition-list dt:last-of-type,
+.definition-list dd:last-of-type {
+  border-bottom: none;
+}
+.gap {
+  background: #fff3cd;
+  border: 1px dashed #ffc107;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+.gap-marker { color: #856404; font-weight: 600; }
+.redaction {
+  display: inline-block;
+  background: #333;
+  color: #333;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+.redaction-marker { font-family: monospace; }
+.quote {
+  border-left: 4px solid var(--border);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.quote footer { margin-top: 0.5rem; font-size: 0.9rem; }
+.math {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: var(--code-bg);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.math-inline {
+  font-family: "IBM Plex Mono", monospace;
+  background: var(--code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+.breadcrumb-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+.breadcrumb-btn {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.breadcrumb-btn:hover {
+  background: #f1ede6;
+}
+.inspect-modal {
+  position: fixed;
+  right: clamp(16px, 3vw, 32px);
+  top: 96px;
+  width: min(360px, calc(100vw - 48px));
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(19, 16, 12, 0.18);
+  padding: 1rem 1.2rem;
+  display: none;
+  z-index: 41;
+  max-height: calc(100vh - 140px);
+  overflow: hidden;
+}
+.inspect-modal.active {
+  display: block;
+}
+.inspect-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+.inspect-modal h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.inspect-close {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+.inspect-close:hover {
+  background: #f1ede6;
+  color: #2c2a27;
+}
+.inspect-modal p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+}
+.inspect-content {
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  padding-right: 0.4rem;
+}
+.inspect-defs {
+  margin-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.8rem;
+}
+.inspect-defs h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.inspect-defs ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+.inspect-defs li {
+  background: #f7f4ee;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+}
+.inspect-defs code {
+  background: transparent;
+  padding: 0;
+}
+.inspect-meta {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  color: #4a453f;
+  background: #f7f5f2;
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  margin-top: 0.6rem;
+  white-space: pre-wrap;
+}
+.inspect-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.inspect-copy {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.inspect-copy:hover {
+  background: #f1ede6;
+}
+.ref-link {
+  color: var(--ink);
+  text-decoration: underline dotted;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(31, 107, 90, 0.5);
+  outline-offset: 2px;
+}
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  width: 0%;
+  z-index: 200;
+  transition: width 0.1s ease-out;
+}
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(19, 16, 12, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease;
+  z-index: 90;
+}
+.back-to-top:hover {
+  background: #f1ede6;
+  transform: translateY(-2px);
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.toc a.active {
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(31, 107, 90, 0.12);
+  border-radius: 8px;
+}
+html {
+  scroll-behavior: smooth;
+}
+.anchor {
+  margin-left: 0.4rem;
+  font-size: 0.75em;
+  color: #9c9488;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
+  opacity: 1;
+}
+.copy-link {
+  margin-left: 0.3rem;
+  color: #9c9488;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0.2rem;
+  border-radius: 4px;
+  vertical-align: middle;
+  width: 1.2em;
+  height: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.copy-link svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.copy-link:hover {
+  color: var(--accent);
+  background: var(--highlight);
+}
+.copy-link.copied {
+  color: #2d8a4e;
+}
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 120px;
+}
+h2[id]:target,
+h3[id]:target,
+h4[id]:target,
+h5[id]:target,
+h6[id]:target {
+  background: var(--highlight);
+  border-radius: 12px;
+  padding: 0.2rem 0.4rem;
+}
+h2:hover .copy-link,
+h3:hover .copy-link,
+h4:hover .copy-link,
+h5:hover .copy-link,
+h6:hover .copy-link {
+  opacity: 1;
+}
+/* VERA-specific entity styles */
+.vera-section { margin: 2rem 0; }
+.vera-para { margin: 0.8rem 0; }
+.vera-definition { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid var(--accent); }
+.vera-rule { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #9c5b1c; }
+.vera-theorem { border: 1px solid var(--border); background: #fef5f7; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #9b2c4a; }
+.vera-proof { border: 1px solid var(--border); background: #f9f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #6b46c1; }
+.vera-example { border: 1px solid var(--border); background: #f0f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #2c5282; }
+.vera-exercise { border: 1px solid var(--border); background: #fff8f0; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #c77a1c; }
+.vera-claim { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.vera-evidence { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.vera-gap { background: #fff3cd; border: 1px dashed #ffc107; padding: 0.8rem 1rem; border-radius: 8px; margin: 1rem 0; }
+.vera-redaction { display: inline-block; background: #333; color: #333; padding: 0.2rem 0.5rem; border-radius: 4px; }
+.vera-admonition { border-left: 4px solid #c77a1c; background: #fff4e1; padding: 0.8rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+.vera-quote { border-left: 4px solid var(--border); padding-left: 1rem; margin: 1rem 0; color: var(--muted); font-style: italic; }
+.vera-quote footer { margin-top: 0.5rem; font-size: 0.9rem; }
+.vera-formula { font-family: "IBM Plex Mono", "SFMono-Regular", monospace; background: var(--code-bg); padding: 0.8rem 1rem; border-radius: 8px; margin: 0.5rem 0; overflow-x: auto; white-space: pre-wrap; }
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .progress-bar {
+    transition: none;
+  }
+  main,
+  .cover {
+    animation: none;
+  }
+}
+.breadcrumb {
+  position: fixed;
+  top: 3px;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  z-index: 100;
+  transform: translateY(-100%);
+  transition: transform 0.25s ease;
+  box-shadow: 0 2px 8px rgba(19, 16, 12, 0.08);
+}
+.breadcrumb.visible {
+  transform: translateY(0);
+}
+.breadcrumb-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb-item {
+  color: var(--muted);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.breadcrumb-item:hover {
+  color: #2c2a27;
+  text-decoration: underline;
+}
+.breadcrumb-item.current {
+  color: var(--ink);
+  font-weight: 600;
+}
+.breadcrumb-sep {
+  color: #c1bbb3;
+  flex-shrink: 0;
+}
+.breadcrumb-item.truncated {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.toc-floating .toc {
+  position: fixed;
+  top: 24px;
+  width: 320px;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  box-shadow: 0 12px 40px rgba(19, 16, 12, 0.18);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+body.toc-floating .toc::before {
+  content: "Outline";
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+body.toc-right.toc-floating .toc {
+  right: 24px;
+  left: auto;
+}
+body.toc-left.toc-floating .toc {
+  left: 24px;
+  right: auto;
+}
+@media (max-width: 720px) {
+  .definition-list {
+    grid-template-columns: 1fr;
+  }
+  .definition-list dt {
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: 0.4rem;
+  }
+  .definition-list dd {
+    padding-top: 0;
+  }
+}
+@media (max-width: 900px) {
+  .cover-body {
+    grid-template-columns: 1fr;
+  }
+  .cover-title {
+    font-size: 2.2rem;
+  }
+  .toc ul {
+    columns: 1;
+  }
+  body.toc-floating .toc {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+  .inspect-modal {
+    right: 16px;
+    left: 16px;
+    width: auto;
+    top: 96px;
+  }
+}
+@media (max-width: 600px) {
+  body { padding: 24px 16px 64px; }
+  main { padding: 24px; border-radius: 16px; }
+  .cover { padding: 16px; }
+  .cover-title { font-size: 1.8rem; }
+  .cover-meta-row { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+@media print {
+  .cover {
+    page-break-after: always;
+  }
+}
+</style>
+  </head>
+  <body>
+    <main>
+      
+    <section class="cover">
+      <div class="cover-surface">
+        <div class="cover-head">
+          <p class="cover-eyebrow">VERA Document</p>
+          <h1 class="cover-title">Garbage Collection Proofs</h1>
+        </div>
+        <div class="cover-body">
+          <div class="cover-meta"><div class="cover-meta-row"><span>Document ID</span><span>01KDEV5YW16DPPXY22P8T28800</span></div></div>
+        </div>
+      </div>
+    </section>
+  
+      
+    <nav class="toc">
+      <h2>Contents</h2>
+      <ul><li><a href="#01KDEV5YW10SYSMODEL00001">System Model</a></li><li><a href="#01KDEV5YW19FJ7H1TY78CC8401">GC Safety Requirements</a></li><li><a href="#01KDEV5YW1STABMETH00001">Stability Detection Methods</a></li><li><a href="#01KDEV5YW2EPOCHVEC00001">Epoch and Version Vectors</a></li><li><a href="#01KDEV5YW2ANTIENTY00001">Anti-Entropy Protocol Requirements</a></li><li><a href="#01KDEV5YW2COMPOSE00001">The Composition Problem</a></li><li><a href="#01KDEV5YW2N4DJMEABYDX2YK04">GC Correctness Proofs</a></li></ul>
+    </nav>
+  
+      
+        <section class="vera-section" id="01KDEV5YW10SYSMODEL00001" data-alias="sub-system-model">
+          <h2>System Model
+            <a class="anchor" href="#01KDEV5YW10SYSMODEL00001">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEV5YW10SYSMODEL00002">This section establishes the formal model underlying our garbage collection proofs. We consider a distributed system with the following properties:</div>
+
+        <div class="vera-definition definition" id="01KDEV5YW10SYSMODEL00003" data-alias="def-network-model">
+          <p class="definition-title">
+            <strong>Definition (Network Model)</strong>
+            <a class="anchor" href="#01KDEV5YW10SYSMODEL00003">#</a>
+          </p>
+          <p>The system operates under an eventually synchronous network model, characterized by the following guarantees:</p>
+          
+        </div>
+<div class="vera-para" id="01KDEV5YW10SYSMODEL00004"><ol><li>Messages may be delayed arbitrarily but are eventually delivered</li><li>No message is lost permanently (fair-loss links with retransmission)</li><li>Replicas may be partitioned but eventually reconnect</li><li>No Byzantine failures (all replicas faithfully execute the protocol)</li></ol></div>
+
+        <div class="vera-definition definition" id="01KDEV5YW10SYSMODEL00005" data-alias="def-replica-set">
+          <p class="definition-title">
+            <strong>Definition (Replica Set)</strong>
+            <a class="anchor" href="#01KDEV5YW10SYSMODEL00005">#</a>
+          </p>
+          <p>R = {r₁, r₂, ..., rₙ} is a finite, known set of replicas. Each replica maintains local state sᵢ and a logical clock clockᵢ.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEV5YW10SYSMODEL00007" data-alias="def-crdt-state">
+          <p class="definition-title">
+            <strong>Definition (CRDT State Space)</strong>
+            <a class="anchor" href="#01KDEV5YW10SYSMODEL00007">#</a>
+          </p>
+          <p>A CRDT C = (S, ⊔, eval) where S is the state space, ⊔ : S × S → S is a join-semilattice merge, and eval : S → V extracts the user-visible value.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEV5YW10SYSMODEL00008" data-alias="def-semantic-equiv">
+          <p class="definition-title">
+            <strong>Definition (Semantic Equivalence)</strong>
+            <a class="anchor" href="#01KDEV5YW10SYSMODEL00008">#</a>
+          </p>
+          <p>Two states s₁ ≡ s₂ are semantically equivalent if and only if eval(s₁) = eval(s₂). States may differ in internal representation—such as tombstone sets or metadata—while remaining equivalent from the user&#39;s perspective.</p>
+          
+        </div>
+
+        <div class="vera-admonition admonition admonition-important" id="01KDEV5YW10SYSMODEL00006">
+          <p><strong>Membership Assumption</strong></p>
+          These safety proofs assume static membership: the replica set R is fixed throughout system execution. Supporting dynamic membership (replicas joining or leaving) requires additional view-change protocols not addressed in this document.
+        </div>
+
+        <section class="vera-section" id="01KDEV5YW19FJ7H1TY78CC8401" data-alias="sub-gc-safety-requirements">
+          <h2>GC Safety Requirements
+            <a class="anchor" href="#01KDEV5YW19FJ7H1TY78CC8401">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEV5YW12ADZ5ZAH6X0X7M02">Garbage collection in CRDTs must preserve convergence guarantees while reclaiming space. Formally, a GC scheme is a pair (gc, stable) where gc : S → S is the collection function that removes tombstones, and stable : Tombstone × Replica → Bool is the predicate that determines when a tombstone is safe to collect.</div>
+
+        <div class="vera-definition definition" id="01KDEV5YW13KZA2VDF6W86NY03" data-alias="def-gc-safety">
+          <p class="definition-title">
+            <strong>Definition (GC Safety)</strong>
+            <a class="anchor" href="#01KDEV5YW13KZA2VDF6W86NY03">#</a>
+          </p>
+          <p>A garbage collection scheme (gc, stable) is SAFE for CRDT C iff it satisfies properties GC-1&#39; through GC-3&#39;:</p>
+          
+        </div>
+
+        <div class="vera-rule rule" id="01KDEV5YW1CWD7EJEPRCEJ6X04">
+          <p><strong>GC-1&#39; (Monotonic Projection)</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW1YG4BWH1P21HZ0M05">
+          gc(s) ⊑ s  ∧  (s₁ ⊑ s₂ ⟹ gc(s₁) ⊑ gc(s₂))
+        </div>
+<div class="vera-para" id="01KDEV5YW165ZJH29T0JCXWF06">This property states that GC only removes information—never adds it—where ⊑ denotes the lattice ordering. Additionally, GC preserves the relative ordering between states. This requirement is deliberately weaker than requiring gc to be a join-homomorphism, since the stronger property fails for non-deterministic GC implementations.</div>
+
+        <div class="vera-admonition admonition admonition-note" id="01KDEV5YW1GC1ADMON0001">
+          <p><strong>Why Not Join-Homomorphism?</strong></p>
+          The naive formula gc(s₁) ⊔ gc(s₂) = gc(s₁ ⊔ s₂) cannot hold for non-deterministic GC. If gc can choose which stable tombstones to collect, two replicas might make different choices, breaking equality. For this stronger property, GC must be deterministic: given the same stability information, always collect the same tombstones.
+        </div>
+
+        <div class="vera-definition definition" id="01KDEV5YW1DETGC00001" data-alias="def-deterministic-gc">
+          <p class="definition-title">
+            <strong>Definition (Deterministic GC)</strong>
+            <a class="anchor" href="#01KDEV5YW1DETGC00001">#</a>
+          </p>
+          <p>A GC function gc is DETERMINISTIC iff for all states s₁ ≡ s₂ with identical stability information: gc(s₁) ≡ gc(s₂).</p>
+          
+        </div>
+
+        <div class="vera-rule rule" id="01KDEV5YW1GC1STRONG">
+          <p><strong>GC-1 (Join-Homomorphism (Strong, requires deterministic GC))</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW1GC1STRONGF">
+          ∀ s₁, s₂. stable(t, s₁) ∧ stable(t, s₂) ⟹ gcₜ(s₁) ⊔ gcₜ(s₂) = gcₜ(s₁ ⊔ s₂)
+        </div>
+<div class="vera-para" id="01KDEV5YW1GC1STRONGP">When GC is deterministic and targets a specific tombstone t, the strong homomorphism property holds under stability preconditions. The subscript t denotes GC targeting tombstone t specifically.</div>
+
+        <div class="vera-rule rule" id="01KDEV5YW1C8RQQB51W70B9V07">
+          <p><strong>GC-2&#39; (Stability Soundness)</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW1P211K2YJFT2KKC08">
+          stable(t, r) ⟹ ∀ r&#39; ∈ R. t ∈ observed(r&#39;)
+        </div>
+<div class="vera-para" id="01KDEV5YW1T69J5FGZC1CHW309">This property ensures the stability oracle is sound: whenever it reports a tombstone t as stable, all replicas have indeed observed t. This soundness requirement is essential for implementability—in an asynchronous distributed system, no replica can directly verify what other replicas have observed.</div>
+
+        <div class="vera-definition definition" id="01KDEV5YW1ORACLE00001" data-alias="def-stability-oracle">
+          <p class="definition-title">
+            <strong>Definition (Stability Oracle)</strong>
+            <a class="anchor" href="#01KDEV5YW1ORACLE00001">#</a>
+          </p>
+          <p>A stability oracle is a function stable : Tombstone × Replica → Bool that can be implemented by one of the detection methods below. Each method requires specific network assumptions for soundness.</p>
+          
+        </div>
+
+        <div class="vera-rule rule" id="01KDEV5YW1YHGG3RJ0R2BP9T0A">
+          <p><strong>GC-3&#39; (Semantic Preservation)</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW12VJJ0ESVQRGV4X0B">
+          eval(gc(s)) = eval(s)
+        </div>
+<div class="vera-para" id="01KDEV5YW1DR88449QMCEC740C">GC must preserve the user-visible value: the eval function extracts identical results before and after garbage collection. This formulation provides a cleaner semantic requirement than alternative predicates that reason about operation applicability.</div>
+
+        <div class="vera-rule rule" id="01KDEV5YW1GC4LIVENESS01">
+          <p><strong>GC-4 (Liveness (Progress))</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW1GC4LIVENESS02">
+          ∀ t. ◇(∀ r ∈ R. stable(t, sᵣ)) ⟹ ◇(∀ r ∈ R. t ∉ sᵣ)
+        </div>
+<div class="vera-para" id="01KDEV5YW1GC4LIVENESS03">Once a tombstone becomes stable at all replicas, it must eventually be collected at all replicas. This liveness property ensures GC makes progress and prevents unbounded tombstone accumulation.</div>
+
+        <section class="vera-section" id="01KDEV5YW1STABMETH00001" data-alias="sub-stability-methods">
+          <h2>Stability Detection Methods
+            <a class="anchor" href="#01KDEV5YW1STABMETH00001">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEV5YW1STABMETH00002">Each stability detection method implements the stability oracle with specific assumptions:</div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW1STABMETH00003" data-alias="lem-vc-stability">
+          <p><strong>Lemma: S1 (Vector Clock Stability)</strong></p>
+          Define stable_vc(t, r) := min{VCᵣ[i] : i ∈ R} ≥ t.clock. Under causal delivery (no message reordering), stable_vc satisfies GC-2&#39;.
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW1STABMETH00004">
+          <p><strong>Proof:</strong></p>
+          If min(VCᵣ) ≥ t.clock, then for all replicas r&#39;, VCᵣ[r&#39;] ≥ t.clock. By vector clock semantics under causal delivery, this means r has received confirmation (via transitive message chains) that r&#39; has logical time ≥ t.clock. Since t was created at t.clock, r&#39; must have observed t. ✓
+          <p class="proof-end">∎</p>
+        </div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW1STABMETH00005" data-alias="lem-ack-stability">
+          <p><strong>Lemma: S2 (Acknowledgment Stability)</strong></p>
+          Define stable_ack(t, r) := ∀ r&#39; ∈ R. ack(r&#39;, t) ∈ received(r). Under reliable delivery with retransmission, stable_ack satisfies GC-2&#39;.
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW1STABMETH00006">
+          <p><strong>Proof:</strong></p>
+          Each replica r&#39; sends ack(r&#39;, t) only after observing t. Under reliable delivery, if r has received ack(r&#39;, t), then r&#39; did observe t. If acks can be lost, retransmission ensures eventual delivery; the oracle waits until all acks arrive. ✓
+          <p class="proof-end">∎</p>
+        </div>
+
+        <div class="vera-admonition admonition admonition-warning" id="01KDEV5YW1STABMETH00007">
+          <p><strong>Ack Loss</strong></p>
+          If an ack is lost and not retransmitted, stable_ack may never return true (liveness failure) but remains sound (no false positives).
+        </div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW1STABMETH00008" data-alias="lem-checkpoint-stability">
+          <p><strong>Lemma: S3 (Checkpoint Stability)</strong></p>
+          Define stable_cp(t, r) := t.clock &lt; checkpoint_epoch(r). Under synchronous checkpoint protocol (all replicas confirm reaching checkpoint before any proceeds), stable_cp satisfies GC-2&#39;.
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW1STABMETH00009">
+          <p><strong>Proof:</strong></p>
+          The checkpoint protocol guarantees: no replica advances past checkpoint C until all replicas reach C. Reaching C requires having received all operations with clock &lt; C, including t. Therefore, if r has checkpoint_epoch &gt; t.clock, all replicas observed t. ✓
+          <p class="proof-end">∎</p>
+        </div>
+
+        <div class="vera-admonition admonition admonition-note" id="01KDEV5YW1STABMETH00010">
+          <p><strong>Checkpoint Implementation</strong></p>
+          Checkpoints guarantee causal consistency (all ops before C are delivered), not necessarily state equality. Replicas may have different representations but are semantically equivalent (s₁ ≡ s₂).
+        </div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW1STABMETH00011" data-alias="lem-time-stability">
+          <p><strong>Lemma: S4 (Time-Based Stability)</strong></p>
+          Define stable_time(t, r) := now(r) &gt; t.timestamp + D. Given bounded clock skew ε and maximum message delay δ, if D &gt; ε + δ, then stable_time satisfies GC-2&#39;.
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW1STABMETH00012">
+          <p><strong>Proof:</strong></p>
+          Let t be created at physical time T (by creator&#39;s clock). Any replica r&#39; has clock within ε of true time. Message carrying t arrives within δ of send time. If now(r) &gt; T + D and D &gt; ε + δ, then sufficient real time has passed for t to reach all replicas. ✓
+          <p class="proof-end">∎</p>
+        </div>
+
+        <div class="vera-admonition admonition admonition-caution" id="01KDEV5YW1STABMETH00013">
+          <p><strong>Time-Based Assumptions</strong></p>
+          This method requires known bounds on clock skew (ε) and message delay (δ). In truly asynchronous networks where δ is unbounded, time-based stability is unsound.
+        </div>
+
+        <section class="vera-section" id="01KDEV5YW2EPOCHVEC00001" data-alias="sub-epoch-vectors">
+          <h2>Epoch and Version Vectors
+            <a class="anchor" href="#01KDEV5YW2EPOCHVEC00001">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEV5YW2EPOCHVEC00002">To track GC progress across replicas, we introduce epoch vectors:</div>
+
+        <div class="vera-definition definition" id="01KDEV5YW2EPOCHVEC00003" data-alias="def-gc-epoch">
+          <p class="definition-title">
+            <strong>Definition (GC Epoch)</strong>
+            <a class="anchor" href="#01KDEV5YW2EPOCHVEC00003">#</a>
+          </p>
+          <p>A GC epoch e is a monotonically increasing identifier representing a GC generation. Each replica maintains epochᵣ indicating the highest GC epoch it has applied.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEV5YW2EPOCHVEC00004" data-alias="def-epoch-vector">
+          <p class="definition-title">
+            <strong>Definition (Epoch Vector)</strong>
+            <a class="anchor" href="#01KDEV5YW2EPOCHVEC00004">#</a>
+          </p>
+          <p>An epoch vector EV = [e₁, e₂, ..., eₙ] where eᵢ is replica rᵢ&#39;s last known GC epoch as observed by the local replica.</p>
+          
+        </div>
+
+        <div class="vera-rule rule" id="01KDEV5YW2EPOCHVEC00005">
+          <p><strong>EV-1 (Epoch Vector Update)</strong></p>
+          
+        </div>
+<div class="vera-para" id="01KDEV5YW2EPOCHVEC00006">On receiving message m from replica rⱼ with epoch eⱼ: EVᵢ[j] := max(EVᵢ[j], eⱼ)</div>
+
+        <div class="vera-rule rule" id="01KDEV5YW2EPOCHVEC00007">
+          <p><strong>EV-2 (Safe GC Epoch Advancement)</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW2EPOCHVEC00008">
+          Replica r may advance to epoch e+1 iff: min(EVᵣ) ≥ e
+        </div>
+<div class="vera-para" id="01KDEV5YW2EPOCHVEC00009">A replica only advances its GC epoch when it knows all other replicas have reached the current epoch.</div>
+
+        <section class="vera-section" id="01KDEV5YW2ANTIENTY00001" data-alias="sub-anti-entropy">
+          <h2>Anti-Entropy Protocol Requirements
+            <a class="anchor" href="#01KDEV5YW2ANTIENTY00001">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEV5YW2ANTIENTY00002">For GC to be safe, the anti-entropy (synchronization) protocol must satisfy:</div>
+
+        <div class="vera-rule rule" id="01KDEV5YW2ANTIENTY00003">
+          <p><strong>AE-1 (Tombstone Propagation)</strong></p>
+          
+        </div>
+<div class="vera-para" id="01KDEV5YW2ANTIENTY00004">Tombstones must be propagated before they can be collected. The protocol must ensure that if replica A has collected tombstone t, then for any replica B syncing with A, B has already observed t.</div>
+
+        <div class="vera-rule rule" id="01KDEV5YW2ANTIENTY00005">
+          <p><strong>AE-2 (Epoch Consistency)</strong></p>
+          
+        </div>
+<div class="vera-para" id="01KDEV5YW2ANTIENTY00006">Messages must include the sender&#39;s GC epoch. A replica at epoch e must not accept operations from epoch e&#39; &gt; e without first synchronizing the GC state.</div>
+
+        <div class="vera-rule rule" id="01KDEV5YW2ANTIENTY00007">
+          <p><strong>AE-3 (Causal Delivery)</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEV5YW2ANTIENTY00008">
+          send(m₁) → send(m₂) ⟹ deliver(m₁) → deliver(m₂)
+        </div>
+<div class="vera-para" id="01KDEV5YW2ANTIENTY00009">Causal delivery ensures that an operation creating a tombstone is delivered before any operation that depends on observing that tombstone.</div>
+
+        <section class="vera-section" id="01KDEV5YW2COMPOSE00001" data-alias="sub-composition">
+          <h2>The Composition Problem
+            <a class="anchor" href="#01KDEV5YW2COMPOSE00001">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEV5YW2COMPOSE00002">A critical question: if replicas run GC at different times, do results still converge?</div>
+
+        <div class="vera-definition definition" id="01KDEV5YW2COMPOSE00003" data-alias="def-async-gc-scenario">
+          <p class="definition-title">
+            <strong>Definition (Asynchronous GC Scenario)</strong>
+            <a class="anchor" href="#01KDEV5YW2COMPOSE00003">#</a>
+          </p>
+          <p>Replica A with state sₐ runs gc → gc(sₐ). Replica B with state s_B doesn&#39;t run GC yet. They sync: gc(sₐ) ⊔ s_B = ?</p>
+          
+        </div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW2COMPOSE00004" data-alias="thm-async-gc-composition">
+          <p><strong>Theorem: C1 (Asynchronous GC Composition)</strong></p>
+          For deterministic GC with stability oracle satisfying GC-2&#39;, if stable(t, A) holds when A runs gc, then: gc(sₐ) ⊔ s_B ≡ gc(sₐ ⊔ s_B)
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW2COMPOSE00005">
+          <p><strong>Proof:</strong></p>
+          By GC-2&#39; soundness, stable(t, A) implies B has observed t.
+          <p class="proof-end">∎</p>
+        </div>
+<div class="vera-para" id="01KDEV5YW2COMPOSE00006">Case analysis on s_B relative to t:</div>
+<div class="vera-para" id="01KDEV5YW2COMPOSE00007"><ol><li>If t ∈ s_B: Both sides contain t&#39;s effect. Merging gc(sₐ) (without t) with s_B (with t) preserves the deletion semantics. Then gc on the result removes t.</li><li>If B already ran gc and t ∉ s_B: Both gc(sₐ) and s_B lack t. Merge is straightforward; gc is idempotent.</li><li>Semantic equivalence (≡) follows from GC-3&#39;: eval is preserved through gc. ✓</li></ol></div>
+
+        <div class="vera-admonition admonition admonition-important" id="01KDEV5YW2COMPOSE00008">
+          <p><strong>Synchronous GC Alternative</strong></p>
+          If asynchronous composition is too complex, the protocol can enforce synchronous GC: checkpoints force all replicas to run GC simultaneously, avoiding the composition problem entirely.
+        </div>
+
+        <section class="vera-section" id="01KDEV5YW2N4DJMEABYDX2YK04" data-alias="sub-gc-proofs">
+          <h2>GC Correctness Proofs
+            <a class="anchor" href="#01KDEV5YW2N4DJMEABYDX2YK04">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW286X1JHRNKZ07WF05" data-alias="thm-checkpoint-gc">
+          <p><strong>Theorem: 24.1 (Checkpoint GC Safety)</strong></p>
+          <p>Given:</p><p>- Synchronous checkpoint protocol (all replicas confirm reaching C before proceeding)</p><p>- Tombstone t created before checkpoint C</p><p>- Deterministic gc removes t after checkpoint</p><p>- CRDT has add-wins or remove-wins conflict resolution (conflict semantics specified)</p><p>Then: gc satisfies GC-1&#39;, GC-2&#39;, GC-3&#39;</p>
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW2AY1QGYANV4NQ7R06">
+          <p><strong>Proof:</strong></p>
+          We prove each property under the stated assumptions.
+          <p class="proof-end">∎</p>
+        </div>
+<div class="vera-para" id="01KDEV5YW2PROOF0001"><strong>GC-1&#39; (Monotonic Projection):</strong></div>
+<div class="vera-para" id="01KDEV5YW2PROOF0002">gc(s) ⊑ s: By construction, gc only removes tombstones, never adds information. Removing elements from a join-semilattice produces a smaller element.</div>
+<div class="vera-para" id="01KDEV5YW2PROOF0003">s₁ ⊑ s₂ ⟹ gc(s₁) ⊑ gc(s₂): If s₁ ⊑ s₂, then s₂ contains all information in s₁ plus possibly more. Deterministic gc removes the same tombstones (those stable at both states). Since gc preserves relative ordering, gc(s₁) ⊑ gc(s₂). ✓</div>
+<div class="vera-para" id="01KDEV5YW2PROOF0004"><strong>GC-2&#39; (Stability Soundness):</strong></div>
+<div class="vera-para" id="01KDEV5YW2PROOF0005">By Lemma S3 (Checkpoint Stability), stable_cp satisfies GC-2&#39; under synchronous checkpoint protocol. The checkpoint barrier ensures all replicas observed t before any can collect it. ✓</div>
+<div class="vera-para" id="01KDEV5YW2PROOF0006"><strong>GC-3&#39; (Semantic Preservation):</strong></div>
+<div class="vera-para" id="01KDEV5YW2PROOF0007">We must show eval(gc(s)) = eval(s). Tombstones encode deletions; removing a tombstone doesn&#39;t resurrect the element because:</div>
+<div class="vera-para" id="01KDEV5YW2PROOF0008"><ul><li>For remove-wins: The element remains deleted; tombstone was bookkeeping only.</li><li>For add-wins (e.g., ORSet): Tombstone t only masks adds with IDs concurrent with or before t. By stability, no such adds remain undelivered. Future adds use fresh IDs not masked by t.</li></ul></div>
+<div class="vera-para" id="01KDEV5YW2PROOF0009">In both cases, eval returns the same value before and after gc. ✓</div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW2LATEARR00001" data-alias="thm-late-arriving">
+          <p><strong>Theorem: 24.2 (Late-Arriving Operation Safety)</strong></p>
+          <p>If replica A has collected tombstone t (at epoch e_A), and later receives operation op from replica B (at epoch e_B &lt; e_A) where op was concurrent with t&#39;s creation, then:</p><p>(a) If op does not reference the tombstoned element: applied normally</p><p>(b) If op references the element: epoch mismatch triggers resynchronization</p>
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW2LATEARR00002">
+          <p><strong>Proof:</strong></p>
+          By AE-2 (Epoch Consistency), messages include sender&#39;s GC epoch.
+          <p class="proof-end">∎</p>
+        </div>
+<div class="vera-para" id="01KDEV5YW2LATEARR00003">When A receives op from B with e_B &lt; e_A:</div>
+<div class="vera-para" id="01KDEV5YW2LATEARR00004"><ol><li>A detects epoch mismatch: e_B &lt; e_A</li><li>By EV-2, A only advanced to e_A after knowing all replicas (including B) reached e_A - 1</li><li>B sending from e_B &lt; e_A means B was partitioned during epoch advancement</li><li>A initiates resync: B must catch up to e_A before its operations integrate</li><li>After resync, B has observed all tombstones collected up to e_A, preventing conflicts ✓</li></ol></div>
+
+        <div class="vera-admonition admonition admonition-warning" id="01KDEV5YW2LATEARR00006">
+          <p><strong>Partition During Epoch Advancement</strong></p>
+          This theorem requires that epoch advancement waits for all replicas (EV-2). The epoch vector mechanism prevents premature advancement by blocking until all replicas are observed at the current epoch.
+        </div>
+
+        <div class="vera-theorem theorem" id="01KDEV5YW2LIVENESS00001" data-alias="thm-gc-liveness">
+          <p><strong>Theorem: 24.3 (GC Liveness)</strong></p>
+          Under the eventually synchronous network model, if tombstone t is created at time τ, then t is eventually collected at all replicas.
+          
+        </div>
+
+        <div class="vera-proof" id="01KDEV5YW2LIVENESS00002">
+          <p><strong>Proof:</strong></p>
+          By the network model (eventually synchronous):
+          <p class="proof-end">∎</p>
+        </div>
+<div class="vera-para" id="01KDEV5YW2LIVENESS00003"><ol><li>Tombstone t is created at replica r at time τ</li><li>By message delivery guarantee, t eventually reaches all replicas</li><li>By epoch vector protocol, eventually all replicas report having observed t</li><li>Once min(EV) indicates all replicas have observed t, t becomes stable</li><li>By GC-4, stable tombstones are eventually collected ✓</li></ol></div>
+    </main>
+  </body>
+</html>

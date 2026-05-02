@@ -41,26 +41,7 @@
           "type": "array",
           "description": "Local definitions scoped to this section",
           "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "id",
-              "key",
-              "value"
-            ],
-            "properties": {
-              "id": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Stable identifier for cross-section references"
-              },
-              "key": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/$defs/sectionDef"
           }
         },
         "content": {
@@ -76,6 +57,175 @@
           }
         }
       }
+    },
+    "sectionDefBase": {
+      "type": "object",
+      "description": "Base properties shared by all section definition types",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier for cross-section references"
+        },
+        "number": {
+          "type": "string",
+          "description": "Section numbering label (e.g., '16.1')"
+        },
+        "section": {
+          "type": "string",
+          "description": "Parent section reference"
+        },
+        "name": {
+          "type": "string",
+          "description": "Formal name of the definition"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label, may use referenceMap() template"
+        }
+      },
+      "required": ["id"]
+    },
+    "sectionDef": {
+      "oneOf": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/sectionDefBase" },
+            {
+              "type": "object",
+              "properties": {
+                "kind": { "const": "enum" },
+                "values": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Enumeration values"
+                }
+              },
+              "required": ["kind", "values"]
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/sectionDefBase" },
+            {
+              "type": "object",
+              "properties": {
+                "kind": { "const": "type" },
+                "syntax": {
+                  "type": "string",
+                  "description": "Formal syntax definition"
+                },
+                "change_types": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of change type values"
+                },
+                "transform_types": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of transform type values"
+                }
+              },
+              "required": ["kind"]
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/sectionDefBase" },
+            {
+              "type": "object",
+              "properties": {
+                "kind": { "const": "rule" },
+                "premises": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Rule premises"
+                },
+                "conclusion": {
+                  "type": "string",
+                  "description": "Rule conclusion"
+                },
+                "compatible_changes": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of compatible change types"
+                },
+                "breaking_changes": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of breaking change types"
+                }
+              },
+              "required": ["kind", "conclusion"]
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/sectionDefBase" },
+            {
+              "type": "object",
+              "properties": {
+                "kind": { "const": "function" },
+                "signature": {
+                  "type": "string",
+                  "description": "Function signature"
+                }
+              },
+              "required": ["kind", "signature"]
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/sectionDefBase" },
+            {
+              "type": "object",
+              "properties": {
+                "kind": { "const": "theorem" },
+                "conclusion": {
+                  "type": "string",
+                  "description": "Theorem statement"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Theorem category (e.g., 'preservation')"
+                },
+                "proof_sketch": {
+                  "type": "string",
+                  "description": "Outline of proof"
+                }
+              },
+              "required": ["kind", "conclusion"]
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "description": "Simple key-value definition (legacy format)",
+          "additionalProperties": false,
+          "required": ["id", "key", "value"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Stable identifier for cross-section references"
+            },
+            "key": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        }
+      ]
     },
     "contentItem": {
       "oneOf": [

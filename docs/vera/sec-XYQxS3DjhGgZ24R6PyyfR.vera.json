@@ -1,0 +1,987 @@
+{
+  "documentId": "01KDEW4H8S8EERKRAJCFVRQA00",
+  "frontmatter": {
+    "documentId": "01KDEW4H8S8EERKRAJCFVRQA00",
+    "title": "Foundations"
+  },
+  "entities": [
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8S0A6YJS5E14RD2501",
+      "attributes": {
+        "title": "PRIMITIVE SETS",
+        "alias": "sub-sec-XYQxS3DjhGgZ24R6PyyfR-1"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SEYRGJM3S33RY3W02",
+      "attributes": {
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Let the following primitive sets be given:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S08VJ7GZ5WQ0KKV04",
+      "attributes": {
+        "term": "ID",
+        "statement": "A countably infinite set of identifiers",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SYYWS8NP4NAW63X05",
+      "attributes": {
+        "term": "NAME",
+        "statement": "A countably infinite set of names (strings)",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SSXF5CMPAABXX5H06",
+      "attributes": {
+        "term": "VALUE",
+        "statement": "The universal value domain (JSON-compatible)",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SKA657PQP3YZ2KB07",
+      "attributes": {
+        "term": "TIME",
+        "statement": "The set of timestamps (ISO 8601)",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S299CR2NN5AMN9Z08",
+      "attributes": {
+        "term": "ℕ",
+        "statement": "Natural numbers",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S402X7D5AMTS2YG09",
+      "attributes": {
+        "term": "ℤ",
+        "statement": "Integers",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SJHHWSP5N00E6G90A",
+      "attributes": {
+        "term": "ℝ",
+        "statement": "Real numbers",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S6666TMBWM947E40B",
+      "attributes": {
+        "term": "𝔹",
+        "statement": "Booleans {⊤, ⊥}",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SHNCS8W6Q1CVFHQ0C",
+      "attributes": {
+        "term": "ACTOR",
+        "statement": "A countably infinite set of actor identifiers",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SKK6JVYK5FP010K0D",
+      "attributes": {
+        "term": "CLOCK",
+        "statement": "Vector clocks for causality tracking",
+        "refs": "01KDEW4H8S0A6YJS5E14RD2501"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8SNCSQ9B4NTE6P4G0E",
+      "attributes": {
+        "title": "DERIVED SETS",
+        "alias": "sub-sec-XYQxS3DjhGgZ24R6PyyfR-2"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SR033S1E3HRS8RV0G",
+      "attributes": {
+        "term": "ID*",
+        "statement": "ID ∪ {ε} - Identifiers with null",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8STAHF6B20X5CQ3F0H",
+      "attributes": {
+        "term": "P(X)",
+        "statement": "Power set of X",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SF00G41WBPQ38TF0J",
+      "attributes": {
+        "term": "X × Y",
+        "statement": "Cartesian product",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S54TYZC8PM4673Z0K",
+      "attributes": {
+        "term": "X → Y",
+        "statement": "Total functions from X to Y",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SVKA55HX71Z01FE0M",
+      "attributes": {
+        "term": "X ⇀ Y",
+        "statement": "Partial functions from X to Y",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SN8CTN4ZN6Z7NVY0N",
+      "attributes": {
+        "term": "X*",
+        "statement": "Finite sequences over X",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8STNGV2XSMDGM5VV0P",
+      "attributes": {
+        "term": "X⁺",
+        "statement": "Non-empty finite sequences over X",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SHDVXDKXSF45RCA0Q",
+      "attributes": {
+        "term": "Multiset(X)",
+        "statement": "Multisets over X",
+        "refs": "01KDEW4H8SNCSQ9B4NTE6P4G0E"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8SPYYGDWBR1TQ3PG0R",
+      "attributes": {
+        "title": "NOTATION CONVENTIONS",
+        "alias": "sub-sec-XYQxS3DjhGgZ24R6PyyfR-3"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SFFBY5W2V2G5E090T",
+      "attributes": {
+        "term": "e, e₁, e₂, ...",
+        "statement": "Elements",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SDXW45GGNQ2Q5KK0V",
+      "attributes": {
+        "term": "l, l₁, l₂, ...",
+        "statement": "Layers",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SE5QYQK0V2VV63D0W",
+      "attributes": {
+        "term": "d, d₁, d₂, ...",
+        "statement": "Dependencies",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S0JX6XF88T268390X",
+      "attributes": {
+        "term": "c, c₁, c₂, ...",
+        "statement": "Constraints",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SN7W8D1WF5SRWDE0Y",
+      "attributes": {
+        "term": "b, b₁, b₂, ...",
+        "statement": "Bindings",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SZXF9E8QB0ES22T0Z",
+      "attributes": {
+        "term": "r, r₁, r₂, ...",
+        "statement": "Cascade rules",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S3YJHDA4CBTY9PW10",
+      "attributes": {
+        "term": "S, S₁, S₂, ...",
+        "statement": "Specifications",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SHYWBNK7HWM67WS11",
+      "attributes": {
+        "term": "Γ, Δ, Θ",
+        "statement": "Contexts (sets of judgments)",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8ST0YPZEE1F1Y39612",
+      "attributes": {
+        "term": "τ, σ, ρ",
+        "statement": "Types",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SB0A0S53BAAV12613",
+      "attributes": {
+        "term": "π, φ, ψ",
+        "statement": "Predicates",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SC58SMZ56RBHYCF14",
+      "attributes": {
+        "term": "α, β",
+        "statement": "Actor identifiers",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S4240J19STH4B2D15",
+      "attributes": {
+        "term": "vc, vc₁, vc₂",
+        "statement": "Vector clocks",
+        "refs": "01KDEW4H8SPYYGDWBR1TQ3PG0R"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8S7CWAWR4XP8D9Q716",
+      "attributes": {
+        "title": "THE STRATUM KERNEL (K0)",
+        "alias": "sub-sec-XYQxS3DjhGgZ24R6PyyfR-4"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8S9DV4SV80ADX71M17",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "**Purpose**: The STRATUM Kernel is the irreducible core of the specification—the minimum set of definitions required for K0 conformance. This section provides a self-contained reading guide for implementers who need only the essential framework without certification, concurrency, or advanced features."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEW4H8SC3HPCH8DG9H3AY18",
+      "attributes": {
+        "variant": "note",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "**Conformance Level K0 (Kernel-Conformant)**: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4\", \"§{{sectionNumber}}.4 Structure Overview\")."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8SMHNQS1QEKWEDE019",
+      "attributes": {
+        "title": "Kernel Components"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SGD999M4Q1NKY891A",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The Kernel consists of six essential subsystems:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SBB1G4WJSANYY0V1C",
+      "attributes": {
+        "term": "**1. Data Structures** (referenceMap(\"sub-xYOy8xUJpcssgjNVmANNW\", \"§{{sectionNumber}}.1 Element\") – referenceMap(\"sub-1PQdtQJCcUP4hsmjE7iJL\", \"§{{sectionNumber}}.2 Layer\") – referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\"))",
+        "statement": "Element, Layer, Dependency — the core abstract syntax tree. Read: Definition 2.1 (Element), Definition 2.6 (Layer), Definition 2.11 (Dependency), Definition 2.8 (DEPTYPE enumeration).",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SH1E25WQGDYAAGK1D",
+      "attributes": {
+        "term": "**2. Constraints** (referenceMap(\"sub-CyAf_GsK2z3HhpvlCgKlD\", \"§{{sectionNumber}}.4 Constraint\"))",
+        "statement": "QF_LIA + QF_LRA + QF_UF constraint language. Read: Definition 2.12 (Predicate Language), Definition 2.16 (Constraint), Theorem 2.1 (Decidability). Note: SMT-LIB 2.6 standard required for conformance.",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SNX9JJ96VK20J041E",
+      "attributes": {
+        "term": "**3. Well-Formedness** (referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\"))",
+        "statement": "Structural invariants that all specifications must satisfy. Read: All WF-rules including WF-ID, WF-LAYER, WF-ACYCLIC-HARD, WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION (added v2.4.4).",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S7YZZW344SW8W3W1F",
+      "attributes": {
+        "term": "**4. Six Guarantees** (referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"))",
+        "statement": "G1 (Traceability), G2 (Completeness), G3 (Consistency), G4 (Groundedness), G5 (Determinism), G6 (Coherence). These are the semantic properties that define a Valid specification. G7 (Explainability) is K1, not K0.",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SJ57QTJYYVSZ6141G",
+      "attributes": {
+        "term": "**5. Inference Rules** (referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"))",
+        "statement": "Cascade computation (CASCADE-1, CASCADE-N, CASCADE-ATT), constraint satisfaction (CONSTR-SAT), trace computation (TRACE-ROOT, TRACE-STEP). These define the operational semantics.",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SC90G7Z802PMQ961H",
+      "attributes": {
+        "term": "**6. Core Operations** (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"))",
+        "statement": "validate(S) → violations, trace(e) → path, impact(S, δ) → affected elements. These are the three required Kernel operations. Note: validateIncremental (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\").1) is K3, not K0.",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8SZ1H33G1P2W0FJQ1J",
+      "attributes": {
+        "title": "Kernel Properties"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SW9E4NTKCZX3Y3G1K",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "All Kernel operations share three essential properties:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S5JXC1JRCFM7CRV1N",
+      "attributes": {
+        "term": "**Pure**",
+        "statement": "All Kernel functions are deterministic total functions with no side effects. No I/O, no randomness, no wall-clock time dependencies. Given the same input, always produce the same output.",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8SX39RXYSF600E3Z1P",
+      "attributes": {
+        "term": "**Decidable**",
+        "statement": "All Kernel judgments terminate with definite yes/no answers. No \"unknown\" or \"timeout\" results. Well-formedness checking is O(|E| + |D| + |L|²). Constraint validation is decidable via SMT solving (NP-complete, but terminates).",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEW4H8S2GVW549CBW7T141Q",
+      "attributes": {
+        "term": "**Compositional**",
+        "statement": "Kernel(S₁ ⊕ S₂) = Kernel(S₁) ⊕ Kernel(S₂). Merging two specifications preserves all Kernel properties. This follows from the CRDT-based merge semantics (referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\")) but does not require understanding CRDTs for K0 conformance.",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8SETW22X5S8PHRJW1R",
+      "attributes": {
+        "title": "What is NOT in the Kernel"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SF6KX2T54GWVJ2B1S",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The following features are EXTENSIONS, not Kernel requirements:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SE5Q987VBTYG3PJ1T",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "**Concurrency (referenceMap(\"sec-FKg-HIOFmN1Oiyr_KJhnT\", \"§{{sectionNumber}}\") – referenceMap(\"sec-aAgCXhEN9t0xxoeTpf0Qc\", \"§{{sectionNumber}}\"))**: CRDTs, vector clocks, conflict resolution. Optional for single-user tools."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "**Certification (referenceMap(\"sec-5jP_ZWlaA8SfDbhVxrG99\", \"§{{sectionNumber}}\") – referenceMap(\"sec-YFHOeAjN2dYDjDiTocSSI\", \"§{{sectionNumber}}\") – referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\") – referenceMap(\"sec-S3Z17-kDEc2A9A92Y0bqi\", \"§{{sectionNumber}}\"), referenceMap(\"sec-ZBsFkK5bvDEL4m-rsfH17\", \"§{{sectionNumber}}\") – referenceMap(\"sec-RBDT59WZE2xJyi9k5UFvY\", \"§{{sectionNumber}}\") – referenceMap(\"sec-rRDDwm1LZy_CFk7nC2L0k\", \"§{{sectionNumber}}\") – referenceMap(\"sec-Nei3FTlw11oOPZVBq920l\", \"§{{sectionNumber}}\") – referenceMap(\"sec-x6eVbGvoVfS9GNeqNkLUG\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dM0e66FHuNRBmoEaMjfxF\", \"§{{sectionNumber}}\") – referenceMap(\"sec-F4EMqD3954zBnfEDnmQGj\", \"§{{sectionNumber}}\"))**: RTM, DO-178C/ISO 26262 mappings, STPA/FMEA. Only required for K2+ conformance."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "**Advanced Operations (referenceMap(\"sec-aBNKnM08R3W5pfjELaQas\", \"§{{sectionNumber}}\"), referenceMap(\"sec-FzfSSWJ73nYlWnpzz3-B7\", \"§{{sectionNumber}}\") – referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\"))**: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "**Mechanized Proofs (referenceMap(\"sec-z3nlCPJ5B1h7TUhEf25LL\", \"§{{sectionNumber}}\"), referenceMap(\"sec-PAskKN4i1etyZhtOY5xtv\", \"§{{sectionNumber}}\") – referenceMap(\"sec-ojM0_ZLauOdjNuKK99Pg0\", \"§{{sectionNumber}}\") – referenceMap(\"sec-dIOSpm6loMFLin3AzkYRN\", \"§{{sectionNumber}}\") – referenceMap(\"sec-LUj58UniUYiDJ-BI2QMU3\", \"§{{sectionNumber}}\"))**: TLA+, Coq, Lean templates. Helpful for verification but not required for implementation."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "**G7 Explainability (referenceMap(\"sub-Q_FIkGVXUuZIl6JAWPVwl\", \"§{{sectionNumber}}.8 Valid Specification\"))**: Unsat core generation. This is K1 (Certified-Aware), not K0."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8S19SMZ9JE9X7N4G1V",
+      "attributes": {
+        "title": "Kernel-Only Reading Path"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SAZ05WMD2CTX8RX1W",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "For K0 conformance, read in this order:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SEAK9T3YN4265HS1X",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr_KJhnT-1\", \"§{{sectionNumber}}.1 Core Contributions\") – referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr_KJhnT-2\", \"§{{sectionNumber}}.2 Key Theorems\") – referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr_KJhnT-3\", \"§{{sectionNumber}}.3 Certification Path\"): Primitive sets, notation (5 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4\", \"§{{sectionNumber}}.4 Structure Overview\"): This section (10 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sub-xYOy8xUJpcssgjNVmANNW\", \"§{{sectionNumber}}.1 Element\") – referenceMap(\"sub-1PQdtQJCcUP4hsmjE7iJL\", \"§{{sectionNumber}}.2 Layer\") – referenceMap(\"sub-przG8f9oPcQ5oNMXdlyHX\", \"§{{sectionNumber}}.3 Dependency\") – referenceMap(\"sub-CyAf_GsK2z3HhpvlCgKlD\", \"§{{sectionNumber}}.4 Constraint\"): Element, Layer, Dependency, Constraint (30 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\"): Well-formedness conditions (15 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"): The Six Guarantees G1-G6 (25 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sec-CwnDzo78GYBw57r1EI_R5\", \"§{{sectionNumber}}\"): Inference rules for cascade, trace, constraints (20 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"): validate(), trace(), impact() operations (15 minutes)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "referenceMap(\"sub-OBU4duRRllB7_9IhbL-1N\", \"§{{sectionNumber}}.1 Soundness\") – referenceMap(\"sub-OB_3VjaM4yzhjgIYWx1_k\", \"§{{sectionNumber}}.2 Convergence\") – referenceMap(\"sub-kbjoG8RVDTc33BlKjcHtq\", \"§{{sectionNumber}}.3 Decidability\"): Soundness, decidability, cascade termination theorems (10 minutes)"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SP6RPT2HBEJD9601Y",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "**Total: ~2 hours** to understand the complete Kernel. Compare this to 30 sections (8-10 hours for full specification)."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEW4H8S7HMKB8ZZXR6TF41Z",
+      "attributes": {
+        "variant": "important",
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "**Kernel Boundary Enforcement**: Some sections are explicitly marked **non-Kernel**. Artifact Adapters (referenceMap(\"sec-xEbsOCjQmAy1Uj_H6qRLr\", \"§{{sectionNumber}}\")) introduce `effectful: true` to mark I/O-performing components that violate Kernel purity. These adapters emit Operation lists that the Kernel consumes deterministically, maintaining the pure/effectful boundary."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEW4H8SS34WVSKS5XRZ2J20",
+      "attributes": {
+        "title": "Reference Implementation Checklist"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8SGC1T2E1WZC5S0Q21",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "To claim K0 conformance, your implementation must:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8S3Y8ER8QQ0NQA6V22",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Implement data structures: Specification, Element, Layer, Dependency, Constraint, Binding, CascadeRule"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Implement constraint language: QF_LIA + QF_LRA + QF_UF (via SMT solver like Z3, CVC5, or Yices)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Implement all WF-rules from referenceMap(\"sec-pYrht_aqaJ5gENPPS98r-\", \"§{{sectionNumber}}\") (including additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Implement guarantee checkers for G1-G6 (referenceMap(\"sub-2rVTmZOx_FfwEKLswk1-j\", \"§{{sectionNumber}}.1 Traceability\") – referenceMap(\"sub-K1-qOmCVrnDqLrLgOd_aa\", \"§{{sectionNumber}}.2 Completeness\") – referenceMap(\"sub-sbASI3HUkg21rQji8CA3y\", \"§{{sectionNumber}}.3 Consistency\") – referenceMap(\"sub-PNmArYZo6xNqQZsWMEHGT\", \"§{{sectionNumber}}.4 Groundedness\") – referenceMap(\"sub-XWHt4rvXeJPsjryeyJk-f\", \"§{{sectionNumber}}.5 Determinism\") – referenceMap(\"sub-BY56RlNT5fC29dbs7WShu\", \"§{{sectionNumber}}.6 Coherence\"))"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Implement cascade computation per CASCADE-1, CASCADE-N rules (referenceMap(\"sub-5Xu8Vv_BHhTdzfCjtqDRo\", \"§{{sectionNumber}}.3 Cascade Computation\"))"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Implement validate(S), trace(e), impact(S, δ) operations (referenceMap(\"sub-amKfbMudBf4a5EIxM14St\", \"§{{sectionNumber}}.1 Query Operations\") – referenceMap(\"sub-9q6VwEYOZyqBvxep8Dw5x\", \"§{{sectionNumber}}.2 Modification Operations\") – referenceMap(\"sub-doChtsVucb4PgzoofGPjB\", \"§{{sectionNumber}}.3 Comparison Operations\"))"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Pass Kernel test suite (if available from reference implementation)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Demonstrate purity: All operations return same output for same input"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "✓ Demonstrate decidability: All operations terminate (no infinite loops)"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEW4H8S5HR3KW2KVRXHMP23",
+      "attributes": {
+        "refs": "01KDEW4H8S7CWAWR4XP8D9Q716"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "**Optional but Recommended**: Implement Zod schemas (referenceMap(\"sec-TmlplXlhpu2gAP4_iKrgd\", \"§{{sectionNumber}}\")) for runtime validation, though note the schema drift warning from v2.4.4 (Zod schemas are v1.0 and lack v2.0+ fields like cascade_boundary, priority, actor, clock)."
+        }
+      ],
+      "data": {}
+    }
+  ]
+}

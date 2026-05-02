@@ -1,0 +1,2217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Semantic Invariants</title>
+    <style>
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  color: #1f1b16;
+  background: #f5f2ec;
+  --bg: #f5f2ec;
+  --surface: #fffdf9;
+  --surface-strong: #ffffff;
+  --surface-muted: #f9f6f1;
+  --ink: #1f1b16;
+  --muted: #6b6257;
+  --accent: #1f6b5a;
+  --accent-2: #c1552c;
+  --accent-3: #2c5282;
+  --border: #e1ddd6;
+  --shadow: rgba(19, 16, 12, 0.12);
+  --code-bg: #f1ede6;
+  --soft: #fbfaf8;
+  --highlight: rgba(31, 107, 90, 0.16);
+}
+body {
+  margin: 0;
+  padding: 56px 24px 96px;
+  color: var(--ink);
+  background: var(--bg);
+  position: relative;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(31, 107, 90, 0.14), transparent 55%),
+    radial-gradient(circle at 85% 15%, rgba(193, 85, 44, 0.14), transparent 50%),
+    linear-gradient(180deg, #fff7ec 0%, #f5f2ec 55%, #f2eee6 100%);
+  z-index: -2;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(transparent 94%, rgba(0, 0, 0, 0.03) 95%),
+    linear-gradient(90deg, transparent 94%, rgba(0, 0, 0, 0.03) 95%);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--surface-strong);
+  padding: 36px;
+  border-radius: 22px;
+  border: 1px solid rgba(31, 27, 22, 0.06);
+  box-shadow: 0 34px 110px rgba(19, 16, 12, 0.14);
+  position: relative;
+  animation: riseIn 0.6s ease-out;
+}
+.doc-content > :first-child {
+  margin-top: 0;
+}
+.doc-grid {
+  display: grid;
+  gap: 2.4rem;
+  align-items: start;
+}
+.doc-grid.has-toc {
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+}
+.doc-grid.no-toc {
+  grid-template-columns: minmax(0, 1fr);
+}
+.doc-content {
+  min-width: 0;
+}
+.cover {
+  margin: 0 0 3rem;
+  padding: 28px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fdf6ea 0%, #e6f3ee 55%, #faefe7 100%);
+  animation: riseIn 0.7s ease-out;
+}
+.cover-surface {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 14px 36px rgba(19, 16, 12, 0.12);
+}
+.cover-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+.cover-title {
+  font-size: 2.8rem;
+  margin: 0 0 0.5rem;
+  font-family: "IBM Plex Serif", Georgia, serif;
+}
+.cover-subtitle {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin: 0 0 0.8rem;
+}
+.cover-description {
+  font-size: 1rem;
+  margin: 0 0 1.4rem;
+  max-width: 60ch;
+  color: #4a453f;
+}
+.cover-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.cover-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  background: var(--surface-strong);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cover-link:hover {
+  background: #f1ede6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(31, 27, 22, 0.12);
+}
+.cover-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 2fr;
+  gap: 2rem;
+}
+.cover-meta {
+  display: grid;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+}
+.cover-meta-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.6rem;
+  color: #3c3731;
+}
+.cover-meta-row span:first-child {
+  font-weight: 600;
+  color: #3f3a34;
+}
+.cover-meta-row span:last-child {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.9rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  width: fit-content;
+}
+.cover-abstract h2 {
+  margin-top: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Serif", "Georgia", serif;
+  margin: 1.6em 0 0.4em;
+  color: #2c2a27;
+}
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.9rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.2rem; }
+p { margin: 0.6em 0; }
+section { margin-bottom: 2rem; }
+.doc-content p {
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+.doc-content p + p {
+  margin-top: 0.9rem;
+}
+.vera-section {
+  margin: 2.4rem 0 1.2rem;
+}
+.vera-section h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(31, 27, 22, 0.08);
+}
+.vera-section h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(31, 107, 90, 0.25), transparent 70%);
+  margin-left: 0.4rem;
+}
+section.part > section + section {
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent 10%, #e1ddd6 30%, #e1ddd6 70%, transparent 90%) 1;
+  padding-top: 3rem;
+  margin-top: 2.5rem;
+  position: relative;
+}
+section.part > section + section::before {
+  content: "§";
+  position: absolute;
+  top: -0.7em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-strong);
+  padding: 0 0.8rem;
+  color: #c1bbb3;
+  font-size: 1.1rem;
+}
+section.part > section > h3 {
+  border-left: 4px solid var(--accent);
+  padding-left: 1rem;
+  margin-left: -1rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+dl { margin: 1rem 0; }
+dt { font-weight: 600; margin-top: 0.6rem; }
+dd { margin-left: 1rem; margin-bottom: 0.4rem; }
+code {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: var(--code-bg);
+  padding: 0 0.2em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+pre code {
+  background: transparent;
+  padding: 0;
+  display: block;
+  white-space: pre;
+}
+pre code span.highlight {
+  background: rgba(255, 243, 205, 0.8);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  border-left: 3px solid #c77a1c;
+}
+.code-block {
+  margin: 1rem 0;
+}
+.code-block pre {
+  margin: 0;
+}
+.code-filename {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: #e9e5df;
+  padding: 0.4rem 1rem;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid var(--border);
+}
+.code-filename + pre {
+  border-radius: 0 0 10px 10px;
+}
+.diagram {
+  background: #e7f2ef;
+  border-left: 4px solid var(--accent);
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  white-space: pre;
+}
+ul, ol { padding-left: 1.4rem; margin: 0.5em 0; }
+li { margin: 0.3em 0; }
+.doc-content ul,
+.doc-content ol {
+  max-width: 76ch;
+  padding-left: 1.2rem;
+}
+.doc-content li {
+  line-height: 1.65;
+}
+.admonition {
+  border-left: 4px solid #c77a1c;
+  background: #fff4e1;
+  padding: 0.8rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+.admonition-note { border-left-color: var(--accent); background: #e7f2ef; }
+.admonition-warning { border-left-color: #c77a1c; background: #fff4e1; }
+.admonition-important { border-left-color: #b24729; background: #ffebe6; }
+.admonition-tip { border-left-color: #2c5282; background: #e6f0ff; }
+.reference {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 0.65rem 0.85rem;
+  margin: 0.6rem 0;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+.reference-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.reference-title {
+  font-family: "IBM Plex Serif", "Georgia", serif;
+  font-size: 0.86rem;
+}
+.reference-year {
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: #f1ede6;
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+}
+.reference-authors {
+  margin-top: 0.2rem;
+  font-weight: 600;
+  color: #3b3630;
+  font-size: 0.8rem;
+}
+.reference-meta {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.reference-tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+  flex-wrap: wrap;
+}
+.reference-kind,
+.reference-key {
+  background: #e7f2ef;
+  color: var(--accent);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 107, 90, 0.2);
+}
+.reference-key {
+  background: #f3efe7;
+  color: #7a6a58;
+  border-color: rgba(122, 106, 88, 0.2);
+}
+.reference-note {
+  margin-top: 0.45rem;
+  color: #3d3832;
+  font-size: 0.82rem;
+}
+.reference-link {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+.reference-link:hover {
+  text-decoration: underline;
+}
+.definition,
+.rule,
+.theorem,
+.guarantee,
+.operation,
+.profile,
+.checklist,
+.table {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(19, 16, 12, 0.06);
+}
+.vera-table {
+  overflow-x: auto;
+}
+.vera-table table {
+  min-width: 560px;
+}
+.definition { border-left: 4px solid var(--accent); }
+.rule { border-left: 4px solid #9c5b1c; }
+.theorem { border-left: 4px solid #9b2c4a; background: #fef5f7; }
+.proof { border-left: 4px solid #6b46c1; background: #f9f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.example { border-left: 4px solid #2c5282; background: #f0f5ff; }
+.exercise { border-left: 4px solid #c77a1c; background: #fff8f0; }
+.definition-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  word-break: break-word;
+  margin: 0 0 0.5rem;
+}
+.definition-title strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: #2a2621;
+}
+.definition-title strong::before {
+  content: "DEF";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  padding: 0.18rem 0.4rem;
+  border-radius: 999px;
+  background: #e7f2ef;
+  color: var(--accent);
+}
+.definition p {
+  margin: 0.45rem 0;
+}
+.definition p code,
+.definition p em {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+}
+.rule-description { color: var(--muted); font-size: 0.95rem; }
+.proof-end { text-align: right; color: var(--muted); margin: 0.5rem 0 0; }
+.definitions-index {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.definitions-index ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.definitions-index li {
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+}
+.definitions-index a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+.definitions-index a:hover {
+  text-decoration: underline;
+}
+.def-origin {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.definition .anchor {
+  font-size: 0.85em;
+  color: #9c9488;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.definition:hover .anchor {
+  opacity: 1;
+}
+.profile-layer + .profile-layer {
+  margin-top: 0.8rem;
+}
+figure {
+  margin: 1rem 0;
+}
+figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: #5b564f;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+th {
+  background: #f1ede6;
+}
+.toc {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  padding: 1.1rem 1.3rem;
+  border-radius: 18px;
+  margin: 0;
+  box-shadow: 0 18px 48px rgba(19, 16, 12, 0.1);
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+}
+.toc::after {
+  content: "";
+  display: block;
+  margin-top: 0.8rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(31, 107, 90, 0.2), transparent);
+}
+.toc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.toc-title {
+  flex: 1;
+}
+.toc-toggle {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.toc-search {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-top: 0.4rem;
+}
+.toc-search:focus {
+  outline: 2px solid rgba(31, 107, 90, 0.2);
+  border-color: var(--accent);
+}
+.toc h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  border: none;
+}
+.toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0 0;
+}
+.toc ul ul {
+  padding-left: 1rem;
+  margin-top: 0.4rem;
+}
+.toc li {
+  break-inside: avoid;
+  margin: 0.35rem 0;
+}
+.toc li a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.18rem 0.4rem;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+  color: var(--ink);
+  text-decoration: none;
+}
+.toc li a::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(31, 27, 22, 0.18);
+}
+.toc li a:hover {
+  background: rgba(31, 107, 90, 0.12);
+  text-decoration: none;
+}
+.toc-part > span {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.toc-hidden {
+  display: none;
+}
+.def-stack {
+  display: grid;
+  gap: 1rem;
+  margin: 1.4rem 0;
+}
+.def-block {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+}
+.def-header {
+  display: flex;
+  gap: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.def-block h4 {
+  margin: 0.4rem 0 0.6rem;
+}
+.def-list ul {
+  margin: 0.4rem 0 0.8rem;
+}
+.def-proof h5 {
+  margin: 1rem 0 0.4rem;
+}
+.def-code {
+  margin: 0.6rem 0;
+}
+.def-code-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.def-code pre {
+  margin: 0;
+}
+.def-kv {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: 0;
+  margin: 0;
+}
+.def-kv dt {
+  font-weight: 600;
+  color: #3c3731;
+  padding: 0.4rem 0.8rem 0.4rem 0;
+  border-right: 2px solid var(--border);
+}
+.def-kv dd {
+  margin: 0;
+  padding: 0.4rem 0 0.4rem 0.8rem;
+}
+.def-kind {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  background: #e9e5df;
+}
+.def-kind-enum {
+  background: #e7f2ef;
+  color: #1f6b5a;
+}
+.def-kind-type {
+  background: #e6eef8;
+  color: #2c5282;
+}
+.def-kind-rule {
+  background: #fef3e2;
+  color: #9c5b1c;
+}
+.def-kind-function {
+  background: #f0e7f6;
+  color: #6b46c1;
+}
+.def-kind-theorem {
+  background: #fce8ec;
+  color: #9b2c4a;
+}
+.def-category {
+  background: #f1ede6;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+.def-section {
+  color: #9c9488;
+  font-size: 0.7rem;
+}
+.def-enum-values ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+}
+.def-enum-values li {
+  background: #e7f2ef;
+  color: #1f6b5a;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.85rem;
+}
+.def-compatible ul {
+  list-style: none;
+  padding: 0;
+}
+.def-compatible li::before {
+  content: "+";
+  color: #1f6b5a;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.def-breaking ul {
+  list-style: none;
+  padding: 0;
+}
+.def-breaking li::before {
+  content: "!";
+  color: #b24729;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.def-block.def-enum {
+  border-left: 4px solid #1f6b5a;
+}
+.def-block.def-type {
+  border-left: 4px solid #2c5282;
+}
+.def-block.def-rule {
+  border-left: 4px solid #9c5b1c;
+}
+.def-block.def-function {
+  border-left: 4px solid #6b46c1;
+}
+.def-block.def-theorem {
+  border-left: 4px solid #9b2c4a;
+}
+.definition-list {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  gap: 0;
+  margin: 1.4rem 0;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.definition-list dt,
+.definition-list dd {
+  padding: 0.8rem 1rem;
+  margin: 0;
+  border-bottom: 1px solid #e9e5df;
+}
+.definition-list dt {
+  font-weight: 600;
+  color: #3c3731;
+  background: rgba(241, 237, 230, 0.5);
+  border-right: 1px solid #e9e5df;
+}
+.definition-list dd {
+  color: #4a453f;
+}
+.definition-list dt:last-of-type,
+.definition-list dd:last-of-type {
+  border-bottom: none;
+}
+.gap {
+  background: #fff3cd;
+  border: 1px dashed #ffc107;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+.gap-marker { color: #856404; font-weight: 600; }
+.redaction {
+  display: inline-block;
+  background: #333;
+  color: #333;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+.redaction-marker { font-family: monospace; }
+.quote {
+  border-left: 4px solid var(--border);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.quote footer { margin-top: 0.5rem; font-size: 0.9rem; }
+.math {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: var(--code-bg);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.math-inline {
+  font-family: "IBM Plex Mono", monospace;
+  background: var(--code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+.breadcrumb-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+.breadcrumb-btn {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.breadcrumb-btn:hover {
+  background: #f1ede6;
+}
+.inspect-modal {
+  position: fixed;
+  right: clamp(16px, 3vw, 32px);
+  top: 96px;
+  width: min(360px, calc(100vw - 48px));
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(19, 16, 12, 0.18);
+  padding: 1rem 1.2rem;
+  display: none;
+  z-index: 41;
+  max-height: calc(100vh - 140px);
+  overflow: hidden;
+}
+.inspect-modal.active {
+  display: block;
+}
+.inspect-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+.inspect-modal h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.inspect-close {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+.inspect-close:hover {
+  background: #f1ede6;
+  color: #2c2a27;
+}
+.inspect-modal p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+}
+.inspect-content {
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  padding-right: 0.4rem;
+}
+.inspect-defs {
+  margin-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.8rem;
+}
+.inspect-defs h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.inspect-defs ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+.inspect-defs li {
+  background: #f7f4ee;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+}
+.inspect-defs code {
+  background: transparent;
+  padding: 0;
+}
+.inspect-meta {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  color: #4a453f;
+  background: #f7f5f2;
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  margin-top: 0.6rem;
+  white-space: pre-wrap;
+}
+.inspect-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.inspect-copy {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.inspect-copy:hover {
+  background: #f1ede6;
+}
+.ref-link {
+  color: var(--ink);
+  text-decoration: underline dotted;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(31, 107, 90, 0.5);
+  outline-offset: 2px;
+}
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  width: 0%;
+  z-index: 200;
+  transition: width 0.1s ease-out;
+}
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(19, 16, 12, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease;
+  z-index: 90;
+}
+.back-to-top:hover {
+  background: #f1ede6;
+  transform: translateY(-2px);
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.toc a.active {
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(31, 107, 90, 0.12);
+  border-radius: 8px;
+}
+.toc a.active::before {
+  background: var(--accent);
+}
+.footnotes {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.footnotes h2 {
+  font-size: 1.2rem;
+  margin-top: 0;
+}
+.footnotes ol {
+  padding-left: 1.2rem;
+}
+.footnotes li {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #2a2621;
+}
+.footnote-ref {
+  font-size: 0.75em;
+}
+.footnote-ref a {
+  text-decoration: none;
+  color: var(--accent);
+}
+.footnote-ref a:hover {
+  text-decoration: underline;
+}
+.footnote-backref {
+  margin-left: 0.4rem;
+  text-decoration: none;
+  color: var(--muted);
+}
+.footnote-backref:hover {
+  color: var(--accent);
+}
+html {
+  scroll-behavior: smooth;
+}
+.anchor {
+  margin-left: 0.4rem;
+  font-size: 0.75em;
+  color: #9c9488;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
+  opacity: 1;
+}
+.copy-link {
+  margin-left: 0.3rem;
+  color: #9c9488;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0.2rem;
+  border-radius: 4px;
+  vertical-align: middle;
+  width: 1.2em;
+  height: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.copy-link svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.copy-link:hover {
+  color: var(--accent);
+  background: var(--highlight);
+}
+.copy-link.copied {
+  color: #2d8a4e;
+}
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 120px;
+}
+h2[id]:target,
+h3[id]:target,
+h4[id]:target,
+h5[id]:target,
+h6[id]:target {
+  background: var(--highlight);
+  border-radius: 12px;
+  padding: 0.2rem 0.4rem;
+}
+h2:hover .copy-link,
+h3:hover .copy-link,
+h4:hover .copy-link,
+h5:hover .copy-link,
+h6:hover .copy-link {
+  opacity: 1;
+}
+/* VERA-specific entity styles */
+.vera-para {
+  margin: 0.8rem 0;
+  max-width: 78ch;
+  font-size: 1.03rem;
+  line-height: 1.7;
+  color: #2a2621;
+}
+.vera-definition,
+.vera-rule,
+.vera-theorem,
+.vera-proof,
+.vera-example,
+.vera-exercise,
+.vera-claim,
+.vera-evidence,
+.vera-guarantee,
+.vera-admonition {
+  box-shadow: 0 14px 32px rgba(19, 16, 12, 0.08);
+}
+.vera-definition { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid var(--accent); }
+.vera-rule { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #9c5b1c; }
+.vera-theorem { border: 1px solid var(--border); background: #fef5f7; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #9b2c4a; }
+.vera-proof { border: 1px solid var(--border); background: #f9f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #6b46c1; }
+.vera-example { border: 1px solid var(--border); background: #f0f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #2c5282; }
+.vera-exercise { border: 1px solid var(--border); background: #fff8f0; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #c77a1c; }
+.vera-claim { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.vera-evidence { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.vera-gap { background: #fff3cd; border: 1px dashed #ffc107; padding: 0.8rem 1rem; border-radius: 8px; margin: 1rem 0; }
+.vera-redaction { display: inline-block; background: #333; color: #333; padding: 0.2rem 0.5rem; border-radius: 4px; }
+.vera-admonition { border-left: 4px solid #c77a1c; background: #fff4e1; padding: 0.8rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+.vera-quote { border-left: 4px solid var(--border); padding-left: 1rem; margin: 1rem 0; color: var(--muted); font-style: italic; }
+.vera-quote footer { margin-top: 0.5rem; font-size: 0.9rem; }
+.vera-formula {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: linear-gradient(180deg, #f8f4ed 0%, #f1ece3 100%);
+  padding: 0.95rem 1.2rem;
+  border-radius: 12px;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  border: 1px solid rgba(31, 27, 22, 0.12);
+  border-left: 4px solid rgba(31, 107, 90, 0.4);
+  font-size: 0.95rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+.vera-guarantee { border: 1px solid var(--border); background: #f0fff4; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #2d8a4e; }
+.vera-guarantee .guarantee-header {
+  margin: 0 0 0.6rem;
+  color: #1a5c32;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.vera-guarantee .guarantee-header strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.vera-guarantee .guarantee-header strong::before {
+  content: "G";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #2d8a4e;
+  color: #f8fff9;
+  font-size: 0.75rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .progress-bar {
+    transition: none;
+  }
+  main,
+  .cover {
+    animation: none;
+  }
+}
+.breadcrumb {
+  position: fixed;
+  top: 3px;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  z-index: 100;
+  transform: translateY(-100%);
+  transition: transform 0.25s ease;
+  box-shadow: 0 2px 8px rgba(19, 16, 12, 0.08);
+}
+.breadcrumb.visible {
+  transform: translateY(0);
+}
+.breadcrumb-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb-item {
+  color: var(--muted);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.breadcrumb-item:hover {
+  color: #2c2a27;
+  text-decoration: underline;
+}
+.breadcrumb-item.current {
+  color: var(--ink);
+  font-weight: 600;
+}
+.breadcrumb-sep {
+  color: #c1bbb3;
+  flex-shrink: 0;
+}
+.breadcrumb-item.truncated {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.toc-floating .toc {
+  position: fixed;
+  top: 24px;
+  width: 320px;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  box-shadow: 0 12px 40px rgba(19, 16, 12, 0.18);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+body.toc-floating .toc::before {
+  content: "Outline";
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+body.toc-right.toc-floating .toc {
+  right: 24px;
+  left: auto;
+}
+body.toc-left.toc-floating .toc {
+  left: 24px;
+  right: auto;
+}
+@media (max-width: 720px) {
+  .definition-list {
+    grid-template-columns: 1fr;
+  }
+  .definition-list dt {
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: 0.4rem;
+  }
+  .definition-list dd {
+    padding-top: 0;
+  }
+}
+@media (max-width: 900px) {
+  .cover-body {
+    grid-template-columns: 1fr;
+  }
+  .cover-title {
+    font-size: 2.2rem;
+  }
+  .toc ul {
+    columns: 1;
+  }
+  body.toc-floating .toc {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+  .inspect-modal {
+    right: 16px;
+    left: 16px;
+    width: auto;
+    top: 96px;
+  }
+  .doc-grid.has-toc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .toc {
+    position: static;
+    max-height: none;
+  }
+}
+@media (max-width: 600px) {
+  body { padding: 24px 16px 64px; }
+  main { padding: 24px; border-radius: 16px; }
+  .cover { padding: 16px; }
+  .cover-title { font-size: 1.8rem; }
+  .cover-meta-row { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+@media print {
+  .cover {
+    page-break-after: always;
+  }
+}
+</style>
+  </head>
+  <body class="vera-doc">
+    <main>
+      
+    <section class="cover">
+      <div class="cover-surface">
+        <div class="cover-head">
+          <p class="cover-eyebrow">VERA Document</p>
+          <h1 class="cover-title">Semantic Invariants</h1>
+        </div>
+        <div class="cover-body">
+          <div class="cover-meta"><div class="cover-meta-row"><span>Document ID</span><span>01KDEXED2NK9FFRKVNK3HSXF00</span></div><div class="cover-meta-row"><span>Source Type</span><span>manual</span></div><div class="cover-meta-row"><span>Extraction</span><span>hybrid</span></div><div class="cover-meta-row"><span>Confidence</span><span>95%</span></div></div>
+        </div>
+        <div class="cover-links">
+          <button class="cover-link" id="export-latex" type="button">Export LaTeX</button>
+        </div>
+      </div>
+    </section>
+  
+      <div class="doc-grid has-toc">
+        
+    <nav class="toc">
+      <h2>Contents</h2>
+      <ul><li><a href="#01KDEXED2NP3EKN2K2KX99V101">Provenance</a></li><li><a href="#01KDEXED2NFJGPDM3PD9TJM108">Fulfillment</a></li><li><a href="#01KDEXED2PXGM7DPD47TRJBG05">Non-Contradiction</a></li><li><a href="#01KDEXED2PDHNZXENH2PDM600G">Materialization</a></li><li><a href="#01KDEXED2PPK3ZSGVDCEHTYW0S">Predictability</a></li><li><a href="#01KDEXED2PA0WV2YH059RSYX12">Stratification</a></li><li><a href="#01KDEXED2PPA6KXQEJF1A2A21C">Diagnosability</a></li><li><a href="#01KDEXED2PBDK2ZG73H3SHVY1X">Valid Specification</a></li><li><a href="#01KDEXED2N0000TERM000SEC">Terminology Mapping Summary</a></li><li><a href="#01KDEXED2N0000REFS000SEC">References</a></li></ul>
+    </nav>
+  
+        <div class="doc-content">
+          
+<div class="vera-para" id="01KDEXED2N0000INTRO00000">A valid Stratum specification must satisfy seven semantic invariants. These invariants ensure that every specification is not only syntactically well-formed but also semantically coherent, traceable, and verifiable. Together, they form the foundation for trustworthy system documentation that can be automatically validated and maintained over time.</div>
+<div class="vera-para" id="01KDEXED2N0000INTRO00001">Each invariant addresses a distinct aspect of specification quality: G1 (Provenance) ensures traceability to purpose; G2 (Fulfillment) ensures completeness; G3 (Non-Contradiction) ensures consistency; G4 (Materialization) ensures groundedness; G5 (Predictability) enables impact analysis; G6 (Stratification) enforces abstraction boundaries; and G7 (Diagnosability) provides actionable error reporting.</div>
+
+        <div class="vera-admonition admonition admonition-note" id="01KDEXED2N0000INTRO00002">
+          <p><strong>Research Foundation</strong></p>
+          These seven invariants have deep roots in 40+ years of academic literature, industry standards, and formal methods. Each property maps to established concepts from IEEE/ISO standards, SEI publications, OMG specifications, and foundational computer science research.
+        </div>
+
+        <section class="vera-section" id="01KDEXED2NP3EKN2K2KX99V101" data-alias="sub-2rVTmZOx_FfwEKLswk1-j">
+          <h2>Provenance
+            <a class="anchor" href="#01KDEXED2NP3EKN2K2KX99V101">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000PROV000TRM">
+          The Provenance guarantee (G1) corresponds to <strong>bidirectional traceability</strong> in requirements engineering literature. IEEE 24765 defines traceability as &quot;the degree to which each element in a software development product establishes its reason for existing.&quot; ISO/IEC/IEEE 29148:2018 requires that traceable requirements be &quot;upwards traceable to specific documented stakeholder statement(s) of need... and downwards traceable to the specific requirements in the lower tier requirements specification.&quot;
+        </div>
+<div class="vera-para" id="01KDEXED2N0000PROV000000">The Provenance guarantee ensures that every element in a specification can trace its existence back to a root purpose. Nothing exists without justification—every requirement, design decision, and implementation detail must be connected to the fundamental goals of the system. This prevents orphaned elements that serve no purpose and ensures complete traceability from implementation to intent.</div>
+<div class="vera-para" id="01KDEXED2N0000PROV000GND">Safety-critical standards enforce this rigorously. DO-178C requires that &quot;every line of code must be traceable to a requirement&quot; (Table A-7, Objective 9). IEC 61508-3 Annex A.1 specifies that backward traceability checks &quot;that the implementation is justified by a requirement&quot;—the core provenance property. In formal methods, the refinement calculus (Back &amp; von Wright 1998) provides mathematical foundations where each refinement step is proven to preserve specification truth.</div>
+
+        <div class="vera-definition definition" id="01KDEXED2NXQB6R5BKRRP0X402" data-alias="def-pvGj6gjFtuI">
+          <p class="definition-title">
+            <strong>Definition (Root Element)</strong>
+            <a class="anchor" href="#01KDEXED2NXQB6R5BKRRP0X402">#</a>
+          </p>
+          <p>root(e) ≡ layer(e).stratum = purpose ∧ ¬∃d ∈ D. d.tgt.elem = e.id ∧ d.δ = justified_by</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2NCBPY55ZQEDBRKG03" data-alias="def-cloH22TGs_k">
+          <p class="definition-title">
+            <strong>Definition (Trace Path)</strong>
+            <a class="anchor" href="#01KDEXED2NCBPY55ZQEDBRKG03">#</a>
+          </p>
+          <p>tracePath(e) = shortest path from e to some e&#39; where root(e&#39;) following justified_by dependencies from target to source (impl → requirement)</p>
+          
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2NGCP1HTA6N1SCX104">
+          <p class="guarantee-header"><strong>GUARANTEE G1 - PROVENANCE</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2NX793K8P1RQAJ1C05">
+          ∀ e ∈ E. ∃ e&#39; ∈ E. root(e&#39;) ∧ reachable(e, e&#39;, justified_by)
+        </div>
+<div class="vera-para" id="01KDEXED2NE4SMFRT359Z38W06">Every element in the specification must be reachable from a root element in the purpose stratum via justified_by dependencies, which flow from implementation toward requirement.</div>
+<div class="vera-para" id="01KDEXED2N56VXJCCH5V8GKC07">Formally, for specification S:
+Provenanced(S) ≡ ∀ e ∈ elements(S). tracePath(e) ≠ ∅</div>
+
+        <section class="vera-section" id="01KDEXED2NFJGPDM3PD9TJM108" data-alias="sub-K1-qOmCVrnDqLrLgOd_aa">
+          <h2>Fulfillment
+            <a class="anchor" href="#01KDEXED2NFJGPDM3PD9TJM108">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000FULF000TRM">
+          The Fulfillment guarantee (G2) corresponds to <strong>constraint satisfaction</strong> and <strong>model satisfaction</strong> (M ⊨ S) in formal logic. Contract-based design (Benveniste et al. 2018) formalizes this through assume-guarantee contracts where a component satisfies a contract if &quot;all runs that satisfy assumptions A must satisfy guarantees G.&quot; The compositional theorem states that if all components satisfy their own contracts, a global system contract is satisfied.
+        </div>
+<div class="vera-para" id="01KDEXED2N0000FULF000000">The Fulfillment guarantee ensures that a specification satisfies its own declared constraints. Every specification may declare constraints—rules that must hold for the specification to be considered complete. Fulfillment requires that all error-level constraints evaluate to true. This makes the specification self-validating: it defines its own completeness criteria and then meets them.</div>
+<div class="vera-para" id="01KDEXED2N0000FULF000GND">IEEE 29148:2018 defines &quot;complete&quot; for individual requirements as &quot;needs no further amplification because it is measurable and sufficiently describes the capability.&quot; DO-178C specifies 71 verification objectives organized by Design Assurance Level, with completeness requiring evidence that &quot;each phase is complete, coherent, and traceable to its predecessor.&quot; The OMG OCL 2.4 Specification requires that &quot;an OCL expression is an invariant of the type and must be true for all instances of that type at any time.&quot;</div>
+
+        <div class="vera-definition definition" id="01KDEXED2NAVB4AZN13VGSSB09" data-alias="def-EhPHueVALWs">
+          <p class="definition-title">
+            <strong>Definition (Constraint Satisfaction)</strong>
+            <a class="anchor" href="#01KDEXED2NAVB4AZN13VGSSB09">#</a>
+          </p>
+          <p>S ⊨ c ≡ c.φ(elements(S), dependencies(S)) = ⊤</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2N17CFKVWGXAHPQ60A" data-alias="def-WjI32zYI4uY">
+          <p class="definition-title">
+            <strong>Definition (Error Constraints)</strong>
+            <a class="anchor" href="#01KDEXED2N17CFKVWGXAHPQ60A">#</a>
+          </p>
+          <p>ErrorConstraints(S) = {c ∈ constraints(S) | c.sev = error}</p>
+          
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2N9BWMTBB3WTTWF80B">
+          <p class="guarantee-header"><strong>GUARANTEE G2 - FULFILLMENT</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2PA2XTZHQRXEYEY100">
+          ∀ c ∈ ErrorConstraints(S). S ⊨ c
+        </div>
+<div class="vera-para" id="01KDEXED2PM1NX6V1R9GAP6T01">Every error-level constraint declared in the specification must evaluate to true. This ensures completeness relative to the specification&#39;s own stated requirements.</div>
+<div class="vera-para" id="01KDEXED2PM1NX6V1R9GAP6T01B">Complexity: evaluating all error constraints is O(|C_error| * T_eval), where T_eval is the cost of a single constraint evaluation over E and D. For finite, quantifier-bounded constraints, this is typically polynomial in |E| + |D|.</div>
+<div class="vera-para" id="01KDEXED2PBSJHH3KY8DZHGT02">Formally:
+Fulfilled(S) ≡ ∀ c ∈ ErrorConstraints(S). c.φ(E, D) = ⊤</div>
+<div class="vera-para" id="01KDEXED2PPNFVH96W8RBE5B03">Common fulfillment constraints:</div>
+<div class="vera-para" id="01KDEXED2PF1CHFS3SH2550G04"><ul><li>∀ feature f. ∃ test t. tests(t, f) - Feature test coverage</li><li>∀ api a. ∃ doc d. documents(d, a) - API documentation</li><li>∀ aggregate ag. ∃ command c. commands(ag, c) - Aggregate has commands</li></ul></div>
+
+        <section class="vera-section" id="01KDEXED2PXGM7DPD47TRJBG05" data-alias="sub-sbASI3HUkg21rQji8CA3y">
+          <h2>Non-Contradiction
+            <a class="anchor" href="#01KDEXED2PXGM7DPD47TRJBG05">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000NONC000TRM">
+          The Non-Contradiction guarantee (G3) maps to <strong>internal consistency</strong> and <strong>satisfiability</strong> in formal methods. The classical Law of Non-Contradiction (Aristotle) states ¬(P ∧ ¬P). In SAT/SMT solving, this becomes satisfiability: a set of constraints is consistent iff their conjunction is satisfiable. VDM explicitly defines proof obligations for internal consistency: &quot;A proof obligation is a theorem stating that a certain property must hold in order for a formal specification to be internally consistent.&quot;
+        </div>
+<div class="vera-para" id="01KDEXED2N0000NONC000000">The Non-Contradiction guarantee prevents semantic conflicts within a specification. When two elements make claims about the same property—such as an API&#39;s return type appearing in both the interface definition and its handler implementation—those claims must agree. Contradiction detection identifies cases where elements that should unify actually assert incompatible values, catching integration errors before they manifest as runtime bugs.</div>
+<div class="vera-para" id="01KDEXED2N0000NONC000GND">For TLA+ specifications, Lamport defines invariants as &quot;state predicates true of all reachable states,&quot; with the TLC model checker performing breadth-first search to verify invariance. In Alloy, consistency analysis uses SAT-based model finding: a specification is consistent if at least one valid instance exists that satisfies all facts within a bounded scope. IEEE 29148:2018 requires that requirements be &quot;consistent: free of conflicts with other requirements.&quot; The KAOS methodology formally defines conflicts as goals that are &quot;mutually inconsistent under domain axioms.&quot;</div>
+
+        <div class="vera-definition definition" id="01KDEXED2P8V7EHHR74S2SK706" data-alias="def-bNvMe3y7FO4">
+          <p class="definition-title">
+            <strong>Definition (Contradiction)</strong>
+            <a class="anchor" href="#01KDEXED2P8V7EHHR74S2SK706">#</a>
+          </p>
+          <p>contradiction(e₁, e₂) ≡ ∃ property p. e₁.π(p) is defined ∧ e₂.π(p) is defined ∧ e₁.π(p) ≠ e₂.π(p) ∧ unifies(e₁, e₂, p)</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2PHFKVZTCV7M9ARZ09" data-alias="def-9J3vkcyQMV4">
+          <p class="definition-title">
+            <strong>Definition (Unifies)</strong>
+            <a class="anchor" href="#01KDEXED2PHFKVZTCV7M9ARZ09">#</a>
+          </p>
+          <p>unifies(e₁, e₂, p) ≡ ∃ c ∈ C. c.cat = non_contradiction ∧ c specifies e₁.p must equal e₂.p</p>
+          
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2PKGH1ZQKAWARARQ0A">
+          <p class="guarantee-header"><strong>GUARANTEE G3 - NON-CONTRADICTION</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2P1FFGXF10NGQNWH0B">
+          ∀ e₁, e₂ ∈ E. ¬contradiction(e₁, e₂)
+        </div>
+<div class="vera-para" id="01KDEXED2PJV4R0FV7MXM7R50C">No pair of elements may assert incompatible values for any property that a unification constraint requires to match. This prevents semantic conflicts within the specification.</div>
+<div class="vera-para" id="01KDEXED2PJV4R0FV7MXM7R50CB">Complexity: a direct check over all constrained pairs is O(|E|^2 <em> k), where k is the average number of properties compared. With indexed constraints and candidate pairing, this can be reduced to O(|D| + |E| </em> k) in typical implementations.</div>
+<div class="vera-para" id="01KDEXED2PX3HEGZK5YRKK8M0D">Formally:
+NonContradictory(S) ≡ ∀ e₁, e₂ ∈ elements(S). ¬contradiction(e₁, e₂)</div>
+<div class="vera-para" id="01KDEXED2PBEFKT84YP7AJF00E">Common non-contradiction constraints:</div>
+<div class="vera-para" id="01KDEXED2PC20C5Y2TDFEA3N0F"><ul><li>API return type = Handler return type</li><li>Event schema = Event handler expected schema</li><li>Database field type = Domain entity field type</li></ul></div>
+
+        <section class="vera-section" id="01KDEXED2PDHNZXENH2PDM600G" data-alias="sub-PNmArYZo6xNqQZsWMEHGT">
+          <h2>Materialization
+            <a class="anchor" href="#01KDEXED2PDHNZXENH2PDM600G">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000MATE000TRM">
+          The Materialization guarantee (G4) builds on <strong>refinement</strong> and <strong>reification</strong> theory with a 40-year history. C.B. Jones&#39;s VDM work defines reification as &quot;finding a more concrete representation of abstract data types&quot;—stepwise transformation with proof obligations via retrieve functions. The He-Hoare-Sanders formulation (1986) introduces downward and upward simulation with abstraction relations ρ ⊆ Σ_A × Σ_C between abstract and concrete states.
+        </div>
+<div class="vera-para" id="01KDEXED2N0000MATE000000">The Materialization guarantee ensures that abstract specifications are grounded in concrete reality. Every element at the physical stratum—the lowest level of abstraction—must have a binding that connects it to an actual artifact: a file, a database table, a hardware component. This prevents specifications from describing phantom systems that exist only on paper, ensuring that what is specified actually exists.</div>
+<div class="vera-para" id="01KDEXED2N0000MATE000GND">Enterprise architecture uses the <strong>realization relationship</strong> (ArchiMate 3.2): &quot;A dependency relationship that connects a logical entity with a more concrete entity that implements it.&quot; The progression flows from Architecture Building Blocks (ABBs) to Solution Building Blocks (SBBs). In MDA, the transformation chain CIM → PIM → PSM → Code represents progressive materialization. A specification is &quot;fully grounded&quot; when the Platform Specific Model produces deployable Executable Object Code.</div>
+
+        <div class="vera-definition definition" id="01KDEXED2P2DAD380MNQ0YY60H" data-alias="def-w2hpvUu37v0">
+          <p class="definition-title">
+            <strong>Definition (Terminal Element)</strong>
+            <a class="anchor" href="#01KDEXED2P2DAD380MNQ0YY60H">#</a>
+          </p>
+          <p>terminal(e) ≡ layer(e).stratum = physical</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2PYSZDPE2HPTX7330J" data-alias="def-H42yTmjdvhM">
+          <p class="definition-title">
+            <strong>Definition (Materialized Element)</strong>
+            <a class="anchor" href="#01KDEXED2PYSZDPE2HPTX7330J">#</a>
+          </p>
+          <p>materialized(e) ≡ ∃ b ∈ B. b.abstract.elem = e.id</p>
+          
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2PEWGEZA2BR5F3170K">
+          <p class="guarantee-header"><strong>GUARANTEE G4 - MATERIALIZATION</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2P7BXHMG834F20TD0M">
+          ∀ e ∈ E. terminal(e) → materialized(e)
+        </div>
+<div class="vera-para" id="01KDEXED2PW7VTSDWNM19CMX0N">Every element at the physical stratum must have an associated binding that maps it to a concrete artifact. This ensures specifications describe things that actually exist.</div>
+<div class="vera-para" id="01KDEXED2PNT6B7G9EDTQ59P0P">Formally:
+Materialized(S) ≡ ∀ e ∈ elements(S). terminal(e) → materialized(e)</div>
+<div class="vera-para" id="01KDEXED2P0000G4COMPLEX00">Complexity: checking bindings for terminal elements is O(|E_terminal| × |B|) with naive lookup, or O(|E_terminal|) with indexed bindings where each terminal element has O(1) binding lookup.</div>
+<div class="vera-para" id="01KDEXED2PCN47PHTBX5J3890Q">Materialization types per domain:</div>
+<div class="vera-para" id="01KDEXED2PN5YDEVFCNEBAY40R"><ul><li>Software: Component → File:Line</li><li>Manufacturing: Part → Drawing + BOM</li><li>Healthcare: Protocol → EMR Configuration</li><li>Legal: Clause → Document Section</li></ul></div>
+
+        <section class="vera-section" id="01KDEXED2PPK3ZSGVDCEHTYW0S" data-alias="sub-XWHt4rvXeJPsjryeyJk-f">
+          <h2>Predictability
+            <a class="anchor" href="#01KDEXED2PPK3ZSGVDCEHTYW0S">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000PRED000TRM">
+          The Predictability guarantee (G5) connects to <strong>modifiability</strong> and <strong>change impact analysis</strong> research. The SEI defines modifiability as &quot;a quality attribute that relates to the cost of change and refers to the ease with which a software system can accommodate changes.&quot; Bohner &amp; Arnold&#39;s foundational 1996 work defines change impact analysis as &quot;identifying the potential consequences of a change, or estimating what needs to be modified to accomplish a change.&quot;
+        </div>
+<div class="vera-para" id="01KDEXED2N0000PRED000000">The Predictability guarantee enables reliable change impact analysis. Before any change is applied to a specification, the complete set of affected elements can be computed in linear time. This allows teams to understand the full consequences of a proposed change—which tests need to run, which documents need updating, which stakeholders need notification—before committing to it.</div>
+<div class="vera-para" id="01KDEXED2N0000PRED000GND">Reps, Horwitz, and Sagiv&#39;s POPL 1995 paper on IFDS problems provides &quot;a polynomial-time algorithm for finding precise solutions to a general class of interprocedural dataflow-analysis problems.&quot; The incremental model transformation literature (VIATRA framework) establishes that &quot;synchronization time is proportional to the magnitude of change and not to the size of models&quot;—precisely the property Predictable(S) requires. Yau &amp; Collofello&#39;s ripple effect analysis (IEEE TSE 1985) measures structural stability upon modification.</div>
+
+        <div class="vera-definition definition" id="01KDEXED2PRH3TK9862GB1070T" data-alias="def-2pzpYRfy1QM">
+          <p class="definition-title">
+            <strong>Definition (Change)</strong>
+            <a class="anchor" href="#01KDEXED2PRH3TK9862GB1070T">#</a>
+          </p>
+          <p>δ ::= ⟨element: ID, changeType: CHANGE, details: VALUE⟩</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2PW10A076J7NTP8G0V" data-alias="def-OeKkKip9IF8">
+          <p class="definition-title">
+            <strong>Definition (Impact)</strong>
+            <a class="anchor" href="#01KDEXED2PW10A076J7NTP8G0V">#</a>
+          </p>
+          <p>impact(S, δ) = ⋃ {cascade(S, elem(δ), δ.changeType, r) | r ∈ R, r.trigger matches δ}</p>
+          
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2PD6DJJZP3HQ4VNC0W">
+          <p class="guarantee-header"><strong>GUARANTEE G5 - PREDICTABILITY</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2PVQTVQZSWJ5NC2Y0X">
+          ∀ δ : CHANGE. impact(S, δ) is computable before applying δ
+        </div>
+<div class="vera-para" id="01KDEXED2P579QRBTZYGPP660Y">For any proposed change δ, the complete set of affected elements and their effects can be computed in O(|E| + |D|) time before the change is applied. This enables reliable impact analysis and risk assessment.</div>
+<div class="vera-para" id="01KDEXED2PJX986GA3FG1PMW0Z">Formally:
+Predictable(S) ≡ impact : S × CHANGE → P(E × EFFECT) is total and computable in O(|E| + |D|) time</div>
+<div class="vera-para" id="01KDEXED2PGH0Q9R9EC9N84810">This enables:</div>
+<div class="vera-para" id="01KDEXED2PW7JWR1RW81KQ4411"><ul><li>Pre-change impact analysis</li><li>Automated change review</li><li>Risk assessment</li><li>Staged rollout decisions</li></ul></div>
+
+        <section class="vera-section" id="01KDEXED2PA0WV2YH059RSYX12" data-alias="sub-BY56RlNT5fC29dbs7WShu">
+          <h2>Stratification
+            <a class="anchor" href="#01KDEXED2PA0WV2YH059RSYX12">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000STRA000TRM">
+          The Stratification guarantee (G6) embodies <strong>layered abstraction</strong> and Robert C. Martin&#39;s <strong>Dependency Rule</strong>: &quot;Source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.&quot; A crucial distinction from Abelson &amp; Sussman&#39;s work (1987): &quot;Where layers are levels of equal abstraction in software, strata are levels of different abstraction.&quot; Layers provide horizontal separation by functional concern; strata provide vertical separation by abstraction level.
+        </div>
+<div class="vera-para" id="01KDEXED2N0000STRA000000">The Stratification guarantee enforces clean abstraction boundaries. Dependencies must flow downward through the strata (from purpose through logical to physical), preventing implementation details from leaking into high-level requirements. The sole exception is the justified_by relation, which explicitly links implementations back to the requirements they satisfy—flowing upward to establish provenance.</div>
+<div class="vera-para" id="01KDEXED2N0000STRA000GND">ArchiMate&#39;s three core layers (Business, Application, Technology) formalize this with &quot;higher layers making use of services provided by lower layers&quot; and realization relationships connecting elements across layers. OMG&#39;s MOF four-layer metamodel architecture (M0-M3) provides rigorous formalization: &quot;Models at every level conform to a model belonging to the upper level.&quot; MOF is closed—M3 conforms to itself. MDA&#39;s CIM/PIM/PSM separation achieves vertical separation of concerns with transformations flowing downward.</div>
+
+        <div class="vera-definition definition" id="01KDEXED2PWVJ940PA9C7QNQ13" data-alias="def-8hSSk2iFvyc">
+          <p class="definition-title">
+            <strong>Definition (Stratum Respecting)</strong>
+            <a class="anchor" href="#01KDEXED2PWVJ940PA9C7QNQ13">#</a>
+          </p>
+          <p>stratumRespecting(d) ≡ let l_s = layer(src(d)), l_t = layer(tgt(d)) in</p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2PW15ERN876WYVQA14">
+          rank(l_s) ≥ rank(l_t) ∨ d.δ = justified_by
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2PGPC7T5MT6N7ZCX15">
+          <p class="guarantee-header"><strong>GUARANTEE G6 - STRATIFICATION</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2P0JHS797WW46CH616">
+          ∀ d ∈ D. stratumRespecting(d)
+        </div>
+<div class="vera-para" id="01KDEXED2PCJ995TXNCPZZJ817">Dependencies must respect stratum boundaries: elements may only depend on elements at equal or lower rank. The justified_by relation is the sole exception, explicitly linking implementations to their requirements.</div>
+<div class="vera-para" id="01KDEXED2P2ZH9YP9BP900DF18">Formally:
+Stratified(S) ≡ ∀ d ∈ dependencies(S). stratumRespecting(d)</div>
+<div class="vera-para" id="01KDEXED2P0000G6COMPLEX00">Complexity: a single pass over all dependencies, O(|D|). Each dependency check requires O(1) stratum rank lookup for source and target elements, making the total verification linear in the number of dependencies.</div>
+<div class="vera-para" id="01KDEXED2PXXKY0X5S0PPC1719">This ensures:</div>
+<div class="vera-para" id="01KDEXED2PR6JCBBPMREANEQ1A"><ul><li>Abstraction boundaries are respected</li><li>Implementation details don&#39;t leak upward</li><li>Changes cascade predictably (down, not up)</li></ul></div>
+<div class="vera-para" id="01KDEXED2PQW2MDPDNZHBWJ31B">Exception: justified_by dependencies go UP (from impl to requirement)</div>
+
+        <section class="vera-section" id="01KDEXED2PPA6KXQEJF1A2A21C" data-alias="sub-KiCYjiFp6iFIhq6fcelIP">
+          <h2>Diagnosability
+            <a class="anchor" href="#01KDEXED2PPA6KXQEJF1A2A21C">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-entity vera-interpretation" id="01KDEXED2N0000DIAG000TRM">
+          The Diagnosability guarantee (G7) leverages <strong>MUS extraction</strong> and <strong>model-based diagnosis</strong> from SAT/SMT theory. A Minimal Unsatisfiable Subset (MUS) is a subset M of an unsatisfiable formula F where M is unsatisfiable but removing any clause makes it satisfiable. Reiter&#39;s seminal 1987 paper establishes that &quot;the set of diagnoses is exactly the set of minimal hitting sets of the collection of all conflicts.&quot; Junker&#39;s QuickXplain algorithm (2004) efficiently computes preferred minimal conflicts using divide-and-conquer with O(n·log(k+1)+k²) consistency checks.
+        </div>
+<div class="vera-para" id="01KDEXED2PDD0B2V2G9V04JR1D">When validation fails, humans need actionable explanations. G7 requires that every violation report includes an irreducible unsat core—the minimal set of constraints causing the failure—and human-readable diagnostic text.</div>
+<div class="vera-para" id="01KDEXED2N0000DIAG000GND">Diagnosability from discrete-event systems theory (Sampath et al. 1995) defines when faults can be unambiguously detected: fault f is diagnosable iff no two infinite runs exist with identical observable projections where f occurs in one but not the other. The hitting set duality—every MUS hits every MCS (Minimal Correction Subset)—enables computing repairs from conflicts. Delta debugging (Zeller 1999) provides 1-minimality for failure-inducing inputs.</div>
+
+        <div class="vera-definition definition" id="01KDEXED2PA5YJMNJAW1S2C11E" data-alias="def-HLFhuhKgrZE">
+          <p class="definition-title">
+            <strong>Definition (Diagnosis)</strong>
+            <a class="anchor" href="#01KDEXED2PA5YJMNJAW1S2C11E">#</a>
+          </p>
+          <p>diagnosis ::= ⟨violatedGuarantee, minimalConflictSet, causalTrace, diagnosticMessage, suggestedFix?⟩</p>
+          
+        </div>
+<div class="vera-para" id="01KDEXED2PDJN65DS4GHV3VH1F">where:</div>
+
+        <div class="vera-definition definition" id="01KDEXED2P62YX0P2SAXGFSR1H">
+          <p class="definition-title">
+            <strong>Definition (violatedGuarantee ∈ {&#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;, &#39;G4&#39;, &#39;G5&#39;, &#39;G6&#39;, &#39;G7&#39;})</strong>
+            <a class="anchor" href="#01KDEXED2P62YX0P2SAXGFSR1H">#</a>
+          </p>
+          <p>Which guarantee failed</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2P45BA48X9SYQFA41J">
+          <p class="definition-title">
+            <strong>Definition (minimalConflictSet ⊆ constraints(S))</strong>
+            <a class="anchor" href="#01KDEXED2P45BA48X9SYQFA41J">#</a>
+          </p>
+          <p>Minimal unsatisfiable subset (see Theorem 10.12)</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2P0A2Z7TXDC74NMZ1K">
+          <p class="definition-title">
+            <strong>Definition (causalTrace ∈ Operation*)</strong>
+            <a class="anchor" href="#01KDEXED2P0A2Z7TXDC74NMZ1K">#</a>
+          </p>
+          <p>Causal chain of changes leading to violation (uses vector clocks from referenceMap(&quot;sub-xYOy8xUJpcssgjNVmANNW&quot;, &quot;§{{sectionNumber}}.1 Element&quot;), referenceMap(&quot;sec-FKg-HIOFmN1Oiyr_KJhnT&quot;, &quot;§{{sectionNumber}}&quot;))</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2P5ZBJ74R6829MDP1M">
+          <p class="definition-title">
+            <strong>Definition (diagnosticMessage ∈ NAME)</strong>
+            <a class="anchor" href="#01KDEXED2P5ZBJ74R6829MDP1M">#</a>
+          </p>
+          <p>Natural language explanation targeting domain experts</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEXED2PJTGY1X82SM20TT1N">
+          <p class="definition-title">
+            <strong>Definition (suggestedFix ∈ Operation?)</strong>
+            <a class="anchor" href="#01KDEXED2PJTGY1X82SM20TT1N">#</a>
+          </p>
+          <p>Optional: automated remediation per Policy (referenceMap(&quot;sec-A6gecSxlJYGPIDKvgzjsG&quot;, &quot;§{{sectionNumber}}&quot;))</p>
+          
+        </div>
+
+        <div class="vera-guarantee guarantee" id="01KDEXED2PC11D8GW41T1T171P">
+          <p class="guarantee-header"><strong>GUARANTEE G7 - DIAGNOSABILITY</strong></p>
+          
+        </div>
+
+        <div class="vera-formula math" id="01KDEXED2PHT1Z8AZMC6DBS31Q">
+          ∀ violations v from validate(S). ∃ diagnosis d. explains(d, v) ∧ irreducible(d.minimalConflictSet)
+        </div>
+<div class="vera-para" id="01KDEXED2PHY21KE4C9AZMNT1R">Every validation failure must produce a diagnosis containing an irreducible minimal conflict set. This enables precise identification of the root cause and supports automated remediation.</div>
+<div class="vera-para" id="01KDEXED2PGQK460ZJK70GH91S">Formally:
+Diagnosable(S) ≡ validate(S) produces diagnoses for all violations</div>
+<div class="vera-para" id="01KDEXED2PGSY550J64KAMFX1T"><strong>Implementation</strong>: Use SMT solver unsat core extraction (Z3 <code>unsat_core()</code>, CVC5 <code>getUnsatCore()</code>). See Theorem 10.12 for irreducibility proof obligation.</div>
+
+        <div class="vera-admonition admonition admonition-note" id="01KDEXED2P4H2SZSNW2WHSDS1V">
+          <p><strong>NOTE</strong></p>
+          <strong>Conformance</strong>: G7 is <strong>K1 (Certified-Aware)</strong>, not K0. K0 implementations may return violations without explanations. K1+ implementations MUST provide irreducible unsat cores per Theorem 10.12.
+        </div>
+<div class="vera-para" id="01KDEXED2PR3J6XG9AJX7NM81W"><strong>Example</strong>: See referenceMap(&quot;sub-sec-FKg-HIOFmN1Oiyr_KJhnT-5&quot;, &quot;§{{sectionNumber}}.5 How to Read This Document&quot;) Demo Scenario for complete G7 workflow showing blame chains and suggested fixes.</div>
+
+        <section class="vera-section" id="01KDEXED2PBDK2ZG73H3SHVY1X" data-alias="sub-Q_FIkGVXUuZIl6JAWPVwl">
+          <h2>Valid Specification
+            <a class="anchor" href="#01KDEXED2PBDK2ZG73H3SHVY1X">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEXED2N0000VALD000000">The seven invariants combine to form the definition of a valid specification. A specification that satisfies all invariants is one that can be trusted: it is traceable to purpose, internally consistent, grounded in reality, and when it fails validation, it explains why. This is the central quality criterion for any Stratum document.</div>
+
+        <div class="vera-definition definition" id="01KDEXED2PC1PTAMDSEDMTR51Y" data-alias="def-JyLj52Ka6Q4">
+          <p class="definition-title">
+            <strong>Definition (Valid Specification)</strong>
+            <a class="anchor" href="#01KDEXED2PC1PTAMDSEDMTR51Y">#</a>
+          </p>
+          <p>Valid(S) ≡ WellFormed(S) ∧ Provenanced(S) ∧ Fulfilled(S) ∧ NonContradictory(S) ∧ Materialized(S) ∧ Predictable(S) ∧ Stratified(S) ∧ Diagnosable(S)</p>
+          
+        </div>
+<div class="vera-para" id="01KDEXED2PH7XMSB20WM2V1C26">A specification is valid iff it is well-formed and satisfies all seven invariants. Note: G7 (Diagnosability) is K1 conformance; K0 implementations check G1-G6 only.</div>
+
+        <section class="vera-section" id="01KDEXED2N0000TERM000SEC" data-alias="sub-terminology-mapping">
+          <h2>Terminology Mapping Summary
+            <a class="anchor" href="#01KDEXED2N0000TERM000SEC">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEXED2N0000TERM000001">The following table summarizes how each Stratum guarantee maps to established terminology in formal methods, requirements engineering, and safety-critical standards:</div>
+
+        <div class="vera-table table" id="01KDEXED2N0000TERM000TBL">
+          <table>
+          <thead>
+            <tr><th>Stratum Property</th><th>Primary Established Term</th><th>Key Standards/Papers</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>G1: Provenanced(S)</td><td>Bidirectional traceability</td><td>IEEE 29148:2018, DO-178C, Gotel &amp; Finkelstein 1994</td></tr><tr><td>G2: Fulfilled(S)</td><td>Constraint satisfaction</td><td>IEEE 29148:2018, Benveniste et al. 2018</td></tr><tr><td>G3: NonContradictory(S)</td><td>Internal consistency</td><td>VDM Proof Obligations, Lamport TLA+ 2002</td></tr><tr><td>G4: Materialized(S)</td><td>Reification/Refinement</td><td>Jones VDM 1990, ArchiMate 3.2, DO-178C</td></tr><tr><td>G5: Predictable(S)</td><td>Modifiability</td><td>SEI CMU/SEI-2007-TR-002, Bohner &amp; Arnold 1996</td></tr><tr><td>G6: Stratified(S)</td><td>Layered abstraction</td><td>Martin Clean Architecture 2017, OMG MDA, MOF M0-M3</td></tr><tr><td>G7: Diagnosable(S)</td><td>Minimal unsatisfiable subset</td><td>Reiter 1987, Junker QuickXplain 2004, Sampath 1995</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <div class="vera-admonition admonition admonition-important" id="01KDEXED2N0000TERM000ADM">
+          <p><strong>Cross-Domain Convergence</strong></p>
+          IEEE/ISO standards, OMG specifications (MOF, OCL, MDA), and safety-critical standards (DO-178C, ISO 26262, IEC 61508) independently arrived at nearly identical property definitions, suggesting these validity properties are fundamental to rigorous specification. Every Stratum property maps to concepts with 30-40 years of formal methods research.
+        </div>
+
+
+          
+    <section class="vera-section references-section" id="01KDEXED2N0000REFS000SEC">
+      <h2>References
+        <a class="anchor" href="#01KDEXED2N0000REFS000SEC">#</a>
+      </h2>
+      <div class="vera-para" id="01KDEXED2N0000REFS000INT">The following references provide the foundational research grounding for Stratum&#39;s semantic invariants. References are organized by the guarantee they primarily support.</div>
+
+        <div class="vera-entity vera-annotation_block" id="01KDEXED2N0000REFS000FN1">
+          <strong>Note on decidability stratification</strong>: Properties WellFormed and NonContradictory have decidable checking procedures (type systems, SAT solvers), while Fulfilled and Provenanced may require semi-decidable or process-based verification depending on the expressiveness of constraint languages used.
+        </div>
+
+        <div class="vera-entity vera-annotation_block" id="01KDEXED2N0000REFS000FN2">
+          <strong>Note on IEEE/OMG/safety-critical convergence</strong>: The independent convergence of IEEE 29148, OMG specifications (MOF, OCL, MDA), and safety-critical standards (DO-178C, ISO 26262, IEC 61508) on nearly identical property definitions suggests these validity properties are fundamental rather than arbitrary design choices.
+        </div>
+
+        <div class="vera-entity vera-annotation_block" id="01KDEXED2N0000REFS000FN3">
+          <strong>Note on formal methods maturity</strong>: Every Stratum property maps to concepts with 30-40 years of formal methods research. This maturity provides confidence in both theoretical soundness and practical implementability via established tools (Z3, CVC5, TLC, Alloy Analyzer, etc.).
+        </div>
+      
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000001">
+          <div class="reference-head">
+            <strong class="reference-title">An Analysis of the Requirements Traceability Problem</strong>
+            <span class="reference-year">1994</span>
+          </div>
+          <div class="reference-authors">Gotel, Orlena C. Z. and Finkelstein, Anthony C. W.</div>
+          <div class="reference-meta">IEEE Computer Society Press · Proceedings of the First IEEE International Conference on Requirements Engineering (ICRE&#39;94)</div>
+          <div class="reference-tags"><span class="reference-kind">inproceedings</span><span class="reference-key">gotel1994-full</span></div>
+          <p class="reference-note">Foundational paper defining requirements traceability. Introduces the distinction between pre-requirements specification (pre-RS) and post-requirements specification (post-RS) traceability.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000002">
+          <div class="reference-head">
+            <strong class="reference-title">ISO/IEC/IEEE 29148:2018 Systems and software engineering — Life cycle processes — Requirements engineering</strong>
+            <span class="reference-year">2018</span>
+          </div>
+          <div class="reference-authors">ISO/IEC/IEEE</div>
+          <div class="reference-meta">International Organization for Standardization</div>
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">ieee29148-full</span></div>
+          <p class="reference-note">International standard defining requirements engineering processes. Section 5.2.8 specifies bidirectional traceability requirements. Section 6.2 defines nine characteristics for well-formed requirements: necessary, appropriate, unambiguous, complete, singular, feasible, verifiable, correct, and conforming.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000003">
+          <div class="reference-head">
+            <strong class="reference-title">DO-178C: Software Considerations in Airborne Systems and Equipment Certification</strong>
+            <span class="reference-year">2011</span>
+          </div>
+          <div class="reference-authors">RTCA, Inc.</div>
+          <div class="reference-meta">RTCA, Inc.</div>
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">do178c-full</span></div>
+          <p class="reference-note">Primary safety standard for airborne software. Table A-7 specifies traceability objectives including Objective 9: verification of additional code that cannot be traced to Source Code. Defines 71 verification objectives organized by Design Assurance Level (DAL). Requires 100% requirements coverage and no orphan code.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000004">
+          <div class="reference-head">
+            <strong class="reference-title">Refinement Calculus: A Systematic Introduction</strong>
+            <span class="reference-year">1998</span>
+          </div>
+          <div class="reference-authors">Back, Ralph-Johan and von Wright, Joakim</div>
+          <div class="reference-meta">Springer-Verlag</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">back1998-full</span></div>
+          <p class="reference-note">Comprehensive treatment of refinement calculus. Provides mathematical foundations where each refinement step is proven to preserve specification truth. Introduces the refinement relation ⊑ and proves compositionality theorems.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000005">
+          <div class="reference-head">
+            <strong class="reference-title">Toward Reference Models for Requirements Traceability</strong>
+            <span class="reference-year">2001</span>
+          </div>
+          <div class="reference-authors">Ramesh, Balasubramaniam and Jarke, Matthias</div>
+          <div class="reference-meta">IEEE Transactions on Software Engineering</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">ramesh2001</span></div>
+          <p class="reference-note">Presents a comprehensive reference model for requirements traceability based on empirical study of 26 organizations. Distinguishes between low-end and high-end traceability practices.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000006">
+          <div class="reference-head">
+            <strong class="reference-title">Contracts for System Design</strong>
+            <span class="reference-year">2018</span>
+          </div>
+          <div class="reference-authors">Benveniste, Albert and Caillaud, Benoît and Nickovic, Dejan and Passerone, Roberto and Raclet, Jean-Baptiste and Reinkemeier, Philipp and Sangiovanni-Vincentelli, Alberto and Damm, Werner and Henzinger, Thomas A. and Larsen, Kim G.</div>
+          <div class="reference-meta">Foundations and Trends in Electronic Design Automation</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">benveniste2018-full</span></div>
+          <p class="reference-note">Comprehensive survey of contract-based design. Formalizes assume-guarantee contracts: a component satisfies contract (A,G) if all runs satisfying assumptions A also satisfy guarantees G. Proves compositional theorem: if all components satisfy their contracts, the composed system satisfies the global contract.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000007">
+          <div class="reference-head">
+            <strong class="reference-title">Object Constraint Language (OCL) Version 2.4</strong>
+            <span class="reference-year">2014</span>
+          </div>
+          <div class="reference-authors">Object Management Group</div>
+          
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">ocl24</span></div>
+          <p class="reference-note">OMG formal specification formal/2014-02-03. States: &#39;OCL is a typed language so that each OCL expression has a type. To be well formed, an OCL expression must conform to the type conformance rules of the language.&#39; Sections 8.3.7, 10.2.2, 11.3-11.7 define well-formedness rules. Requires invariants to be true for all instances at all times.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000008">
+          <div class="reference-head">
+            <strong class="reference-title">Systematic Software Development using VDM</strong>
+            <span class="reference-year">1990</span>
+          </div>
+          <div class="reference-authors">Jones, Cliff B.</div>
+          <div class="reference-meta">Prentice Hall International</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">jones1990-full</span></div>
+          <p class="reference-note">Definitive VDM reference. Defines reification as &#39;finding a more concrete representation of abstract data types&#39; with proof obligations via retrieve functions. Chapter 8 covers data reification; Chapter 9 covers operation decomposition. Introduces proof obligations for internal consistency.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000009">
+          <div class="reference-head">
+            <strong class="reference-title">Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers</strong>
+            <span class="reference-year">2002</span>
+          </div>
+          <div class="reference-authors">Lamport, Leslie</div>
+          <div class="reference-meta">Addison-Wesley Professional</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">lamport2002-full</span></div>
+          <p class="reference-note">Comprehensive TLA+ guide. Defines invariants as &#39;state predicates true of all reachable states.&#39; The TLC model checker performs breadth-first search to verify invariance. Chapter 14 covers the model checker; Chapter 5 covers invariants and safety properties.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000010">
+          <div class="reference-head">
+            <strong class="reference-title">Software Abstractions: Logic, Language, and Analysis</strong>
+            <span class="reference-year">2012</span>
+          </div>
+          <div class="reference-authors">Jackson, Daniel</div>
+          <div class="reference-meta">MIT Press</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">jackson2012</span></div>
+          <p class="reference-note">Alloy language and analyzer reference. Explains SAT-based consistency analysis: a specification is consistent if at least one valid instance exists satisfying all facts within a bounded scope. Introduces &#39;small scope hypothesis&#39; for bounded verification.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000011">
+          <div class="reference-head">
+            <strong class="reference-title">Requirements Engineering: From System Goals to UML Models to Software Specifications</strong>
+            <span class="reference-year">2009</span>
+          </div>
+          <div class="reference-authors">van Lamsweerde, Axel</div>
+          <div class="reference-meta">Wiley</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">vanlamsweerde2009</span></div>
+          <p class="reference-note">Comprehensive RE text covering KAOS methodology. Formally defines conflicts as goals that are &#39;mutually inconsistent under domain axioms&#39; and divergences as weaker conflicts occurring under boundary conditions. Chapter 8 covers conflict management.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000012">
+          <div class="reference-head">
+            <strong class="reference-title">Data Refinement Refined</strong>
+            <span class="reference-year">1986</span>
+          </div>
+          <div class="reference-authors">He, Jifeng and Hoare, C. A. R. and Sanders, Jeff W.</div>
+          <div class="reference-meta">Springer · ESOP &#39;86: European Symposium on Programming</div>
+          <div class="reference-tags"><span class="reference-kind">inproceedings</span><span class="reference-key">he1986</span></div>
+          <p class="reference-note">Introduces downward and upward simulation with abstraction relations ρ ⊆ Σ_A × Σ_C between abstract and concrete states. Proves joint completeness: using both simulation notions ensures sound refinement.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000013">
+          <div class="reference-head">
+            <strong class="reference-title">ArchiMate 3.2 Specification</strong>
+            <span class="reference-year">2022</span>
+          </div>
+          <div class="reference-authors">The Open Group</div>
+          <div class="reference-meta">The Open Group</div>
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">archimate32-full</span></div>
+          <p class="reference-note">Enterprise architecture modeling standard. Defines realization relationship as &#39;a dependency relationship that connects a logical entity with a more concrete entity that implements it.&#39; Specifies three core layers: Business, Application, Technology with &#39;higher layers making use of services provided by lower layers.&#39;</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000014">
+          <div class="reference-head">
+            <strong class="reference-title">MDA Guide Version 2.0</strong>
+            <span class="reference-year">2014</span>
+          </div>
+          <div class="reference-authors">Object Management Group</div>
+          
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">mda2014</span></div>
+          <p class="reference-note">OMG Model Driven Architecture guide. Defines CIM/PIM/PSM transformation chain representing progressive materialization. A specification is &#39;fully grounded&#39; when PSM produces deployable Executable Object Code.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000015">
+          <div class="reference-head">
+            <strong class="reference-title">Modifiability Tactics</strong>
+            <span class="reference-year">2007</span>
+          </div>
+          <div class="reference-authors">Bachmann, Felix and Bass, Len and Nord, Robert</div>
+          
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">sei2007-full</span></div>
+          <p class="reference-note">SEI technical report on modifiability. Defines modifiability as &#39;a quality attribute that relates to the cost of change and refers to the ease with which a software system can accommodate changes.&#39; Provides cost model: Average cost = direct modification cost + propagated modification costs.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000016">
+          <div class="reference-head">
+            <strong class="reference-title">Software Change Impact Analysis</strong>
+            <span class="reference-year">1996</span>
+          </div>
+          <div class="reference-authors">Bohner, Shawn A. and Arnold, Robert S.</div>
+          <div class="reference-meta">IEEE Computer Society Press</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">bohner1996-full</span></div>
+          <p class="reference-note">Foundational work on change impact analysis. Defines IA as &#39;identifying the potential consequences of a change, or estimating what needs to be modified to accomplish a change.&#39; Distinguishes traceability-based IA (relationships analyzed for scope) from dependency-based IA (linkages assessed for consequences).</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000017">
+          <div class="reference-head">
+            <strong class="reference-title">Precise Interprocedural Dataflow Analysis via Graph Reachability</strong>
+            <span class="reference-year">1995</span>
+          </div>
+          <div class="reference-authors">Reps, Thomas and Horwitz, Susan and Sagiv, Mooly</div>
+          <div class="reference-meta">ACM · Proceedings of the 22nd ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL &#39;95)</div>
+          <div class="reference-tags"><span class="reference-kind">inproceedings</span><span class="reference-key">reps1995</span></div>
+          <p class="reference-note">Provides polynomial-time algorithm for IFDS problems. When dataflow functions distribute over meet and domain is finite, Tabulation Algorithm runs in O(N·D²). Foundation for precise impact analysis.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000018">
+          <div class="reference-head">
+            <strong class="reference-title">Design Stability Measures for Software Maintenance</strong>
+            <span class="reference-year">1985</span>
+          </div>
+          <div class="reference-authors">Yau, Stephen S. and Collofello, James S.</div>
+          <div class="reference-meta">IEEE Transactions on Software Engineering</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">yau1985</span></div>
+          <p class="reference-note">Introduces ripple effect analysis measuring structural stability upon modification using applied probabilities and matrix algebra. Foundation for quantitative impact prediction.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000019">
+          <div class="reference-head">
+            <strong class="reference-title">Clean Architecture: A Craftsman&#39;s Guide to Software Structure and Design</strong>
+            <span class="reference-year">2017</span>
+          </div>
+          <div class="reference-authors">Martin, Robert C.</div>
+          <div class="reference-meta">Prentice Hall</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">martin2017-full</span></div>
+          <p class="reference-note">Articulates The Dependency Rule: &#39;Source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.&#39; Layers (inner to outer): Entities, Use Cases, Interface Adapters, Frameworks &amp; Drivers. &#39;As you move inwards, the level of abstraction increases.&#39;</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000020">
+          <div class="reference-head">
+            <strong class="reference-title">Lisp: A Language for Stratified Design</strong>
+            <span class="reference-year">1987</span>
+          </div>
+          <div class="reference-authors">Abelson, Harold and Sussman, Gerald Jay</div>
+          
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">abelson1987</span></div>
+          <p class="reference-note">Distinguishes layers from strata: &#39;Where layers are levels of equal abstraction in software, strata are levels of different abstraction.&#39; Layers provide horizontal separation by functional concern; strata provide vertical separation by abstraction level.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000021">
+          <div class="reference-head">
+            <strong class="reference-title">OMG Meta Object Facility (MOF) Core Specification Version 2.5.1</strong>
+            <span class="reference-year">2019</span>
+          </div>
+          <div class="reference-authors">Object Management Group</div>
+          
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">mof251-full</span></div>
+          <p class="reference-note">ISO/IEC 19508:2014. Provides four-layer metamodel architecture (M0-M3): &#39;Models at every level conform to a model belonging to the upper level.&#39; MOF is closed—M3 conforms to itself. Uses constraints to define well-formedness rules for metadata.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000022">
+          <div class="reference-head">
+            <strong class="reference-title">A Framework for Information Systems Architecture</strong>
+            <span class="reference-year">1987</span>
+          </div>
+          <div class="reference-authors">Zachman, John A.</div>
+          <div class="reference-meta">IBM Systems Journal</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">zachman1987</span></div>
+          <p class="reference-note">Foundational enterprise architecture framework. Notes: &#39;The Rows define TRANSFORMATION, NOT decomposition&#39;—reification through perspectives from contextual through instantiation.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000023">
+          <div class="reference-head">
+            <strong class="reference-title">A Theory of Diagnosis from First Principles</strong>
+            <span class="reference-year">1987</span>
+          </div>
+          <div class="reference-authors">Reiter, Raymond</div>
+          <div class="reference-meta">Artificial Intelligence</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">reiter1987-full</span></div>
+          <p class="reference-note">Seminal paper on model-based diagnosis. Establishes: &#39;the set of diagnoses is exactly the set of minimal hitting sets of the collection of all conflicts.&#39; A conflict set is a set of components whose assumed correct functioning is inconsistent with observations. Hitting set duality enables computing repairs from conflicts.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000024">
+          <div class="reference-head">
+            <strong class="reference-title">QUICKXPLAIN: Preferred Explanations and Relaxations for Over-Constrained Problems</strong>
+            <span class="reference-year">2004</span>
+          </div>
+          <div class="reference-authors">Junker, Ulrich</div>
+          <div class="reference-meta">AAAI Press · Proceedings of the 19th National Conference on Artificial Intelligence (AAAI-04)</div>
+          <div class="reference-tags"><span class="reference-kind">inproceedings</span><span class="reference-key">junker2004-full</span></div>
+          <p class="reference-note">Efficient algorithm for computing preferred minimal conflicts using divide-and-conquer. Complexity: O(n·log(k+1)+k²) consistency checks where n = constraints, k = conflict size. Non-intrusive: works with any propagation mechanism.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000025">
+          <div class="reference-head">
+            <strong class="reference-title">Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints</strong>
+            <span class="reference-year">2008</span>
+          </div>
+          <div class="reference-authors">Liffiton, Mark H. and Sakallah, Karem A.</div>
+          <div class="reference-meta">Journal on Satisfiability, Boolean Modeling and Computation (JSAT)</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">liffiton2008</span></div>
+          <p class="reference-note">Comprehensive treatment of MUS extraction algorithms. Defines MUS as subset M of unsatisfiable formula F where M is unsatisfiable but removing any clause makes it satisfiable. Surveys exact and approximation algorithms.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000026">
+          <div class="reference-head">
+            <strong class="reference-title">Diagnosability of Discrete-event Systems</strong>
+            <span class="reference-year">1995</span>
+          </div>
+          <div class="reference-authors">Sampath, Meera and Sengupta, Raja and Lafortune, Stéphane and Sinnamohideen, Kasim and Teneketzis, Demosthenis</div>
+          <div class="reference-meta">IEEE Transactions on Automatic Control</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">sampath1995-full</span></div>
+          <p class="reference-note">Defines diagnosability in discrete-event systems: fault f is diagnosable iff no two infinite runs exist with identical observable projections where f occurs in one but not the other. Foundation for fault detection theory.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000027">
+          <div class="reference-head">
+            <strong class="reference-title">Diagnosing Multiple Faults</strong>
+            <span class="reference-year">1987</span>
+          </div>
+          <div class="reference-authors">de Kleer, Johan and Williams, Brian C.</div>
+          <div class="reference-meta">Artificial Intelligence</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">dekleer1987</span></div>
+          <p class="reference-note">Companion paper to Reiter 1987. Develops GDE (General Diagnostic Engine) for diagnosing multiple simultaneous faults. Introduces probabilistic ranking of diagnoses.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000028">
+          <div class="reference-head">
+            <strong class="reference-title">Simplifying and Isolating Failure-Inducing Input</strong>
+            <span class="reference-year">2002</span>
+          </div>
+          <div class="reference-authors">Zeller, Andreas and Hildebrandt, Ralf</div>
+          <div class="reference-meta">IEEE Transactions on Software Engineering</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">zeller2002</span></div>
+          <p class="reference-note">Introduces delta debugging for 1-minimality: finding minimal failure-inducing configuration where removing any single element produces passing test. Generalizes binary search to arbitrary domains.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000029">
+          <div class="reference-head">
+            <strong class="reference-title">On Computing Minimal Correction Subsets</strong>
+            <span class="reference-year">2013</span>
+          </div>
+          <div class="reference-authors">Marques-Silva, Joao and Heras, Federico and Janota, Mikoláš and Previti, Alessandro and Belov, Anton</div>
+          <div class="reference-meta">Proceedings of the 23rd International Joint Conference on Artificial Intelligence (IJCAI-13)</div>
+          <div class="reference-tags"><span class="reference-kind">inproceedings</span><span class="reference-key">marquessilva2013</span></div>
+          <p class="reference-note">Relates MCS (Minimal Correction Subsets) to MUS via hitting set duality. MCS represents minimal sets of constraints whose removal makes formula satisfiable. Every MUS hits every MCS and vice versa.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000030">
+          <div class="reference-head">
+            <strong class="reference-title">A Syntactic Approach to Type Soundness</strong>
+            <span class="reference-year">1994</span>
+          </div>
+          <div class="reference-authors">Wright, Andrew K. and Felleisen, Matthias</div>
+          <div class="reference-meta">Information and Computation</div>
+          <div class="reference-tags"><span class="reference-kind">article</span><span class="reference-key">wright1994</span></div>
+          <p class="reference-note">Canonical formulation of type soundness via Progress and Preservation theorems: well-typed programs do not &#39;go wrong&#39; during execution. Foundation for WellFormed(S) decidability.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000031">
+          <div class="reference-head">
+            <strong class="reference-title">Types and Programming Languages</strong>
+            <span class="reference-year">2002</span>
+          </div>
+          <div class="reference-authors">Pierce, Benjamin C.</div>
+          <div class="reference-meta">MIT Press</div>
+          <div class="reference-tags"><span class="reference-kind">book</span><span class="reference-key">pierce2002</span></div>
+          <p class="reference-note">Comprehensive textbook on type theory. Chapter 8 covers type soundness; Chapters 21-32 cover advanced type systems. Standard reference for understanding WellFormed as type-theoretic property.</p>
+          
+        </div>
+
+        <div class="vera-reference reference" id="01KDEXED2NREF10000000032">
+          <div class="reference-head">
+            <strong class="reference-title">IEC 61508: Functional Safety of Electrical/Electronic/Programmable Electronic Safety-related Systems</strong>
+            <span class="reference-year">2010</span>
+          </div>
+          <div class="reference-authors">International Electrotechnical Commission</div>
+          
+          <div class="reference-tags"><span class="reference-kind">misc</span><span class="reference-key">iec61508</span></div>
+          <p class="reference-note">International safety standard. Annex A.1 specifies that backward traceability checks &#39;that the implementation is justified by a requirement&#39;—the core provenance property. Complements DO-178C for industrial applications.</p>
+          
+        </div>
+    </section>
+  
+          
+        </div>
+      </div>
+    </main>
+    <script>
+      
+      var LATEX_CONTENT = "\\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage{amsmath}\n\\usepackage{hyperref}\n\\title{Semantic Invariants}\n\\date{}\n\\begin{document}\n\\maketitle\nA valid Stratum specification must satisfy seven semantic invariants. These invariants ensure that every specification is not only syntactically well-formed but also semantically coherent, traceable, and verifiable. Together, they form the foundation for trustworthy system documentation that can be automatically validated and maintained over time.\n\nEach invariant addresses a distinct aspect of specification quality: G1 (Provenance) ensures traceability to purpose; G2 (Fulfillment) ensures completeness; G3 (Non-Contradiction) ensures consistency; G4 (Materialization) ensures groundedness; G5 (Predictability) enables impact analysis; G6 (Stratification) enforces abstraction boundaries; and G7 (Diagnosability) provides actionable error reporting.\n\n\\paragraph{Research Foundation} These seven invariants have deep roots in 40+ years of academic literature, industry standards, and formal methods. Each property maps to established concepts from IEEE/ISO standards, SEI publications, OMG specifications, and foundational computer science research.\n\n\n\\section{Provenance}\n\n\\paragraph{Interpretation (Bidirectional Traceability)}\nThe Provenance guarantee (G1) corresponds to \\textbf{bidirectional traceability} in requirements engineering literature. IEEE 24765 defines traceability as \"the degree to which each element in a software development product establishes its reason for existing.\" ISO/IEC/IEEE 29148:2018 requires that traceable requirements be \"upwards traceable to specific documented stakeholder statement(s) of need... and downwards traceable to the specific requirements in the lower tier requirements specification.\"\n\n\nThe Provenance guarantee ensures that every element in a specification can trace its existence back to a root purpose. Nothing exists without justification—every requirement, design decision, and implementation detail must be connected to the fundamental goals of the system. This prevents orphaned elements that serve no purpose and ensures complete traceability from implementation to intent.\n\nSafety-critical standards enforce this rigorously. DO-178C requires that \"every line of code must be traceable to a requirement\" (Table A-7, Objective 9). IEC 61508-3 Annex A.1 specifies that backward traceability checks \"that the implementation is justified by a requirement\"—the core provenance property. In formal methods, the refinement calculus (Back \\& von Wright 1998) provides mathematical foundations where each refinement step is proven to preserve specification truth.\n\n\\paragraph{Definition (Root Element)} root(e) ≡ layer(e).stratum = purpose ∧ ¬∃d ∈ D. d.tgt.elem = e.id ∧ d.δ = justified\\_by\n\n\\paragraph{Definition (Trace Path)} tracePath(e) = shortest path from e to some e' where root(e') following justified\\_by dependencies from target to source (impl → requirement)\n\n\\paragraph{Guarantee G1 - PROVENANCE}\n\n\\[\n∀ e ∈ E. ∃ e' ∈ E. root(e') ∧ reachable(e, e', justified_by)\n\\]\n\nEvery element in the specification must be reachable from a root element in the purpose stratum via justified\\_by dependencies, which flow from implementation toward requirement.\n\nFormally, for specification S:\nProvenanced(S) ≡ ∀ e ∈ elements(S). tracePath(e) ≠ ∅\n\n\\section{Fulfillment}\n\n\\paragraph{Interpretation (Constraint Satisfaction)}\nThe Fulfillment guarantee (G2) corresponds to \\textbf{constraint satisfaction} and \\textbf{model satisfaction} (M ⊨ S) in formal logic. Contract-based design (Benveniste et al. 2018) formalizes this through assume-guarantee contracts where a component satisfies a contract if \"all runs that satisfy assumptions A must satisfy guarantees G.\" The compositional theorem states that if all components satisfy their own contracts, a global system contract is satisfied.\n\n\nThe Fulfillment guarantee ensures that a specification satisfies its own declared constraints. Every specification may declare constraints—rules that must hold for the specification to be considered complete. Fulfillment requires that all error-level constraints evaluate to true. This makes the specification self-validating: it defines its own completeness criteria and then meets them.\n\nIEEE 29148:2018 defines \"complete\" for individual requirements as \"needs no further amplification because it is measurable and sufficiently describes the capability.\" DO-178C specifies 71 verification objectives organized by Design Assurance Level, with completeness requiring evidence that \"each phase is complete, coherent, and traceable to its predecessor.\" The OMG OCL 2.4 Specification requires that \"an OCL expression is an invariant of the type and must be true for all instances of that type at any time.\"\n\n\\paragraph{Definition (Constraint Satisfaction)} S ⊨ c ≡ c.φ(elements(S), dependencies(S)) = ⊤\n\n\\paragraph{Definition (Error Constraints)} ErrorConstraints(S) = \\{c ∈ constraints(S) | c.sev = error\\}\n\n\\paragraph{Guarantee G2 - FULFILLMENT}\n\n\\[\n∀ c ∈ ErrorConstraints(S). S ⊨ c\n\\]\n\nEvery error-level constraint declared in the specification must evaluate to true. This ensures completeness relative to the specification's own stated requirements.\n\nComplexity: evaluating all error constraints is O(|C\\_error| * T\\_eval), where T\\_eval is the cost of a single constraint evaluation over E and D. For finite, quantifier-bounded constraints, this is typically polynomial in |E| + |D|.\n\nFormally:\nFulfilled(S) ≡ ∀ c ∈ ErrorConstraints(S). c.φ(E, D) = ⊤\n\nCommon fulfillment constraints:\n\n\\begin{itemize}\n\\item ∀ feature f. ∃ test t. tests(t, f) - Feature test coverage\n\\item ∀ api a. ∃ doc d. documents(d, a) - API documentation\n\\item ∀ aggregate ag. ∃ command c. commands(ag, c) - Aggregate has commands\n\\end{itemize}\n\n\\section{Non-Contradiction}\n\n\\paragraph{Interpretation (Internal Consistency / Satisfiability)}\nThe Non-Contradiction guarantee (G3) maps to \\textbf{internal consistency} and \\textbf{satisfiability} in formal methods. The classical Law of Non-Contradiction (Aristotle) states ¬(P ∧ ¬P). In SAT/SMT solving, this becomes satisfiability: a set of constraints is consistent iff their conjunction is satisfiable. VDM explicitly defines proof obligations for internal consistency: \"A proof obligation is a theorem stating that a certain property must hold in order for a formal specification to be internally consistent.\"\n\n\nThe Non-Contradiction guarantee prevents semantic conflicts within a specification. When two elements make claims about the same property—such as an API's return type appearing in both the interface definition and its handler implementation—those claims must agree. Contradiction detection identifies cases where elements that should unify actually assert incompatible values, catching integration errors before they manifest as runtime bugs.\n\nFor TLA+ specifications, Lamport defines invariants as \"state predicates true of all reachable states,\" with the TLC model checker performing breadth-first search to verify invariance. In Alloy, consistency analysis uses SAT-based model finding: a specification is consistent if at least one valid instance exists that satisfies all facts within a bounded scope. IEEE 29148:2018 requires that requirements be \"consistent: free of conflicts with other requirements.\" The KAOS methodology formally defines conflicts as goals that are \"mutually inconsistent under domain axioms.\"\n\n\\paragraph{Definition (Contradiction)} contradiction(e₁, e₂) ≡ ∃ property p. e₁.π(p) is defined ∧ e₂.π(p) is defined ∧ e₁.π(p) ≠ e₂.π(p) ∧ unifies(e₁, e₂, p)\n\n\\paragraph{Definition (Unifies)} unifies(e₁, e₂, p) ≡ ∃ c ∈ C. c.cat = non\\_contradiction ∧ c specifies e₁.p must equal e₂.p\n\n\\paragraph{Guarantee G3 - NON-CONTRADICTION}\n\n\\[\n∀ e₁, e₂ ∈ E. ¬contradiction(e₁, e₂)\n\\]\n\nNo pair of elements may assert incompatible values for any property that a unification constraint requires to match. This prevents semantic conflicts within the specification.\n\nComplexity: a direct check over all constrained pairs is O(|E|\\textasciicircum{}2 \\emph{ k), where k is the average number of properties compared. With indexed constraints and candidate pairing, this can be reduced to O(|D| + |E| } k) in typical implementations.\n\nFormally:\nNonContradictory(S) ≡ ∀ e₁, e₂ ∈ elements(S). ¬contradiction(e₁, e₂)\n\nCommon non-contradiction constraints:\n\n\\begin{itemize}\n\\item API return type = Handler return type\n\\item Event schema = Event handler expected schema\n\\item Database field type = Domain entity field type\n\\end{itemize}\n\n\\section{Materialization}\n\n\\paragraph{Interpretation (Reification / Refinement)}\nThe Materialization guarantee (G4) builds on \\textbf{refinement} and \\textbf{reification} theory with a 40-year history. C.B. Jones's VDM work defines reification as \"finding a more concrete representation of abstract data types\"—stepwise transformation with proof obligations via retrieve functions. The He-Hoare-Sanders formulation (1986) introduces downward and upward simulation with abstraction relations ρ ⊆ Σ\\_A × Σ\\_C between abstract and concrete states.\n\n\nThe Materialization guarantee ensures that abstract specifications are grounded in concrete reality. Every element at the physical stratum—the lowest level of abstraction—must have a binding that connects it to an actual artifact: a file, a database table, a hardware component. This prevents specifications from describing phantom systems that exist only on paper, ensuring that what is specified actually exists.\n\nEnterprise architecture uses the \\textbf{realization relationship} (ArchiMate 3.2): \"A dependency relationship that connects a logical entity with a more concrete entity that implements it.\" The progression flows from Architecture Building Blocks (ABBs) to Solution Building Blocks (SBBs). In MDA, the transformation chain CIM → PIM → PSM → Code represents progressive materialization. A specification is \"fully grounded\" when the Platform Specific Model produces deployable Executable Object Code.\n\n\\paragraph{Definition (Terminal Element)} terminal(e) ≡ layer(e).stratum = physical\n\n\\paragraph{Definition (Materialized Element)} materialized(e) ≡ ∃ b ∈ B. b.abstract.elem = e.id\n\n\\paragraph{Guarantee G4 - MATERIALIZATION}\n\n\\[\n∀ e ∈ E. terminal(e) → materialized(e)\n\\]\n\nEvery element at the physical stratum must have an associated binding that maps it to a concrete artifact. This ensures specifications describe things that actually exist.\n\nFormally:\nMaterialized(S) ≡ ∀ e ∈ elements(S). terminal(e) → materialized(e)\n\nComplexity: checking bindings for terminal elements is O(|E\\_terminal| × |B|) with naive lookup, or O(|E\\_terminal|) with indexed bindings where each terminal element has O(1) binding lookup.\n\nMaterialization types per domain:\n\n\\begin{itemize}\n\\item Software: Component → File:Line\n\\item Manufacturing: Part → Drawing + BOM\n\\item Healthcare: Protocol → EMR Configuration\n\\item Legal: Clause → Document Section\n\\end{itemize}\n\n\\section{Predictability}\n\n\\paragraph{Interpretation (Modifiability / Change Impact Analysis)}\nThe Predictability guarantee (G5) connects to \\textbf{modifiability} and \\textbf{change impact analysis} research. The SEI defines modifiability as \"a quality attribute that relates to the cost of change and refers to the ease with which a software system can accommodate changes.\" Bohner \\& Arnold's foundational 1996 work defines change impact analysis as \"identifying the potential consequences of a change, or estimating what needs to be modified to accomplish a change.\"\n\n\nThe Predictability guarantee enables reliable change impact analysis. Before any change is applied to a specification, the complete set of affected elements can be computed in linear time. This allows teams to understand the full consequences of a proposed change—which tests need to run, which documents need updating, which stakeholders need notification—before committing to it.\n\nReps, Horwitz, and Sagiv's POPL 1995 paper on IFDS problems provides \"a polynomial-time algorithm for finding precise solutions to a general class of interprocedural dataflow-analysis problems.\" The incremental model transformation literature (VIATRA framework) establishes that \"synchronization time is proportional to the magnitude of change and not to the size of models\"—precisely the property Predictable(S) requires. Yau \\& Collofello's ripple effect analysis (IEEE TSE 1985) measures structural stability upon modification.\n\n\\paragraph{Definition (Change)} δ ::= ⟨element: ID, changeType: CHANGE, details: VALUE⟩\n\n\\paragraph{Definition (Impact)} impact(S, δ) = ⋃ \\{cascade(S, elem(δ), δ.changeType, r) | r ∈ R, r.trigger matches δ\\}\n\n\\paragraph{Guarantee G5 - PREDICTABILITY}\n\n\\[\n∀ δ : CHANGE. impact(S, δ) is computable before applying δ\n\\]\n\nFor any proposed change δ, the complete set of affected elements and their effects can be computed in O(|E| + |D|) time before the change is applied. This enables reliable impact analysis and risk assessment.\n\nFormally:\nPredictable(S) ≡ impact : S × CHANGE → P(E × EFFECT) is total and computable in O(|E| + |D|) time\n\nThis enables:\n\n\\begin{itemize}\n\\item Pre-change impact analysis\n\\item Automated change review\n\\item Risk assessment\n\\item Staged rollout decisions\n\\end{itemize}\n\n\\section{Stratification}\n\n\\paragraph{Interpretation (Layered Abstraction / The Dependency Rule)}\nThe Stratification guarantee (G6) embodies \\textbf{layered abstraction} and Robert C. Martin's \\textbf{Dependency Rule}: \"Source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.\" A crucial distinction from Abelson \\& Sussman's work (1987): \"Where layers are levels of equal abstraction in software, strata are levels of different abstraction.\" Layers provide horizontal separation by functional concern; strata provide vertical separation by abstraction level.\n\n\nThe Stratification guarantee enforces clean abstraction boundaries. Dependencies must flow downward through the strata (from purpose through logical to physical), preventing implementation details from leaking into high-level requirements. The sole exception is the justified\\_by relation, which explicitly links implementations back to the requirements they satisfy—flowing upward to establish provenance.\n\nArchiMate's three core layers (Business, Application, Technology) formalize this with \"higher layers making use of services provided by lower layers\" and realization relationships connecting elements across layers. OMG's MOF four-layer metamodel architecture (M0-M3) provides rigorous formalization: \"Models at every level conform to a model belonging to the upper level.\" MOF is closed—M3 conforms to itself. MDA's CIM/PIM/PSM separation achieves vertical separation of concerns with transformations flowing downward.\n\n\\paragraph{Definition (Stratum Respecting)} stratumRespecting(d) ≡ let l\\_s = layer(src(d)), l\\_t = layer(tgt(d)) in\n\n\\[\nrank(l_s) ≥ rank(l_t) ∨ d.δ = justified_by\n\\]\n\n\\paragraph{Guarantee G6 - STRATIFICATION}\n\n\\[\n∀ d ∈ D. stratumRespecting(d)\n\\]\n\nDependencies must respect stratum boundaries: elements may only depend on elements at equal or lower rank. The justified\\_by relation is the sole exception, explicitly linking implementations to their requirements.\n\nFormally:\nStratified(S) ≡ ∀ d ∈ dependencies(S). stratumRespecting(d)\n\nComplexity: a single pass over all dependencies, O(|D|). Each dependency check requires O(1) stratum rank lookup for source and target elements, making the total verification linear in the number of dependencies.\n\nThis ensures:\n\n\\begin{itemize}\n\\item Abstraction boundaries are respected\n\\item Implementation details don't leak upward\n\\item Changes cascade predictably (down, not up)\n\\end{itemize}\n\nException: justified\\_by dependencies go UP (from impl to requirement)\n\n\\section{Diagnosability}\n\n\\paragraph{Interpretation (Minimal Unsatisfiable Subset (MUS) / Model-Based Diagnosis)}\nThe Diagnosability guarantee (G7) leverages \\textbf{MUS extraction} and \\textbf{model-based diagnosis} from SAT/SMT theory. A Minimal Unsatisfiable Subset (MUS) is a subset M of an unsatisfiable formula F where M is unsatisfiable but removing any clause makes it satisfiable. Reiter's seminal 1987 paper establishes that \"the set of diagnoses is exactly the set of minimal hitting sets of the collection of all conflicts.\" Junker's QuickXplain algorithm (2004) efficiently computes preferred minimal conflicts using divide-and-conquer with O(n·log(k+1)+k²) consistency checks.\n\n\nWhen validation fails, humans need actionable explanations. G7 requires that every violation report includes an irreducible unsat core—the minimal set of constraints causing the failure—and human-readable diagnostic text.\n\nDiagnosability from discrete-event systems theory (Sampath et al. 1995) defines when faults can be unambiguously detected: fault f is diagnosable iff no two infinite runs exist with identical observable projections where f occurs in one but not the other. The hitting set duality—every MUS hits every MCS (Minimal Correction Subset)—enables computing repairs from conflicts. Delta debugging (Zeller 1999) provides 1-minimality for failure-inducing inputs.\n\n\\paragraph{Definition (Diagnosis)} diagnosis ::= ⟨violatedGuarantee, minimalConflictSet, causalTrace, diagnosticMessage, suggestedFix?⟩\n\nwhere:\n\n\\paragraph{Definition (violatedGuarantee ∈ \\{'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7'\\})} Which guarantee failed\n\n\\paragraph{Definition (minimalConflictSet ⊆ constraints(S))} Minimal unsatisfiable subset (see Theorem 10.12)\n\n\\paragraph{Definition (causalTrace ∈ Operation*)} Causal chain of changes leading to violation (uses vector clocks from referenceMap(\"sub-xYOy8xUJpcssgjNVmANNW\", \"§\\{\\{sectionNumber\\}\\}.1 Element\"), referenceMap(\"sec-FKg-HIOFmN1Oiyr\\_KJhnT\", \"§\\{\\{sectionNumber\\}\\}\"))\n\n\\paragraph{Definition (diagnosticMessage ∈ NAME)} Natural language explanation targeting domain experts\n\n\\paragraph{Definition (suggestedFix ∈ Operation?)} Optional: automated remediation per Policy (referenceMap(\"sec-A6gecSxlJYGPIDKvgzjsG\", \"§\\{\\{sectionNumber\\}\\}\"))\n\n\\paragraph{Guarantee G7 - DIAGNOSABILITY}\n\n\\[\n∀ violations v from validate(S). ∃ diagnosis d. explains(d, v) ∧ irreducible(d.minimalConflictSet)\n\\]\n\nEvery validation failure must produce a diagnosis containing an irreducible minimal conflict set. This enables precise identification of the root cause and supports automated remediation.\n\nFormally:\nDiagnosable(S) ≡ validate(S) produces diagnoses for all violations\n\n\\textbf{Implementation}: Use SMT solver unsat core extraction (Z3 \\texttt{unsat\\_core()}, CVC5 \\texttt{getUnsatCore()}). See Theorem 10.12 for irreducibility proof obligation.\n\n\\paragraph{note} \\textbf{Conformance}: G7 is \\textbf{K1 (Certified-Aware)}, not K0. K0 implementations may return violations without explanations. K1+ implementations MUST provide irreducible unsat cores per Theorem 10.12.\n\n\n\\textbf{Example}: See referenceMap(\"sub-sec-FKg-HIOFmN1Oiyr\\_KJhnT-5\", \"§\\{\\{sectionNumber\\}\\}.5 How to Read This Document\") Demo Scenario for complete G7 workflow showing blame chains and suggested fixes.\n\n\\section{Valid Specification}\n\nThe seven invariants combine to form the definition of a valid specification. A specification that satisfies all invariants is one that can be trusted: it is traceable to purpose, internally consistent, grounded in reality, and when it fails validation, it explains why. This is the central quality criterion for any Stratum document.\n\n\\paragraph{Definition (Valid Specification)} Valid(S) ≡ WellFormed(S) ∧ Provenanced(S) ∧ Fulfilled(S) ∧ NonContradictory(S) ∧ Materialized(S) ∧ Predictable(S) ∧ Stratified(S) ∧ Diagnosable(S)\n\nA specification is valid iff it is well-formed and satisfies all seven invariants. Note: G7 (Diagnosability) is K1 conformance; K0 implementations check G1-G6 only.\n\n\\section{Terminology Mapping Summary}\n\nThe following table summarizes how each Stratum guarantee maps to established terminology in formal methods, requirements engineering, and safety-critical standards:\n\n\\begin{tabular}{lll}\nStratum Property & Primary Established Term & Key Standards/Papers \\\\\nG1: Provenanced(S) & Bidirectional traceability & IEEE 29148:2018, DO-178C, Gotel \\& Finkelstein 1994 \\\\\nG2: Fulfilled(S) & Constraint satisfaction & IEEE 29148:2018, Benveniste et al. 2018 \\\\\nG3: NonContradictory(S) & Internal consistency & VDM Proof Obligations, Lamport TLA+ 2002 \\\\\nG4: Materialized(S) & Reification/Refinement & Jones VDM 1990, ArchiMate 3.2, DO-178C \\\\\nG5: Predictable(S) & Modifiability & SEI CMU/SEI-2007-TR-002, Bohner \\& Arnold 1996 \\\\\nG6: Stratified(S) & Layered abstraction & Martin Clean Architecture 2017, OMG MDA, MOF M0-M3 \\\\\nG7: Diagnosable(S) & Minimal unsatisfiable subset & Reiter 1987, Junker QuickXplain 2004, Sampath 1995\n\\end{tabular}\n\n\\paragraph{Cross-Domain Convergence} IEEE/ISO standards, OMG specifications (MOF, OCL, MDA), and safety-critical standards (DO-178C, ISO 26262, IEC 61508) independently arrived at nearly identical property definitions, suggesting these validity properties are fundamental to rigorous specification. Every Stratum property maps to concepts with 30-40 years of formal methods research.\n\n\n\\section*{References}\nThe following references provide the foundational research grounding for Stratum's semantic invariants. References are organized by the guarantee they primarily support.\n\n\\textbf{Note on decidability stratification}: Properties WellFormed and NonContradictory have decidable checking procedures (type systems, SAT solvers), while Fulfilled and Provenanced may require semi-decidable or process-based verification depending on the expressiveness of constraint languages used.\n\n\\textbf{Note on IEEE/OMG/safety-critical convergence}: The independent convergence of IEEE 29148, OMG specifications (MOF, OCL, MDA), and safety-critical standards (DO-178C, ISO 26262, IEC 61508) on nearly identical property definitions suggests these validity properties are fundamental rather than arbitrary design choices.\n\n\\textbf{Note on formal methods maturity}: Every Stratum property maps to concepts with 30-40 years of formal methods research. This maturity provides confidence in both theoretical soundness and practical implementability via established tools (Z3, CVC5, TLC, Alloy Analyzer, etc.).\n\n\\begin{itemize}\n\\item An Analysis of the Requirements Traceability Problem. Gotel, Orlena C. Z. and Finkelstein, Anthony C. W.. 1994. Proceedings of the First IEEE International Conference on Requirements Engineering (ICRE'94)\n\\item ISO/IEC/IEEE 29148:2018 Systems and software engineering — Life cycle processes — Requirements engineering. ISO/IEC/IEEE. 2018. International Organization for Standardization\n\\item DO-178C: Software Considerations in Airborne Systems and Equipment Certification. RTCA, Inc.. 2011. RTCA, Inc.\n\\item Refinement Calculus: A Systematic Introduction. Back, Ralph-Johan and von Wright, Joakim. 1998. Springer-Verlag\n\\item Toward Reference Models for Requirements Traceability. Ramesh, Balasubramaniam and Jarke, Matthias. 2001. IEEE Transactions on Software Engineering\n\\item Contracts for System Design. Benveniste, Albert and Caillaud, Benoît and Nickovic, Dejan and Passerone, Roberto and Raclet, Jean-Baptiste and Reinkemeier, Philipp and Sangiovanni-Vincentelli, Alberto and Damm, Werner and Henzinger, Thomas A. and Larsen, Kim G.. 2018. Foundations and Trends in Electronic Design Automation\n\\item Object Constraint Language (OCL) Version 2.4. Object Management Group. 2014. OMG formal specification formal/2014-02-03. States: 'OCL is a typed language so that each OCL expression has a type. To be well formed, an OCL expression must conform to the type conformance rules of the language.' Sections 8.3.7, 10.2.2, 11.3-11.7 define well-formedness rules. Requires invariants to be true for all instances at all times.\n\\item Systematic Software Development using VDM. Jones, Cliff B.. 1990. Prentice Hall International\n\\item Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers. Lamport, Leslie. 2002. Addison-Wesley Professional\n\\item Software Abstractions: Logic, Language, and Analysis. Jackson, Daniel. 2012. MIT Press\n\\item Requirements Engineering: From System Goals to UML Models to Software Specifications. van Lamsweerde, Axel. 2009. Wiley\n\\item Data Refinement Refined. He, Jifeng and Hoare, C. A. R. and Sanders, Jeff W.. 1986. ESOP '86: European Symposium on Programming\n\\item ArchiMate 3.2 Specification. The Open Group. 2022. The Open Group\n\\item MDA Guide Version 2.0. Object Management Group. 2014. OMG Model Driven Architecture guide. Defines CIM/PIM/PSM transformation chain representing progressive materialization. A specification is 'fully grounded' when PSM produces deployable Executable Object Code.\n\\item Modifiability Tactics. Bachmann, Felix and Bass, Len and Nord, Robert. 2007. SEI technical report on modifiability. Defines modifiability as 'a quality attribute that relates to the cost of change and refers to the ease with which a software system can accommodate changes.' Provides cost model: Average cost = direct modification cost + propagated modification costs.\n\\item Software Change Impact Analysis. Bohner, Shawn A. and Arnold, Robert S.. 1996. IEEE Computer Society Press\n\\item Precise Interprocedural Dataflow Analysis via Graph Reachability. Reps, Thomas and Horwitz, Susan and Sagiv, Mooly. 1995. Proceedings of the 22nd ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL '95)\n\\item Design Stability Measures for Software Maintenance. Yau, Stephen S. and Collofello, James S.. 1985. IEEE Transactions on Software Engineering\n\\item Clean Architecture: A Craftsman's Guide to Software Structure and Design. Martin, Robert C.. 2017. Prentice Hall\n\\item Lisp: A Language for Stratified Design. Abelson, Harold and Sussman, Gerald Jay. 1987. Distinguishes layers from strata: 'Where layers are levels of equal abstraction in software, strata are levels of different abstraction.' Layers provide horizontal separation by functional concern; strata provide vertical separation by abstraction level.\n\\item OMG Meta Object Facility (MOF) Core Specification Version 2.5.1. Object Management Group. 2019. ISO/IEC 19508:2014. Provides four-layer metamodel architecture (M0-M3): 'Models at every level conform to a model belonging to the upper level.' MOF is closed—M3 conforms to itself. Uses constraints to define well-formedness rules for metadata.\n\\item A Framework for Information Systems Architecture. Zachman, John A.. 1987. IBM Systems Journal\n\\item A Theory of Diagnosis from First Principles. Reiter, Raymond. 1987. Artificial Intelligence\n\\item QUICKXPLAIN: Preferred Explanations and Relaxations for Over-Constrained Problems. Junker, Ulrich. 2004. Proceedings of the 19th National Conference on Artificial Intelligence (AAAI-04)\n\\item Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints. Liffiton, Mark H. and Sakallah, Karem A.. 2008. Journal on Satisfiability, Boolean Modeling and Computation (JSAT)\n\\item Diagnosability of Discrete-event Systems. Sampath, Meera and Sengupta, Raja and Lafortune, Stéphane and Sinnamohideen, Kasim and Teneketzis, Demosthenis. 1995. IEEE Transactions on Automatic Control\n\\item Diagnosing Multiple Faults. de Kleer, Johan and Williams, Brian C.. 1987. Artificial Intelligence\n\\item Simplifying and Isolating Failure-Inducing Input. Zeller, Andreas and Hildebrandt, Ralf. 2002. IEEE Transactions on Software Engineering\n\\item On Computing Minimal Correction Subsets. Marques-Silva, Joao and Heras, Federico and Janota, Mikoláš and Previti, Alessandro and Belov, Anton. 2013. Proceedings of the 23rd International Joint Conference on Artificial Intelligence (IJCAI-13)\n\\item A Syntactic Approach to Type Soundness. Wright, Andrew K. and Felleisen, Matthias. 1994. Information and Computation\n\\item Types and Programming Languages. Pierce, Benjamin C.. 2002. MIT Press\n\\item IEC 61508: Functional Safety of Electrical/Electronic/Programmable Electronic Safety-related Systems. International Electrotechnical Commission. 2010. International safety standard. Annex A.1 specifies that backward traceability checks 'that the implementation is justified by a requirement'—the core provenance property. Complements DO-178C for industrial applications.\n\\end{itemize}\n\n\n\\end{document}\n";
+      var LATEX_FILENAME = "semantic-invariants.tex";
+      (function () {
+        var exportBtn = document.getElementById("export-latex");
+        if (!exportBtn) return;
+        exportBtn.addEventListener("click", function () {
+          if (!LATEX_CONTENT) return;
+          var blob = new Blob([LATEX_CONTENT], { type: "application/x-latex" });
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          link.href = url;
+          link.download = LATEX_FILENAME || "document.tex";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setTimeout(function () {
+            URL.revokeObjectURL(url);
+          }, 1000);
+        });
+      })();
+  
+    </script>
+  </body>
+</html>

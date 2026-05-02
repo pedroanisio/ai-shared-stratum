@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
+import { buildLatexDownloadScript, makeExportFilename } from "./shared-utils";
 
 export type IndexSection = {
   id: string;
@@ -728,18 +729,42 @@ export function renderDefinitionEntries(defs: unknown[] | undefined): string {
     return value.map((entry) => String(entry));
   };
 
-  const renderList = (label: string, items: string[]): string => {
+  const renderList = (label: string, items: string[], cssClass = ""): string => {
     if (!items.length) return "";
     const listItems = items.map((entry) => `<li>${renderInlineWithRefs(entry)}</li>`).join("");
-    return `<div class="def-list"><p><strong>${escapeHtml(label)}</strong></p><ul>${listItems}</ul></div>`;
+    const classes = ["def-list", cssClass].filter(Boolean).join(" ");
+    return `<div class="${classes}"><p><strong>${escapeHtml(label)}</strong></p><ul>${listItems}</ul></div>`;
+  };
+
+  const renderCodeBlock = (code: string, label?: string): string => {
+    if (!code) return "";
+    const labelHtml = label ? `<div class="def-code-label">${escapeHtml(label)}</div>` : "";
+    return `<div class="def-code">${labelHtml}<pre><code>${escapeHtml(code)}</code></pre></div>`;
   };
 
   const blocks = defs
     .map((entry) => {
       if (!entry || typeof entry !== "object") return "";
       const record = entry as Record<string, unknown>;
+
+      // Handle legacy key-value format
+      if ("key" in record && "value" in record && !("kind" in record)) {
+        const key = typeof record.key === "string" ? record.key : "";
+        const value = typeof record.value === "string" ? record.value : "";
+        const id = typeof record.id === "string" ? record.id : "";
+        if (!key && !value) return "";
+        return `<div class="def-block def-legacy" ${id ? `id="${escapeHtml(id)}"` : ""}>
+          <dl class="def-kv">
+            <dt>${renderInlineWithRefs(key)}</dt>
+            <dd>${renderTextBlocks(value)}</dd>
+          </dl>
+        </div>`;
+      }
+
       const kind = typeof record.kind === "string" ? record.kind : "definition";
+      const id = typeof record.id === "string" ? record.id : "";
       const number = typeof record.number === "string" ? record.number : "";
+      const section = typeof record.section === "string" ? record.section : "";
       const name =
         (typeof record.name === "string" && record.name) ||
         (typeof record.label === "string" && record.label) ||
@@ -748,36 +773,86 @@ export function renderDefinitionEntries(defs: unknown[] | undefined): string {
       const title = [number, name].filter(Boolean).join(" ");
       const description =
         typeof record.description === "string" ? renderTextBlocks(record.description) : "";
+
+      // Code-like fields
       const syntax = typeof record.syntax === "string" ? record.syntax : "";
       const signature = typeof record.signature === "string" ? record.signature : "";
       const conclusion = typeof record.conclusion === "string" ? record.conclusion : "";
+
+      // List fields
       const premises = normalizeList(record.premises);
       const values = normalizeList(record.values);
       const changeTypes = normalizeList(record.change_types);
+      const transformTypes = normalizeList(record.transform_types);
       const compatibleChanges = normalizeList(record.compatible_changes);
       const breakingChanges = normalizeList(record.breaking_changes);
+
+      // Theorem-specific
       const category = typeof record.category === "string" ? record.category : "";
       const proofSketch =
         typeof record.proof_sketch === "string" ? renderTextBlocks(record.proof_sketch) : "";
 
+      // Build header badges
+      const kindLabel = kind.charAt(0).toUpperCase() + kind.slice(1);
       const headerBits = [
-        kind ? `<span class="def-kind">${renderInlineWithRefs(kind)}</span>` : "",
+        `<span class="def-kind def-kind-${escapeHtml(kind)}">${escapeHtml(kindLabel)}</span>`,
         category ? `<span class="def-category">${renderInlineWithRefs(category)}</span>` : "",
+        section ? `<span class="def-section">${escapeHtml(section)}</span>` : "",
       ].filter(Boolean);
 
-      return `<div class="def-block def-${escapeHtml(kind)}">
+      const idAttr = id ? ` id="${escapeHtml(id)}"` : "";
+
+      // Build content based on kind
+      let kindContent = "";
+      switch (kind) {
+        case "enum":
+          kindContent = renderList("Values", values, "def-enum-values");
+          break;
+        case "type":
+          kindContent = [
+            renderCodeBlock(syntax, "Syntax"),
+            renderList("Change Types", changeTypes),
+            renderList("Transform Types", transformTypes),
+          ].filter(Boolean).join("\n");
+          break;
+        case "rule":
+          kindContent = [
+            renderList("Premises", premises),
+            renderCodeBlock(conclusion, "Conclusion"),
+            renderList("Compatible Changes", compatibleChanges, "def-compatible"),
+            renderList("Breaking Changes", breakingChanges, "def-breaking"),
+          ].filter(Boolean).join("\n");
+          break;
+        case "function":
+          kindContent = renderCodeBlock(signature, "Signature");
+          break;
+        case "theorem":
+          kindContent = [
+            renderCodeBlock(conclusion, "Statement"),
+            proofSketch ? `<div class="def-proof"><h5>Proof Sketch</h5>${proofSketch}</div>` : "",
+          ].filter(Boolean).join("\n");
+          break;
+        default:
+          // Generic fallback for unknown kinds
+          kindContent = [
+            syntax ? renderCodeBlock(syntax, "Syntax") : "",
+            signature ? renderCodeBlock(signature, "Signature") : "",
+            conclusion ? renderCodeBlock(conclusion, "Conclusion") : "",
+            renderList("Premises", premises),
+            renderList("Values", values),
+            renderList("Change Types", changeTypes),
+            renderList("Transform Types", transformTypes),
+            renderList("Compatible Changes", compatibleChanges, "def-compatible"),
+            renderList("Breaking Changes", breakingChanges, "def-breaking"),
+            proofSketch ? `<div class="def-proof"><h5>Proof Sketch</h5>${proofSketch}</div>` : "",
+          ].filter(Boolean).join("\n");
+      }
+
+      return `<div class="def-block def-${escapeHtml(kind)}"${idAttr}>
         <div class="def-header">${headerBits.join("")}</div>
         ${title ? `<h4>${renderInlineWithRefs(title)}</h4>` : ""}
         ${description}
-        ${syntax ? `<pre><code>${escapeHtml(syntax)}</code></pre>` : ""}
-        ${signature ? `<pre><code>${escapeHtml(signature)}</code></pre>` : ""}
-        ${conclusion ? `<pre><code>${escapeHtml(conclusion)}</code></pre>` : ""}
-        ${renderList("Premises", premises)}
-        ${renderList("Values", values)}
-        ${renderList("Change types", changeTypes)}
-        ${renderList("Compatible changes", compatibleChanges)}
-        ${renderList("Breaking changes", breakingChanges)}
-        ${proofSketch ? `<div class="def-proof"><h5>Proof Sketch</h5>${proofSketch}</div>` : ""}
+        ${kindContent}
       </div>`;
     })
     .filter(Boolean)
@@ -1286,14 +1361,6 @@ function buildDefinitionsSection(
         <ul>${items}</ul>
       </section>
     `;
-}
-
-function makeExportFilename(title: string | undefined): string {
-  const base = (title ?? "document")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return `${base || "document"}.tex`;
 }
 
 async function main(): Promise<void> {
@@ -1867,6 +1934,122 @@ async function main(): Promise<void> {
       .def-proof h5 {
         margin: 1rem 0 0.4rem;
       }
+      .def-code {
+        margin: 0.6rem 0;
+      }
+      .def-code-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 0.3rem;
+      }
+      .def-code pre {
+        margin: 0;
+      }
+      .def-kv {
+        display: grid;
+        grid-template-columns: minmax(120px, 200px) 1fr;
+        gap: 0;
+        margin: 0;
+      }
+      .def-kv dt {
+        font-weight: 600;
+        color: #3c3731;
+        padding: 0.4rem 0.8rem 0.4rem 0;
+        border-right: 2px solid var(--border);
+      }
+      .def-kv dd {
+        margin: 0;
+        padding: 0.4rem 0 0.4rem 0.8rem;
+      }
+      .def-kind {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        background: #e9e5df;
+      }
+      .def-kind-enum {
+        background: #e7f2ef;
+        color: #1f6b5a;
+      }
+      .def-kind-type {
+        background: #e6eef8;
+        color: #2c5282;
+      }
+      .def-kind-rule {
+        background: #fef3e2;
+        color: #9c5b1c;
+      }
+      .def-kind-function {
+        background: #f0e7f6;
+        color: #6b46c1;
+      }
+      .def-kind-theorem {
+        background: #fce8ec;
+        color: #9b2c4a;
+      }
+      .def-category {
+        background: #f1ede6;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+      }
+      .def-section {
+        color: #9c9488;
+        font-size: 0.7rem;
+      }
+      .def-enum-values ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        list-style: none;
+        padding: 0;
+      }
+      .def-enum-values li {
+        background: #e7f2ef;
+        color: #1f6b5a;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.85rem;
+      }
+      .def-compatible ul {
+        list-style: none;
+        padding: 0;
+      }
+      .def-compatible li::before {
+        content: "+";
+        color: #1f6b5a;
+        font-weight: 700;
+        margin-right: 0.4rem;
+      }
+      .def-breaking ul {
+        list-style: none;
+        padding: 0;
+      }
+      .def-breaking li::before {
+        content: "!";
+        color: #b24729;
+        font-weight: 700;
+        margin-right: 0.4rem;
+      }
+      .def-block.def-enum {
+        border-left: 4px solid #1f6b5a;
+      }
+      .def-block.def-type {
+        border-left: 4px solid #2c5282;
+      }
+      .def-block.def-rule {
+        border-left: 4px solid #9c5b1c;
+      }
+      .def-block.def-function {
+        border-left: 4px solid #6b46c1;
+      }
+      .def-block.def-theorem {
+        border-left: 4px solid #9b2c4a;
+      }
       .definition-list {
         display: grid;
         grid-template-columns: minmax(180px, 240px) 1fr;
@@ -2337,8 +2520,7 @@ async function main(): Promise<void> {
     </main>
     <script>
       var SECTION_INFO = ${JSON.stringify(sectionInfo)};
-      var LATEX_CONTENT = ${JSON.stringify(latexContent)};
-      var LATEX_FILENAME = ${JSON.stringify(latexFilename)};
+      ${buildLatexDownloadScript(latexContent, latexFilename)}
       (function () {
         var threshold = 360;
         var positionKey = "toc-position";
@@ -2479,25 +2661,6 @@ async function main(): Promise<void> {
 
         window.addEventListener("scroll", updateBreadcrumb, { passive: true });
         updateBreadcrumb();
-      })();
-
-      (function () {
-        var exportBtn = document.getElementById("export-latex");
-        if (!exportBtn) return;
-        exportBtn.addEventListener("click", function () {
-          if (!LATEX_CONTENT) return;
-          var blob = new Blob([LATEX_CONTENT], { type: "application/x-latex" });
-          var url = URL.createObjectURL(blob);
-          var link = document.createElement("a");
-          link.href = url;
-          link.download = LATEX_FILENAME || "document.tex";
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          setTimeout(function () {
-            URL.revokeObjectURL(url);
-          }, 1000);
-        });
       })();
 
       // Progress bar

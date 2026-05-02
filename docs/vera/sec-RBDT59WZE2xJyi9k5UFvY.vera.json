@@ -1,0 +1,1639 @@
+{
+  "documentId": "01KDEV5YW16DPPXY22P8T28800",
+  "frontmatter": {
+    "documentId": "01KDEV5YW16DPPXY22P8T28800",
+    "title": "Garbage Collection Proofs"
+  },
+  "entities": [
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW10SYSMODEL00001",
+      "attributes": {
+        "title": "System Model",
+        "alias": "sub-system-model"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW10SYSMODEL00002",
+      "attributes": {
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "This section establishes the formal model underlying our garbage collection proofs. We consider a distributed system with the following properties:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW10SYSMODEL00003",
+      "attributes": {
+        "term": "Network Model",
+        "statement": "The system operates under an eventually synchronous network model, characterized by the following guarantees:",
+        "alias": "def-network-model",
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW10SYSMODEL00004",
+      "attributes": {
+        "refs": "01KDEV5YW10SYSMODEL00003"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": true,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Messages may be delayed arbitrarily but are eventually delivered"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "No message is lost permanently (fair-loss links with retransmission)"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Replicas may be partitioned but eventually reconnect"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "No Byzantine failures (all replicas faithfully execute the protocol)"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW10SYSMODEL00005",
+      "attributes": {
+        "term": "Replica Set",
+        "statement": "R = {r₁, r₂, ..., rₙ} is a finite, known set of replicas. Each replica maintains local state sᵢ and a logical clock clockᵢ.",
+        "alias": "def-replica-set",
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW10SYSMODEL00007",
+      "attributes": {
+        "term": "CRDT State Space",
+        "statement": "A CRDT C = (S, ⊔, eval) where S is the state space, ⊔ : S × S → S is a join-semilattice merge, and eval : S → V extracts the user-visible value.",
+        "alias": "def-crdt-state",
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW10SYSMODEL00008",
+      "attributes": {
+        "term": "Semantic Equivalence",
+        "statement": "Two states s₁ ≡ s₂ are semantically equivalent if and only if eval(s₁) = eval(s₂). States may differ in internal representation—such as tombstone sets or metadata—while remaining equivalent from the user's perspective.",
+        "alias": "def-semantic-equiv",
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW10SYSMODEL00009",
+      "attributes": {
+        "term": "Observation Set",
+        "statement": "For each replica r, observed(r) ⊆ Tombstone is the set of tombstones that replica r has received and integrated into its local state. Formally, t ∈ observed(r) iff r has delivered a message containing t.",
+        "alias": "def-observed",
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW10SYSMODEL00006",
+      "attributes": {
+        "variant": "important",
+        "title": "Membership Assumption",
+        "refs": "01KDEV5YW10SYSMODEL00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "These safety proofs assume static membership: the replica set R is fixed throughout system execution. Supporting dynamic membership (replicas joining or leaving) requires additional view-change protocols not addressed in this document."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW19FJ7H1TY78CC8401",
+      "attributes": {
+        "title": "GC Safety Requirements",
+        "alias": "sub-gc-safety-requirements"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW12ADZ5ZAH6X0X7M02",
+      "attributes": {
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Garbage collection in CRDTs must preserve convergence guarantees while reclaiming space. Formally, a GC scheme is a pair (gc, stable) where gc : S → S is the collection function that removes tombstones, and stable : Tombstone × Replica → Bool is the predicate that determines when a tombstone is safe to collect."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW13KZA2VDF6W86NY03",
+      "attributes": {
+        "term": "GC Safety",
+        "statement": "A garbage collection scheme (gc, stable) is SAFE for CRDT C iff it satisfies properties GC-1' through GC-3':",
+        "alias": "def-gc-safety",
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW1CWD7EJEPRCEJ6X04",
+      "attributes": {
+        "defName": "GC-1'",
+        "label": "Monotonic Projection",
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW1YG4BWH1P21HZ0M05",
+      "attributes": {
+        "refs": "01KDEV5YW1CWD7EJEPRCEJ6X04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "gc(s) ⊑ s  ∧  (s₁ ⊑ s₂ ⟹ gc(s₁) ⊑ gc(s₂))"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW165ZJH29T0JCXWF06",
+      "attributes": {
+        "refs": "01KDEV5YW1CWD7EJEPRCEJ6X04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "This property states that GC only removes information—never adds it—where ⊑ denotes the lattice ordering. Additionally, GC preserves the relative ordering between states. This requirement is deliberately weaker than requiring gc to be a join-homomorphism, since the stronger property fails for non-deterministic GC implementations."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW1GC1ADMON0001",
+      "attributes": {
+        "variant": "note",
+        "title": "Why Not Join-Homomorphism?",
+        "refs": "01KDEV5YW1CWD7EJEPRCEJ6X04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The naive formula gc(s₁) ⊔ gc(s₂) = gc(s₁ ⊔ s₂) cannot hold for non-deterministic GC. If gc can choose which stable tombstones to collect, two replicas might make different choices, breaking equality. For this stronger property, GC must be deterministic: given the same stability information, always collect the same tombstones."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW1DETGC00001",
+      "attributes": {
+        "term": "Deterministic GC",
+        "statement": "A GC function gc is DETERMINISTIC iff for all states s₁ ≡ s₂ with identical stability information: gc(s₁) ≡ gc(s₂).",
+        "alias": "def-deterministic-gc",
+        "refs": "01KDEV5YW1CWD7EJEPRCEJ6X04"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW1GC1STRONG",
+      "attributes": {
+        "defName": "GC-1",
+        "label": "Join-Homomorphism (Strong, requires deterministic GC)",
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW1GC1STRONGF",
+      "attributes": {
+        "refs": "01KDEV5YW1GC1STRONG"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ s₁, s₂. stable(t, s₁) ∧ stable(t, s₂) ⟹ gcₜ(s₁) ⊔ gcₜ(s₂) = gcₜ(s₁ ⊔ s₂)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW1GC1STRONGP",
+      "attributes": {
+        "refs": "01KDEV5YW1GC1STRONG"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "When GC is deterministic and targets a specific tombstone t, the strong homomorphism property holds under stability preconditions. The subscript t denotes GC targeting tombstone t specifically."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW1C8RQQB51W70B9V07",
+      "attributes": {
+        "defName": "GC-2'",
+        "label": "Stability Soundness",
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW1P211K2YJFT2KKC08",
+      "attributes": {
+        "refs": "01KDEV5YW1C8RQQB51W70B9V07"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "stable(t, r) ⟹ ∀ r' ∈ R. t ∈ observed(r')"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW1T69J5FGZC1CHW309",
+      "attributes": {
+        "refs": "01KDEV5YW1C8RQQB51W70B9V07"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "This property ensures the stability oracle is sound: whenever it reports a tombstone t as stable, all replicas have indeed observed t. This soundness requirement is essential for implementability—in an asynchronous distributed system, no replica can directly verify what other replicas have observed."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW1ORACLE00001",
+      "attributes": {
+        "term": "Stability Oracle",
+        "statement": "A stability oracle is a function stable : Tombstone × Replica → Bool that can be implemented by one of the detection methods below. Each method requires specific network assumptions for soundness.",
+        "alias": "def-stability-oracle",
+        "refs": "01KDEV5YW1C8RQQB51W70B9V07"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW1YHGG3RJ0R2BP9T0A",
+      "attributes": {
+        "defName": "GC-3'",
+        "label": "Semantic Preservation",
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW12VJJ0ESVQRGV4X0B",
+      "attributes": {
+        "refs": "01KDEV5YW1YHGG3RJ0R2BP9T0A"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "eval(gc(s)) = eval(s)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW1DR88449QMCEC740C",
+      "attributes": {
+        "refs": "01KDEV5YW1YHGG3RJ0R2BP9T0A"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "GC must preserve the user-visible value: the eval function extracts identical results before and after garbage collection. This formulation provides a cleaner semantic requirement than alternative predicates that reason about operation applicability."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW1GC4LIVENESS01",
+      "attributes": {
+        "defName": "GC-4",
+        "label": "Liveness (Progress)",
+        "refs": "01KDEV5YW19FJ7H1TY78CC8401"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW1GC4LIVENESS02",
+      "attributes": {
+        "refs": "01KDEV5YW1GC4LIVENESS01"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ t. ◇(∀ r ∈ R. stable(t, sᵣ)) ⟹ ◇(∀ r ∈ R. t ∉ sᵣ)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW1GC4LIVENESS03",
+      "attributes": {
+        "refs": "01KDEV5YW1GC4LIVENESS01"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Once a tombstone becomes stable at all replicas, it must eventually be collected at all replicas. This liveness property ensures GC makes progress and prevents unbounded tombstone accumulation."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW1STABMETH00001",
+      "attributes": {
+        "title": "Stability Detection Methods",
+        "alias": "sub-stability-methods"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW1STABMETH00002",
+      "attributes": {
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The stability oracle can be implemented through several mechanisms, each with distinct assumptions and trade-offs. We present four methods, proving that each satisfies the GC-2' soundness requirement under its stated conditions."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW1STABMETH00003",
+      "attributes": {
+        "variant": "lemma",
+        "label": "S1 (Vector Clock Stability)",
+        "alias": "lem-vc-stability",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Define stable_vc(t, r) := min{VCᵣ[i] : i ∈ R} ≥ t.clock. Under causal delivery (no message reordering), stable_vc satisfies GC-2'."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW1STABMETH00004",
+      "attributes": {
+        "of": "01KDEV5YW1STABMETH00003",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Assume min(VCᵣ) ≥ t.clock. Then for every replica r', we have VCᵣ[r'] ≥ t.clock. Under causal delivery, vector clock semantics guarantee that r has received confirmation—via transitive message chains—that r' has advanced to logical time ≥ t.clock. Since tombstone t was created at logical time t.clock, replica r' must have observed t before advancing past that time. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW1STABMETH00005",
+      "attributes": {
+        "variant": "lemma",
+        "label": "S2 (Acknowledgment Stability)",
+        "alias": "lem-ack-stability",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Define stable_ack(t, r) := ∀ r' ∈ R. ack(r', t) ∈ received(r). Under reliable delivery with retransmission, stable_ack satisfies GC-2'."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW1STABMETH00006",
+      "attributes": {
+        "of": "01KDEV5YW1STABMETH00005",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "By protocol construction, replica r' sends ack(r', t) only after observing tombstone t. Under reliable delivery, receipt of ack(r', t) at replica r proves that r' observed t. When acknowledgments may be lost, retransmission guarantees eventual delivery; the oracle simply waits until acknowledgments from all replicas have arrived. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW1STABMETH00007",
+      "attributes": {
+        "variant": "warning",
+        "title": "Ack Loss",
+        "refs": "01KDEV5YW1STABMETH00005"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "If an ack is lost and not retransmitted, stable_ack may never return true (liveness failure) but remains sound (no false positives)."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW1STABMETH00008",
+      "attributes": {
+        "variant": "lemma",
+        "label": "S3 (Checkpoint Stability)",
+        "alias": "lem-checkpoint-stability",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Define stable_cp(t, r) := t.clock < checkpoint_epoch(r). Under synchronous checkpoint protocol (all replicas confirm reaching checkpoint before any proceeds), stable_cp satisfies GC-2'."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW1STABMETH00009",
+      "attributes": {
+        "of": "01KDEV5YW1STABMETH00008",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The synchronous checkpoint protocol enforces a global barrier: no replica advances past checkpoint C until all replicas have reached C. Reaching checkpoint C requires receiving all operations with logical clock values less than C—including tombstone t. Therefore, if replica r has checkpoint_epoch(r) > t.clock, every replica must have already observed t. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW1STABMETH00010",
+      "attributes": {
+        "variant": "note",
+        "title": "Checkpoint Implementation",
+        "refs": "01KDEV5YW1STABMETH00008"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Checkpoints guarantee causal consistency—all operations with clock values before C are delivered—but not necessarily identical state representations. After reaching the same checkpoint, replicas may hold different internal representations while remaining semantically equivalent (s₁ ≡ s₂)."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW1STABMETH00011",
+      "attributes": {
+        "variant": "lemma",
+        "label": "S4 (Time-Based Stability)",
+        "alias": "lem-time-stability",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Define stable_time(t, r) := now(r) > t.timestamp + D. Given bounded clock skew ε and maximum message delay δ, if D > ε + δ, then stable_time satisfies GC-2'."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW1STABMETH00012",
+      "attributes": {
+        "of": "01KDEV5YW1STABMETH00011",
+        "refs": "01KDEV5YW1STABMETH00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Let t be created at physical time T according to the creator's clock. Any replica r' maintains a clock within ε of true time. The message carrying t arrives within δ of its send time. When now(r) > T + D and D > ε + δ, sufficient real time has elapsed for t to propagate to all replicas, accounting for both clock skew and message delay. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW1STABMETH00013",
+      "attributes": {
+        "variant": "caution",
+        "title": "Time-Based Assumptions",
+        "refs": "01KDEV5YW1STABMETH00011"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Time-based stability requires known, finite bounds on clock skew (ε) and maximum message delay (δ). In truly asynchronous networks where message delay is unbounded, this method becomes unsound and must not be used."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW2EPOCHVEC00001",
+      "attributes": {
+        "title": "Epoch and Version Vectors",
+        "alias": "sub-epoch-vectors"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2EPOCHVEC00002",
+      "attributes": {
+        "refs": "01KDEV5YW2EPOCHVEC00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Coordinating garbage collection across replicas requires tracking which GC generations each replica has completed. We introduce epoch vectors as a mechanism to achieve this coordination safely."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW2EPOCHVEC00003",
+      "attributes": {
+        "term": "GC Epoch",
+        "statement": "A GC epoch e is a monotonically increasing identifier representing a GC generation. Each replica maintains epochᵣ indicating the highest GC epoch it has applied.",
+        "alias": "def-gc-epoch",
+        "refs": "01KDEV5YW2EPOCHVEC00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW2EPOCHVEC00004",
+      "attributes": {
+        "term": "Epoch Vector",
+        "statement": "An epoch vector EV = [e₁, e₂, ..., eₙ] where eᵢ is replica rᵢ's last known GC epoch as observed by the local replica.",
+        "alias": "def-epoch-vector",
+        "refs": "01KDEV5YW2EPOCHVEC00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW2EPOCHVEC00005",
+      "attributes": {
+        "defName": "EV-1",
+        "label": "Epoch Vector Update",
+        "refs": "01KDEV5YW2EPOCHVEC00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2EPOCHVEC00006",
+      "attributes": {
+        "refs": "01KDEV5YW2EPOCHVEC00005"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "On receiving message m from replica rⱼ with epoch eⱼ: EVᵢ[j] := max(EVᵢ[j], eⱼ)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW2EPOCHVEC00007",
+      "attributes": {
+        "defName": "EV-2",
+        "label": "Safe GC Epoch Advancement",
+        "refs": "01KDEV5YW2EPOCHVEC00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW2EPOCHVEC00008",
+      "attributes": {
+        "refs": "01KDEV5YW2EPOCHVEC00007"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Replica r may advance to epoch e+1 iff: min(EVᵣ) ≥ e"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2EPOCHVEC00009",
+      "attributes": {
+        "refs": "01KDEV5YW2EPOCHVEC00007"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "This rule ensures safe epoch advancement: a replica may only move to the next GC epoch after confirming that all other replicas have reached the current epoch. This prevents any replica from collecting tombstones that others have not yet observed."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW2ANTIENTY00001",
+      "attributes": {
+        "title": "Anti-Entropy Protocol Requirements",
+        "alias": "sub-anti-entropy"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2ANTIENTY00002",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The anti-entropy protocol—responsible for synchronizing state between replicas—must satisfy specific requirements for garbage collection to remain safe. These requirements ensure that no replica attempts to integrate operations referencing already-collected tombstones."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW2ANTIENTY00003",
+      "attributes": {
+        "defName": "AE-1",
+        "label": "Tombstone Propagation",
+        "refs": "01KDEV5YW2ANTIENTY00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2ANTIENTY00004",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00003"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Tombstones must propagate to all replicas before any replica can collect them. Specifically, if replica A has collected tombstone t, then any replica B that synchronizes with A must have already observed t. This prevents B from receiving operations that assume t exists when A no longer has it."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW2ANTIENTY00005",
+      "attributes": {
+        "defName": "AE-2",
+        "label": "Epoch Consistency",
+        "refs": "01KDEV5YW2ANTIENTY00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2ANTIENTY00006",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00005"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Every message must include the sender's current GC epoch. When epochs mismatch, the protocol must handle the discrepancy explicitly:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2ANTIENTY00006A",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00005"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "If receiver.epoch > sender.epoch: The sender is behind. Buffer the incoming operations and initiate a resync request to bring the sender up to date."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "If receiver.epoch < sender.epoch: The receiver is behind. Request GC state from the sender before integrating operations that may reference collected tombstones."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW2ANTIENTY00006B",
+      "attributes": {
+        "term": "Resync Protocol",
+        "statement": "When an epoch mismatch is detected, the following resynchronization procedure executes:",
+        "alias": "def-resync-protocol",
+        "refs": "01KDEV5YW2ANTIENTY00005"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2ANTIENTY00006C",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00006B"
+      },
+      "children": [
+        {
+          "type": "code",
+          "lang": "pseudocode",
+          "value": "on_receive(msg, sender):\n  if msg.epoch > local.epoch:\n    # Receiver is behind: request state transfer\n    buffer.add(msg)\n    send(ResyncRequest{target_epoch: msg.epoch}, sender)\n    \n  else if msg.epoch < local.epoch:\n    # Sender is behind: send GC state to bring them up\n    buffer.add(msg)\n    gc_delta = compute_gc_delta(msg.epoch, local.epoch)\n    send(ResyncResponse{gc_delta, target_epoch: local.epoch}, sender)\n    \n  else:\n    # Epochs match: process normally\n    integrate(msg)\n\non_resync_response(response, sender):\n  apply_gc_delta(response.gc_delta)\n  local.epoch = response.target_epoch\n  flush_buffer()  # Now safe to integrate buffered messages"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW2ANTIENTY00006D",
+      "attributes": {
+        "variant": "note",
+        "title": "Resync Semantics",
+        "refs": "01KDEV5YW2ANTIENTY00005"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The gc_delta contains sufficient information to bring a lagging replica up to date: either a list of tombstone identifiers that have been collected, or a full state snapshot if the gap is too large. The choice between delta and snapshot is an implementation concern; either approach satisfies the safety requirement as long as the receiving replica learns which tombstones no longer exist."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEV5YW2ANTIENTY00007",
+      "attributes": {
+        "defName": "AE-3",
+        "label": "Causal Delivery",
+        "refs": "01KDEV5YW2ANTIENTY00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEV5YW2ANTIENTY00008",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00007"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "send(m₁) → send(m₂) ⟹ deliver(m₁) → deliver(m₂)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2ANTIENTY00009",
+      "attributes": {
+        "refs": "01KDEV5YW2ANTIENTY00007"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Causal delivery guarantees that if one send causally precedes another, their deliveries preserve that order. For garbage collection, this ensures the operation creating a tombstone is delivered before any operation that depends on having observed that tombstone."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW2COMPOSE00001",
+      "attributes": {
+        "title": "The Composition Problem",
+        "alias": "sub-composition"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2COMPOSE00002",
+      "attributes": {
+        "refs": "01KDEV5YW2COMPOSE00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "A fundamental question arises in asynchronous systems: when replicas execute garbage collection at different times, do their states still converge to semantically equivalent values? This section addresses this composition problem."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "definition",
+      "localId": "01KDEV5YW2COMPOSE00003",
+      "attributes": {
+        "term": "Asynchronous GC Scenario",
+        "statement": "Consider two replicas: A with state sₐ runs garbage collection, producing gc(sₐ). Meanwhile, replica B with state sᵦ has not yet run GC. When they synchronize, we must determine: what is gc(sₐ) ⊔ sᵦ, and is it semantically equivalent to the expected converged state?",
+        "alias": "def-async-gc-scenario",
+        "refs": "01KDEV5YW2COMPOSE00001"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW2COMPOSE00004",
+      "attributes": {
+        "variant": "theorem",
+        "label": "C1 (Asynchronous GC Composition)",
+        "alias": "thm-async-gc-composition",
+        "refs": "01KDEV5YW2COMPOSE00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "For deterministic GC with stability oracle satisfying GC-2', if stable(t, A) holds when A runs gc, then: gc(sₐ) ⊔ s_B ≡ gc(sₐ ⊔ s_B)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW2COMPOSE00005",
+      "attributes": {
+        "of": "01KDEV5YW2COMPOSE00004",
+        "method": "direct",
+        "refs": "01KDEV5YW2COMPOSE00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "By GC-2' soundness, stable(t, A) implies B has observed t."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2COMPOSE00006",
+      "attributes": {
+        "refs": "01KDEV5YW2COMPOSE00005"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Case analysis on s_B relative to t:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2COMPOSE00007",
+      "attributes": {
+        "refs": "01KDEV5YW2COMPOSE00005"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": true,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "If t ∈ s_B: Both sides contain t's effect. Merging gc(sₐ) (without t) with s_B (with t) preserves the deletion semantics. Then gc on the result removes t."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "If B already ran gc and t ∉ s_B: Both gc(sₐ) and s_B lack t. Merge is straightforward; gc is idempotent."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Semantic equivalence (≡) follows from GC-3': eval is preserved through gc. ✓"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW2COMPOSE00008",
+      "attributes": {
+        "variant": "important",
+        "title": "Synchronous GC Alternative",
+        "refs": "01KDEV5YW2COMPOSE00001"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "When asynchronous GC composition proves too complex for a given system, an alternative design enforces synchronous GC through checkpoints. This approach forces all replicas to run garbage collection simultaneously at checkpoint boundaries, thereby avoiding the composition problem entirely at the cost of reduced flexibility."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEV5YW2N4DJMEABYDX2YK04",
+      "attributes": {
+        "title": "GC Correctness Proofs",
+        "alias": "sub-gc-proofs"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW286X1JHRNKZ07WF05",
+      "attributes": {
+        "variant": "theorem",
+        "label": "24.1 (Checkpoint GC Safety)",
+        "alias": "thm-checkpoint-gc",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Given:"
+        },
+        {
+          "type": "text",
+          "value": "- Synchronous checkpoint protocol (all replicas confirm reaching C before proceeding)"
+        },
+        {
+          "type": "text",
+          "value": "- Tombstone t created before checkpoint C"
+        },
+        {
+          "type": "text",
+          "value": "- Deterministic gc removes t after checkpoint"
+        },
+        {
+          "type": "text",
+          "value": "- CRDT has add-wins or remove-wins conflict resolution (conflict semantics specified)"
+        },
+        {
+          "type": "text",
+          "value": "Then: gc satisfies GC-1', GC-2', GC-3'"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW2AY1QGYANV4NQ7R06",
+      "attributes": {
+        "of": "01KDEV5YW286X1JHRNKZ07WF05",
+        "method": "cases",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "We establish each safety property in turn, demonstrating that checkpoint-based GC satisfies all requirements under the stated assumptions."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0001",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "text",
+              "value": "GC-1' (Monotonic Projection):"
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0002",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "First, gc(s) ⊑ s: by construction, the gc function only removes tombstones and never adds information. In a join-semilattice, removing elements produces a smaller element under the lattice ordering."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0003",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Second, s₁ ⊑ s₂ implies gc(s₁) ⊑ gc(s₂): when s₁ ⊑ s₂, state s₂ contains all information present in s₁, plus possibly additional information. Because gc is deterministic, it removes the same set of tombstones (those stable at both states) from each input. Since gc preserves relative ordering between states, gc(s₁) ⊑ gc(s₂) follows. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0004",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "text",
+              "value": "GC-2' (Stability Soundness):"
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0005",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "By Lemma S3 (Checkpoint Stability), the stable_cp predicate satisfies GC-2' under a synchronous checkpoint protocol. The checkpoint barrier guarantees that all replicas have observed tombstone t before any replica can collect it. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0006",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "text",
+              "value": "GC-3' (Semantic Preservation):"
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0007",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "We must demonstrate that eval(gc(s)) = eval(s). Tombstones encode deletion operations; the key insight is that removing a stable tombstone does not resurrect the deleted element. This holds for two reasons:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0008",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "For remove-wins semantics: the element remains deleted because the tombstone served only as bookkeeping to ensure the deletion propagates; once stable, this bookkeeping is no longer needed."
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "For add-wins semantics (e.g., ORSet): tombstone t masks only those add operations with identifiers concurrent with or causally preceding t. By the stability requirement, no such add operations remain undelivered. Any future add operations will use fresh identifiers that t does not mask."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2PROOF0009",
+      "attributes": {
+        "refs": "01KDEV5YW2AY1QGYANV4NQ7R06"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "In both conflict resolution policies, the eval function returns identical values before and after garbage collection. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW2PROOF0010",
+      "attributes": {
+        "variant": "note",
+        "title": "GC-1' vs GC-1: Scope of This Proof",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Theorem 24.1 establishes the weaker property GC-1' (Monotonic Projection), not the stronger GC-1 (Join-Homomorphism). The distinction matters: GC-1' holds for all implementations, including non-deterministic ones that may collect different subsets of stable tombstones. The stronger GC-1 requires deterministic GC—given identical stability information, replicas must make identical collection decisions. For systems requiring GC-1, additionally verify that your GC implementation satisfies the Deterministic GC definition."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW2LATEARR00001",
+      "attributes": {
+        "variant": "theorem",
+        "label": "24.2 (Epoch Invariant)",
+        "alias": "thm-epoch-invariant",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Under correct execution of rules EV-1 and EV-2, if replica A is at epoch eₐ and replica B is at epoch eᵦ, then |eₐ - eᵦ| ≤ 1."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW2LATEARR00002",
+      "attributes": {
+        "of": "01KDEV5YW2LATEARR00001",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "We prove by induction on the number of epoch advancements in the system."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2LATEARR00003",
+      "attributes": {
+        "refs": "01KDEV5YW2LATEARR00002"
+      },
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "text",
+              "value": "Base case:"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "value": " Initially all replicas are at epoch 0, so |eₐ - eᵦ| = 0 ≤ 1. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2LATEARR00004",
+      "attributes": {
+        "refs": "01KDEV5YW2LATEARR00002"
+      },
+      "children": [
+        {
+          "type": "strong",
+          "children": [
+            {
+              "type": "text",
+              "value": "Inductive step:"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "value": " Assume the invariant holds. Suppose replica A attempts to advance from epoch e to e+1. By rule EV-2, A may advance only if min(EVₐ) ≥ e. This means A has observed that every replica r ∈ R is at epoch ≥ e. Therefore, after A advances to e+1, the maximum epoch difference between A and any other replica is exactly 1. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW2LATEARR00007",
+      "attributes": {
+        "variant": "corollary",
+        "label": "24.2a (Late-Arriving Operation Safety)",
+        "alias": "cor-late-arriving",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "If replica A at epoch eₐ receives a message from replica B at epoch eᵦ where eᵦ < eₐ - 1, then either:"
+        },
+        {
+          "type": "text",
+          "value": "(a) B violated rule EV-2 (protocol error), or"
+        },
+        {
+          "type": "text",
+          "value": "(b) The message is stale (sent before B advanced) and can be safely discarded or buffered pending resync"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW2LATEARR00008",
+      "attributes": {
+        "of": "01KDEV5YW2LATEARR00007",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "By Theorem 24.2, correct execution maintains |eₐ - eᵦ| ≤ 1. If we receive a message with epoch gap > 1, the message must have been sent before B's most recent epoch advancement. By the resync protocol (AE-2), A buffers such messages and initiates resynchronization. After resync completes, the buffered operations can be integrated safely. ✓"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "admonition_block",
+      "localId": "01KDEV5YW2LATEARR00006",
+      "attributes": {
+        "variant": "important",
+        "title": "Why Partitioned Replicas Cannot Cause Unsafe GC",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "A common concern is: what if replica B is partitioned when A advances its epoch? The answer is that this cannot happen under correct EV-2 execution. Rule EV-2 requires A to observe that B is at epoch e before A can advance to e+1. If B is partitioned, A will never receive the epoch update from B, and therefore A remains blocked at epoch e. The epoch vector mechanism is precisely designed to prevent any replica from advancing past what partitioned replicas have observed."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "theorem_block",
+      "localId": "01KDEV5YW2LIVENESS00001",
+      "attributes": {
+        "variant": "theorem",
+        "label": "24.3 (GC Liveness)",
+        "alias": "thm-gc-liveness",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Under the eventually synchronous network model, if tombstone t is created at time τ, then t is eventually collected at all replicas."
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "proof_block",
+      "localId": "01KDEV5YW2LIVENESS00002",
+      "attributes": {
+        "of": "01KDEV5YW2LIVENESS00001",
+        "refs": "01KDEV5YW2N4DJMEABYDX2YK04"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "The proof proceeds by appealing to the eventually synchronous network model:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEV5YW2LIVENESS00003",
+      "attributes": {
+        "refs": "01KDEV5YW2LIVENESS00002"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": true,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Tombstone t is created at some replica r at time τ"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "By the network model's message delivery guarantee, t eventually reaches all replicas"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Through the epoch vector protocol, eventually all replicas report having observed t"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Once min(EV) indicates that all replicas have observed t, the tombstone becomes stable"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "By property GC-4 (Liveness), stable tombstones are eventually collected at all replicas ✓"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    }
+  ]
+}

@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Foundations</title>
+    <style>
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  color: #1f1b16;
+  background: #f5f2ec;
+  --bg: #f5f2ec;
+  --surface: #fffdf9;
+  --surface-strong: #ffffff;
+  --ink: #1f1b16;
+  --muted: #6b6257;
+  --accent: #1f6b5a;
+  --accent-2: #c1552c;
+  --border: #e1ddd6;
+  --shadow: rgba(19, 16, 12, 0.12);
+  --code-bg: #f1ede6;
+  --soft: #fbfaf8;
+  --highlight: rgba(31, 107, 90, 0.12);
+}
+body {
+  margin: 0;
+  padding: 56px 24px 96px;
+  color: var(--ink);
+  background: var(--bg);
+  position: relative;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(31, 107, 90, 0.14), transparent 55%),
+    radial-gradient(circle at 85% 15%, rgba(193, 85, 44, 0.14), transparent 50%),
+    linear-gradient(180deg, #fff7ec 0%, #f5f2ec 55%, #f2eee6 100%);
+  z-index: -2;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(transparent 94%, rgba(0, 0, 0, 0.03) 95%),
+    linear-gradient(90deg, transparent 94%, rgba(0, 0, 0, 0.03) 95%);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--surface-strong);
+  padding: 36px;
+  border-radius: 20px;
+  box-shadow: 0 32px 90px rgba(19, 16, 12, 0.12);
+  position: relative;
+  animation: riseIn 0.6s ease-out;
+}
+.cover {
+  margin: 0 0 3rem;
+  padding: 28px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fdf6ea 0%, #e6f3ee 55%, #faefe7 100%);
+  animation: riseIn 0.7s ease-out;
+}
+.cover-surface {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 14px 36px rgba(19, 16, 12, 0.12);
+}
+.cover-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+.cover-title {
+  font-size: 2.8rem;
+  margin: 0 0 0.5rem;
+  font-family: "IBM Plex Serif", Georgia, serif;
+}
+.cover-subtitle {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin: 0 0 0.8rem;
+}
+.cover-description {
+  font-size: 1rem;
+  margin: 0 0 1.4rem;
+  max-width: 60ch;
+  color: #4a453f;
+}
+.cover-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.cover-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  background: var(--surface-strong);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cover-link:hover {
+  background: #f1ede6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(31, 27, 22, 0.12);
+}
+.cover-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 2fr;
+  gap: 2rem;
+}
+.cover-meta {
+  display: grid;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+}
+.cover-meta-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.6rem;
+  color: #3c3731;
+}
+.cover-meta-row span:first-child {
+  font-weight: 600;
+  color: #3f3a34;
+}
+.cover-abstract h2 {
+  margin-top: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Serif", "Georgia", serif;
+  margin: 1.6em 0 0.4em;
+  color: #2c2a27;
+}
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.9rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.2rem; }
+p { margin: 0.6em 0; }
+section { margin-bottom: 2rem; }
+section.part > section + section {
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent 10%, #e1ddd6 30%, #e1ddd6 70%, transparent 90%) 1;
+  padding-top: 3rem;
+  margin-top: 2.5rem;
+  position: relative;
+}
+section.part > section + section::before {
+  content: "§";
+  position: absolute;
+  top: -0.7em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-strong);
+  padding: 0 0.8rem;
+  color: #c1bbb3;
+  font-size: 1.1rem;
+}
+section.part > section > h3 {
+  border-left: 4px solid var(--accent);
+  padding-left: 1rem;
+  margin-left: -1rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+dl { margin: 1rem 0; }
+dt { font-weight: 600; margin-top: 0.6rem; }
+dd { margin-left: 1rem; margin-bottom: 0.4rem; }
+code {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: var(--code-bg);
+  padding: 0 0.2em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+pre code {
+  background: transparent;
+  padding: 0;
+  display: block;
+  white-space: pre;
+}
+pre code span.highlight {
+  background: rgba(255, 243, 205, 0.8);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  border-left: 3px solid #c77a1c;
+}
+.code-block {
+  margin: 1rem 0;
+}
+.code-block pre {
+  margin: 0;
+}
+.code-filename {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: #e9e5df;
+  padding: 0.4rem 1rem;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid var(--border);
+}
+.code-filename + pre {
+  border-radius: 0 0 10px 10px;
+}
+.diagram {
+  background: #e7f2ef;
+  border-left: 4px solid var(--accent);
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  white-space: pre;
+}
+ul, ol { padding-left: 1.4rem; margin: 0.5em 0; }
+li { margin: 0.3em 0; }
+.admonition {
+  border-left: 4px solid #c77a1c;
+  background: #fff4e1;
+  padding: 0.8rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+.admonition-note { border-left-color: var(--accent); background: #e7f2ef; }
+.admonition-warning { border-left-color: #c77a1c; background: #fff4e1; }
+.admonition-important { border-left-color: #b24729; background: #ffebe6; }
+.admonition-tip { border-left-color: #2c5282; background: #e6f0ff; }
+.reference {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+}
+.definition,
+.rule,
+.theorem,
+.guarantee,
+.operation,
+.profile,
+.checklist,
+.table {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  border-radius: 12px;
+}
+.definition { border-left: 4px solid var(--accent); }
+.rule { border-left: 4px solid #9c5b1c; }
+.theorem { border-left: 4px solid #9b2c4a; background: #fef5f7; }
+.proof { border-left: 4px solid #6b46c1; background: #f9f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.example { border-left: 4px solid #2c5282; background: #f0f5ff; }
+.exercise { border-left: 4px solid #c77a1c; background: #fff8f0; }
+.definition-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  word-break: break-word;
+  margin: 0 0 0.5rem;
+}
+.rule-description { color: var(--muted); font-size: 0.95rem; }
+.proof-end { text-align: right; color: var(--muted); margin: 0.5rem 0 0; }
+.definitions-index {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.definitions-index ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.definitions-index li {
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+}
+.definitions-index a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+.definitions-index a:hover {
+  text-decoration: underline;
+}
+.def-origin {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.definition .anchor {
+  font-size: 0.85em;
+  color: #9c9488;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.definition:hover .anchor {
+  opacity: 1;
+}
+.profile-layer + .profile-layer {
+  margin-top: 0.8rem;
+}
+figure {
+  margin: 1rem 0;
+}
+figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: #5b564f;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+th {
+  background: #f1ede6;
+}
+.toc {
+  background: var(--soft);
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  border-radius: 16px;
+  margin: 1.5rem 0 2rem;
+  max-width: 380px;
+  box-shadow: 0 16px 40px rgba(19, 16, 12, 0.08);
+}
+.toc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.toc-title {
+  flex: 1;
+}
+.toc-toggle {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.toc-search {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-top: 0.4rem;
+}
+.toc-search:focus {
+  outline: 2px solid rgba(31, 107, 90, 0.2);
+  border-color: var(--accent);
+}
+.toc h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  border: none;
+}
+.toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0 0;
+}
+.toc ul ul {
+  padding-left: 1rem;
+  margin-top: 0.4rem;
+}
+.toc li {
+  break-inside: avoid;
+  margin: 0.35rem 0;
+}
+.toc li a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.18rem 0.4rem;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+  color: var(--ink);
+  text-decoration: none;
+}
+.toc li a:hover {
+  background: rgba(31, 107, 90, 0.12);
+  text-decoration: none;
+}
+.toc-part > span {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.toc-hidden {
+  display: none;
+}
+.def-stack {
+  display: grid;
+  gap: 1rem;
+  margin: 1.4rem 0;
+}
+.def-block {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+}
+.def-header {
+  display: flex;
+  gap: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.def-block h4 {
+  margin: 0.4rem 0 0.6rem;
+}
+.def-list ul {
+  margin: 0.4rem 0 0.8rem;
+}
+.def-proof h5 {
+  margin: 1rem 0 0.4rem;
+}
+.def-code {
+  margin: 0.6rem 0;
+}
+.def-code-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.def-code pre {
+  margin: 0;
+}
+.def-kv {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: 0;
+  margin: 0;
+}
+.def-kv dt {
+  font-weight: 600;
+  color: #3c3731;
+  padding: 0.4rem 0.8rem 0.4rem 0;
+  border-right: 2px solid var(--border);
+}
+.def-kv dd {
+  margin: 0;
+  padding: 0.4rem 0 0.4rem 0.8rem;
+}
+.def-kind {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  background: #e9e5df;
+}
+.def-kind-enum {
+  background: #e7f2ef;
+  color: #1f6b5a;
+}
+.def-kind-type {
+  background: #e6eef8;
+  color: #2c5282;
+}
+.def-kind-rule {
+  background: #fef3e2;
+  color: #9c5b1c;
+}
+.def-kind-function {
+  background: #f0e7f6;
+  color: #6b46c1;
+}
+.def-kind-theorem {
+  background: #fce8ec;
+  color: #9b2c4a;
+}
+.def-category {
+  background: #f1ede6;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+.def-section {
+  color: #9c9488;
+  font-size: 0.7rem;
+}
+.def-enum-values ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+}
+.def-enum-values li {
+  background: #e7f2ef;
+  color: #1f6b5a;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.85rem;
+}
+.def-compatible ul {
+  list-style: none;
+  padding: 0;
+}
+.def-compatible li::before {
+  content: "+";
+  color: #1f6b5a;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.def-breaking ul {
+  list-style: none;
+  padding: 0;
+}
+.def-breaking li::before {
+  content: "!";
+  color: #b24729;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.def-block.def-enum {
+  border-left: 4px solid #1f6b5a;
+}
+.def-block.def-type {
+  border-left: 4px solid #2c5282;
+}
+.def-block.def-rule {
+  border-left: 4px solid #9c5b1c;
+}
+.def-block.def-function {
+  border-left: 4px solid #6b46c1;
+}
+.def-block.def-theorem {
+  border-left: 4px solid #9b2c4a;
+}
+.definition-list {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  gap: 0;
+  margin: 1.4rem 0;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.definition-list dt,
+.definition-list dd {
+  padding: 0.8rem 1rem;
+  margin: 0;
+  border-bottom: 1px solid #e9e5df;
+}
+.definition-list dt {
+  font-weight: 600;
+  color: #3c3731;
+  background: rgba(241, 237, 230, 0.5);
+  border-right: 1px solid #e9e5df;
+}
+.definition-list dd {
+  color: #4a453f;
+}
+.definition-list dt:last-of-type,
+.definition-list dd:last-of-type {
+  border-bottom: none;
+}
+.gap {
+  background: #fff3cd;
+  border: 1px dashed #ffc107;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+.gap-marker { color: #856404; font-weight: 600; }
+.redaction {
+  display: inline-block;
+  background: #333;
+  color: #333;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+.redaction-marker { font-family: monospace; }
+.quote {
+  border-left: 4px solid var(--border);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.quote footer { margin-top: 0.5rem; font-size: 0.9rem; }
+.math {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: var(--code-bg);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.math-inline {
+  font-family: "IBM Plex Mono", monospace;
+  background: var(--code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+.breadcrumb-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+.breadcrumb-btn {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.breadcrumb-btn:hover {
+  background: #f1ede6;
+}
+.inspect-modal {
+  position: fixed;
+  right: clamp(16px, 3vw, 32px);
+  top: 96px;
+  width: min(360px, calc(100vw - 48px));
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(19, 16, 12, 0.18);
+  padding: 1rem 1.2rem;
+  display: none;
+  z-index: 41;
+  max-height: calc(100vh - 140px);
+  overflow: hidden;
+}
+.inspect-modal.active {
+  display: block;
+}
+.inspect-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+.inspect-modal h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.inspect-close {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+.inspect-close:hover {
+  background: #f1ede6;
+  color: #2c2a27;
+}
+.inspect-modal p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+}
+.inspect-content {
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  padding-right: 0.4rem;
+}
+.inspect-defs {
+  margin-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.8rem;
+}
+.inspect-defs h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.inspect-defs ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+.inspect-defs li {
+  background: #f7f4ee;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+}
+.inspect-defs code {
+  background: transparent;
+  padding: 0;
+}
+.inspect-meta {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  color: #4a453f;
+  background: #f7f5f2;
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  margin-top: 0.6rem;
+  white-space: pre-wrap;
+}
+.inspect-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.inspect-copy {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.inspect-copy:hover {
+  background: #f1ede6;
+}
+.ref-link {
+  color: var(--ink);
+  text-decoration: underline dotted;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(31, 107, 90, 0.5);
+  outline-offset: 2px;
+}
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  width: 0%;
+  z-index: 200;
+  transition: width 0.1s ease-out;
+}
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(19, 16, 12, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease;
+  z-index: 90;
+}
+.back-to-top:hover {
+  background: #f1ede6;
+  transform: translateY(-2px);
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.toc a.active {
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(31, 107, 90, 0.12);
+  border-radius: 8px;
+}
+html {
+  scroll-behavior: smooth;
+}
+.anchor {
+  margin-left: 0.4rem;
+  font-size: 0.75em;
+  color: #9c9488;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
+  opacity: 1;
+}
+.copy-link {
+  margin-left: 0.3rem;
+  color: #9c9488;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0.2rem;
+  border-radius: 4px;
+  vertical-align: middle;
+  width: 1.2em;
+  height: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.copy-link svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.copy-link:hover {
+  color: var(--accent);
+  background: var(--highlight);
+}
+.copy-link.copied {
+  color: #2d8a4e;
+}
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 120px;
+}
+h2[id]:target,
+h3[id]:target,
+h4[id]:target,
+h5[id]:target,
+h6[id]:target {
+  background: var(--highlight);
+  border-radius: 12px;
+  padding: 0.2rem 0.4rem;
+}
+h2:hover .copy-link,
+h3:hover .copy-link,
+h4:hover .copy-link,
+h5:hover .copy-link,
+h6:hover .copy-link {
+  opacity: 1;
+}
+/* VERA-specific entity styles */
+.vera-section { margin: 2rem 0; }
+.vera-para { margin: 0.8rem 0; }
+.vera-definition { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid var(--accent); }
+.vera-rule { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #9c5b1c; }
+.vera-theorem { border: 1px solid var(--border); background: #fef5f7; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #9b2c4a; }
+.vera-proof { border: 1px solid var(--border); background: #f9f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #6b46c1; }
+.vera-example { border: 1px solid var(--border); background: #f0f5ff; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #2c5282; }
+.vera-exercise { border: 1px solid var(--border); background: #fff8f0; padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; border-left: 4px solid #c77a1c; }
+.vera-claim { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.vera-evidence { border: 1px solid var(--border); background: var(--soft); padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 12px; }
+.vera-gap { background: #fff3cd; border: 1px dashed #ffc107; padding: 0.8rem 1rem; border-radius: 8px; margin: 1rem 0; }
+.vera-redaction { display: inline-block; background: #333; color: #333; padding: 0.2rem 0.5rem; border-radius: 4px; }
+.vera-admonition { border-left: 4px solid #c77a1c; background: #fff4e1; padding: 0.8rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+.vera-quote { border-left: 4px solid var(--border); padding-left: 1rem; margin: 1rem 0; color: var(--muted); font-style: italic; }
+.vera-quote footer { margin-top: 0.5rem; font-size: 0.9rem; }
+.vera-formula { font-family: "IBM Plex Mono", "SFMono-Regular", monospace; background: var(--code-bg); padding: 0.8rem 1rem; border-radius: 8px; margin: 0.5rem 0; overflow-x: auto; white-space: pre-wrap; }
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .progress-bar {
+    transition: none;
+  }
+  main,
+  .cover {
+    animation: none;
+  }
+}
+.breadcrumb {
+  position: fixed;
+  top: 3px;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  z-index: 100;
+  transform: translateY(-100%);
+  transition: transform 0.25s ease;
+  box-shadow: 0 2px 8px rgba(19, 16, 12, 0.08);
+}
+.breadcrumb.visible {
+  transform: translateY(0);
+}
+.breadcrumb-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb-item {
+  color: var(--muted);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.breadcrumb-item:hover {
+  color: #2c2a27;
+  text-decoration: underline;
+}
+.breadcrumb-item.current {
+  color: var(--ink);
+  font-weight: 600;
+}
+.breadcrumb-sep {
+  color: #c1bbb3;
+  flex-shrink: 0;
+}
+.breadcrumb-item.truncated {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.toc-floating .toc {
+  position: fixed;
+  top: 24px;
+  width: 320px;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  box-shadow: 0 12px 40px rgba(19, 16, 12, 0.18);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+body.toc-floating .toc::before {
+  content: "Outline";
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+body.toc-right.toc-floating .toc {
+  right: 24px;
+  left: auto;
+}
+body.toc-left.toc-floating .toc {
+  left: 24px;
+  right: auto;
+}
+@media (max-width: 720px) {
+  .definition-list {
+    grid-template-columns: 1fr;
+  }
+  .definition-list dt {
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: 0.4rem;
+  }
+  .definition-list dd {
+    padding-top: 0;
+  }
+}
+@media (max-width: 900px) {
+  .cover-body {
+    grid-template-columns: 1fr;
+  }
+  .cover-title {
+    font-size: 2.2rem;
+  }
+  .toc ul {
+    columns: 1;
+  }
+  body.toc-floating .toc {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+  .inspect-modal {
+    right: 16px;
+    left: 16px;
+    width: auto;
+    top: 96px;
+  }
+}
+@media (max-width: 600px) {
+  body { padding: 24px 16px 64px; }
+  main { padding: 24px; border-radius: 16px; }
+  .cover { padding: 16px; }
+  .cover-title { font-size: 1.8rem; }
+  .cover-meta-row { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+@media print {
+  .cover {
+    page-break-after: always;
+  }
+}
+</style>
+  </head>
+  <body>
+    <main>
+      
+    <section class="cover">
+      <div class="cover-surface">
+        <div class="cover-head">
+          <p class="cover-eyebrow">VERA Document</p>
+          <h1 class="cover-title">Foundations</h1>
+        </div>
+        <div class="cover-body">
+          <div class="cover-meta"><div class="cover-meta-row"><span>Document ID</span><span>01KDEW4H8S8EERKRAJCFVRQA00</span></div></div>
+        </div>
+      </div>
+    </section>
+  
+      
+    <nav class="toc">
+      <h2>Contents</h2>
+      <ul><li><a href="#01KDEW4H8S0A6YJS5E14RD2501">PRIMITIVE SETS</a></li><li><a href="#01KDEW4H8SNCSQ9B4NTE6P4G0E">DERIVED SETS</a></li><li><a href="#01KDEW4H8SPYYGDWBR1TQ3PG0R">NOTATION CONVENTIONS</a></li><li><a href="#01KDEW4H8S7CWAWR4XP8D9Q716">THE STRATUM KERNEL (K0)</a></li><li><a href="#01KDEW4H8SMHNQS1QEKWEDE019">Kernel Components</a></li><li><a href="#01KDEW4H8SZ1H33G1P2W0FJQ1J">Kernel Properties</a></li><li><a href="#01KDEW4H8SETW22X5S8PHRJW1R">What is NOT in the Kernel</a></li><li><a href="#01KDEW4H8S19SMZ9JE9X7N4G1V">Kernel-Only Reading Path</a></li><li><a href="#01KDEW4H8SS34WVSKS5XRZ2J20">Reference Implementation Checklist</a></li></ul>
+    </nav>
+  
+      
+        <section class="vera-section" id="01KDEW4H8S0A6YJS5E14RD2501" data-alias="sub-sec-XYQxS3DjhGgZ24R6PyyfR-1">
+          <h2>PRIMITIVE SETS
+            <a class="anchor" href="#01KDEW4H8S0A6YJS5E14RD2501">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8SEYRGJM3S33RY3W02">Let the following primitive sets be given:</div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S08VJ7GZ5WQ0KKV04">
+          <p class="definition-title">
+            <strong>Definition (ID)</strong>
+            <a class="anchor" href="#01KDEW4H8S08VJ7GZ5WQ0KKV04">#</a>
+          </p>
+          <p>A countably infinite set of identifiers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SYYWS8NP4NAW63X05">
+          <p class="definition-title">
+            <strong>Definition (NAME)</strong>
+            <a class="anchor" href="#01KDEW4H8SYYWS8NP4NAW63X05">#</a>
+          </p>
+          <p>A countably infinite set of names (strings)</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SSXF5CMPAABXX5H06">
+          <p class="definition-title">
+            <strong>Definition (VALUE)</strong>
+            <a class="anchor" href="#01KDEW4H8SSXF5CMPAABXX5H06">#</a>
+          </p>
+          <p>The universal value domain (JSON-compatible)</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SKA657PQP3YZ2KB07">
+          <p class="definition-title">
+            <strong>Definition (TIME)</strong>
+            <a class="anchor" href="#01KDEW4H8SKA657PQP3YZ2KB07">#</a>
+          </p>
+          <p>The set of timestamps (ISO 8601)</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S299CR2NN5AMN9Z08">
+          <p class="definition-title">
+            <strong>Definition (ℕ)</strong>
+            <a class="anchor" href="#01KDEW4H8S299CR2NN5AMN9Z08">#</a>
+          </p>
+          <p>Natural numbers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S402X7D5AMTS2YG09">
+          <p class="definition-title">
+            <strong>Definition (ℤ)</strong>
+            <a class="anchor" href="#01KDEW4H8S402X7D5AMTS2YG09">#</a>
+          </p>
+          <p>Integers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SJHHWSP5N00E6G90A">
+          <p class="definition-title">
+            <strong>Definition (ℝ)</strong>
+            <a class="anchor" href="#01KDEW4H8SJHHWSP5N00E6G90A">#</a>
+          </p>
+          <p>Real numbers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S6666TMBWM947E40B">
+          <p class="definition-title">
+            <strong>Definition (𝔹)</strong>
+            <a class="anchor" href="#01KDEW4H8S6666TMBWM947E40B">#</a>
+          </p>
+          <p>Booleans {⊤, ⊥}</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SHNCS8W6Q1CVFHQ0C">
+          <p class="definition-title">
+            <strong>Definition (ACTOR)</strong>
+            <a class="anchor" href="#01KDEW4H8SHNCS8W6Q1CVFHQ0C">#</a>
+          </p>
+          <p>A countably infinite set of actor identifiers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SKK6JVYK5FP010K0D">
+          <p class="definition-title">
+            <strong>Definition (CLOCK)</strong>
+            <a class="anchor" href="#01KDEW4H8SKK6JVYK5FP010K0D">#</a>
+          </p>
+          <p>Vector clocks for causality tracking</p>
+          
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8SNCSQ9B4NTE6P4G0E" data-alias="sub-sec-XYQxS3DjhGgZ24R6PyyfR-2">
+          <h2>DERIVED SETS
+            <a class="anchor" href="#01KDEW4H8SNCSQ9B4NTE6P4G0E">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-definition definition" id="01KDEW4H8SR033S1E3HRS8RV0G">
+          <p class="definition-title">
+            <strong>Definition (ID*)</strong>
+            <a class="anchor" href="#01KDEW4H8SR033S1E3HRS8RV0G">#</a>
+          </p>
+          <p>ID ∪ {ε} - Identifiers with null</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8STAHF6B20X5CQ3F0H">
+          <p class="definition-title">
+            <strong>Definition (P(X))</strong>
+            <a class="anchor" href="#01KDEW4H8STAHF6B20X5CQ3F0H">#</a>
+          </p>
+          <p>Power set of X</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SF00G41WBPQ38TF0J">
+          <p class="definition-title">
+            <strong>Definition (X × Y)</strong>
+            <a class="anchor" href="#01KDEW4H8SF00G41WBPQ38TF0J">#</a>
+          </p>
+          <p>Cartesian product</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S54TYZC8PM4673Z0K">
+          <p class="definition-title">
+            <strong>Definition (X → Y)</strong>
+            <a class="anchor" href="#01KDEW4H8S54TYZC8PM4673Z0K">#</a>
+          </p>
+          <p>Total functions from X to Y</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SVKA55HX71Z01FE0M">
+          <p class="definition-title">
+            <strong>Definition (X ⇀ Y)</strong>
+            <a class="anchor" href="#01KDEW4H8SVKA55HX71Z01FE0M">#</a>
+          </p>
+          <p>Partial functions from X to Y</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SN8CTN4ZN6Z7NVY0N">
+          <p class="definition-title">
+            <strong>Definition (X*)</strong>
+            <a class="anchor" href="#01KDEW4H8SN8CTN4ZN6Z7NVY0N">#</a>
+          </p>
+          <p>Finite sequences over X</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8STNGV2XSMDGM5VV0P">
+          <p class="definition-title">
+            <strong>Definition (X⁺)</strong>
+            <a class="anchor" href="#01KDEW4H8STNGV2XSMDGM5VV0P">#</a>
+          </p>
+          <p>Non-empty finite sequences over X</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SHDVXDKXSF45RCA0Q">
+          <p class="definition-title">
+            <strong>Definition (Multiset(X))</strong>
+            <a class="anchor" href="#01KDEW4H8SHDVXDKXSF45RCA0Q">#</a>
+          </p>
+          <p>Multisets over X</p>
+          
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8SPYYGDWBR1TQ3PG0R" data-alias="sub-sec-XYQxS3DjhGgZ24R6PyyfR-3">
+          <h2>NOTATION CONVENTIONS
+            <a class="anchor" href="#01KDEW4H8SPYYGDWBR1TQ3PG0R">#</a>
+          </h2>
+        </section>
+
+        <div class="vera-definition definition" id="01KDEW4H8SFFBY5W2V2G5E090T">
+          <p class="definition-title">
+            <strong>Definition (e, e₁, e₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8SFFBY5W2V2G5E090T">#</a>
+          </p>
+          <p>Elements</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SDXW45GGNQ2Q5KK0V">
+          <p class="definition-title">
+            <strong>Definition (l, l₁, l₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8SDXW45GGNQ2Q5KK0V">#</a>
+          </p>
+          <p>Layers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SE5QYQK0V2VV63D0W">
+          <p class="definition-title">
+            <strong>Definition (d, d₁, d₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8SE5QYQK0V2VV63D0W">#</a>
+          </p>
+          <p>Dependencies</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S0JX6XF88T268390X">
+          <p class="definition-title">
+            <strong>Definition (c, c₁, c₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8S0JX6XF88T268390X">#</a>
+          </p>
+          <p>Constraints</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SN7W8D1WF5SRWDE0Y">
+          <p class="definition-title">
+            <strong>Definition (b, b₁, b₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8SN7W8D1WF5SRWDE0Y">#</a>
+          </p>
+          <p>Bindings</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SZXF9E8QB0ES22T0Z">
+          <p class="definition-title">
+            <strong>Definition (r, r₁, r₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8SZXF9E8QB0ES22T0Z">#</a>
+          </p>
+          <p>Cascade rules</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S3YJHDA4CBTY9PW10">
+          <p class="definition-title">
+            <strong>Definition (S, S₁, S₂, ...)</strong>
+            <a class="anchor" href="#01KDEW4H8S3YJHDA4CBTY9PW10">#</a>
+          </p>
+          <p>Specifications</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SHYWBNK7HWM67WS11">
+          <p class="definition-title">
+            <strong>Definition (Γ, Δ, Θ)</strong>
+            <a class="anchor" href="#01KDEW4H8SHYWBNK7HWM67WS11">#</a>
+          </p>
+          <p>Contexts (sets of judgments)</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8ST0YPZEE1F1Y39612">
+          <p class="definition-title">
+            <strong>Definition (τ, σ, ρ)</strong>
+            <a class="anchor" href="#01KDEW4H8ST0YPZEE1F1Y39612">#</a>
+          </p>
+          <p>Types</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SB0A0S53BAAV12613">
+          <p class="definition-title">
+            <strong>Definition (π, φ, ψ)</strong>
+            <a class="anchor" href="#01KDEW4H8SB0A0S53BAAV12613">#</a>
+          </p>
+          <p>Predicates</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SC58SMZ56RBHYCF14">
+          <p class="definition-title">
+            <strong>Definition (α, β)</strong>
+            <a class="anchor" href="#01KDEW4H8SC58SMZ56RBHYCF14">#</a>
+          </p>
+          <p>Actor identifiers</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S4240J19STH4B2D15">
+          <p class="definition-title">
+            <strong>Definition (vc, vc₁, vc₂)</strong>
+            <a class="anchor" href="#01KDEW4H8S4240J19STH4B2D15">#</a>
+          </p>
+          <p>Vector clocks</p>
+          
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8S7CWAWR4XP8D9Q716" data-alias="sub-sec-XYQxS3DjhGgZ24R6PyyfR-4">
+          <h2>THE STRATUM KERNEL (K0)
+            <a class="anchor" href="#01KDEW4H8S7CWAWR4XP8D9Q716">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8S9DV4SV80ADX71M17"><strong>Purpose</strong>: The STRATUM Kernel is the irreducible core of the specification—the minimum set of definitions required for K0 conformance. This section provides a self-contained reading guide for implementers who need only the essential framework without certification, concurrency, or advanced features.</div>
+
+        <div class="vera-admonition admonition admonition-note" id="01KDEW4H8SC3HPCH8DG9H3AY18">
+          <p><strong>NOTE</strong></p>
+          <strong>Conformance Level K0 (Kernel-Conformant)</strong>: Implementers reading ONLY the Kernel sections can achieve basic STRATUM conformance. Higher conformance levels (K1: Certified-Aware, K2: Regulated-Pipeline, K3: Live-Graph) require additional sections per referenceMap(&quot;sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4&quot;, &quot;§{{sectionNumber}}.4 Structure Overview&quot;).
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8SMHNQS1QEKWEDE019">
+          <h2>Kernel Components
+            <a class="anchor" href="#01KDEW4H8SMHNQS1QEKWEDE019">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8SGD999M4Q1NKY891A">The Kernel consists of six essential subsystems:</div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SBB1G4WJSANYY0V1C">
+          <p class="definition-title">
+            <strong>Definition (<strong>1. Data Structures</strong> (referenceMap(&quot;sub-xYOy8xUJpcssgjNVmANNW&quot;, &quot;§{{sectionNumber}}.1 Element&quot;) – referenceMap(&quot;sub-1PQdtQJCcUP4hsmjE7iJL&quot;, &quot;§{{sectionNumber}}.2 Layer&quot;) – referenceMap(&quot;sub-przG8f9oPcQ5oNMXdlyHX&quot;, &quot;§{{sectionNumber}}.3 Dependency&quot;)))</strong>
+            <a class="anchor" href="#01KDEW4H8SBB1G4WJSANYY0V1C">#</a>
+          </p>
+          <p>Element, Layer, Dependency — the core abstract syntax tree. Read: Definition 2.1 (Element), Definition 2.6 (Layer), Definition 2.11 (Dependency), Definition 2.8 (DEPTYPE enumeration).</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SH1E25WQGDYAAGK1D">
+          <p class="definition-title">
+            <strong>Definition (<strong>2. Constraints</strong> (referenceMap(&quot;sub-CyAf_GsK2z3HhpvlCgKlD&quot;, &quot;§{{sectionNumber}}.4 Constraint&quot;)))</strong>
+            <a class="anchor" href="#01KDEW4H8SH1E25WQGDYAAGK1D">#</a>
+          </p>
+          <p>QF_LIA + QF_LRA + QF_UF constraint language. Read: Definition 2.12 (Predicate Language), Definition 2.16 (Constraint), Theorem 2.1 (Decidability). Note: SMT-LIB 2.6 standard required for conformance.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SNX9JJ96VK20J041E">
+          <p class="definition-title">
+            <strong>Definition (<strong>3. Well-Formedness</strong> (referenceMap(&quot;sec-pYrht_aqaJ5gENPPS98r-&quot;, &quot;§{{sectionNumber}}&quot;)))</strong>
+            <a class="anchor" href="#01KDEW4H8SNX9JJ96VK20J041E">#</a>
+          </p>
+          <p>Structural invariants that all specifications must satisfy. Read: All WF-rules including WF-ID, WF-LAYER, WF-ACYCLIC-HARD, WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION (added v2.4.4).</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S7YZZW344SW8W3W1F">
+          <p class="definition-title">
+            <strong>Definition (<strong>4. Six Guarantees</strong> (referenceMap(&quot;sub-2rVTmZOx_FfwEKLswk1-j&quot;, &quot;§{{sectionNumber}}.1 Traceability&quot;) – referenceMap(&quot;sub-K1-qOmCVrnDqLrLgOd_aa&quot;, &quot;§{{sectionNumber}}.2 Completeness&quot;) – referenceMap(&quot;sub-sbASI3HUkg21rQji8CA3y&quot;, &quot;§{{sectionNumber}}.3 Consistency&quot;) – referenceMap(&quot;sub-PNmArYZo6xNqQZsWMEHGT&quot;, &quot;§{{sectionNumber}}.4 Groundedness&quot;) – referenceMap(&quot;sub-XWHt4rvXeJPsjryeyJk-f&quot;, &quot;§{{sectionNumber}}.5 Determinism&quot;) – referenceMap(&quot;sub-BY56RlNT5fC29dbs7WShu&quot;, &quot;§{{sectionNumber}}.6 Coherence&quot;)))</strong>
+            <a class="anchor" href="#01KDEW4H8S7YZZW344SW8W3W1F">#</a>
+          </p>
+          <p>G1 (Traceability), G2 (Completeness), G3 (Consistency), G4 (Groundedness), G5 (Determinism), G6 (Coherence). These are the semantic properties that define a Valid specification. G7 (Explainability) is K1, not K0.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SJ57QTJYYVSZ6141G">
+          <p class="definition-title">
+            <strong>Definition (<strong>5. Inference Rules</strong> (referenceMap(&quot;sec-CwnDzo78GYBw57r1EI_R5&quot;, &quot;§{{sectionNumber}}&quot;)))</strong>
+            <a class="anchor" href="#01KDEW4H8SJ57QTJYYVSZ6141G">#</a>
+          </p>
+          <p>Cascade computation (CASCADE-1, CASCADE-N, CASCADE-ATT), constraint satisfaction (CONSTR-SAT), trace computation (TRACE-ROOT, TRACE-STEP). These define the operational semantics.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SC90G7Z802PMQ961H">
+          <p class="definition-title">
+            <strong>Definition (<strong>6. Core Operations</strong> (referenceMap(&quot;sub-amKfbMudBf4a5EIxM14St&quot;, &quot;§{{sectionNumber}}.1 Query Operations&quot;) – referenceMap(&quot;sub-9q6VwEYOZyqBvxep8Dw5x&quot;, &quot;§{{sectionNumber}}.2 Modification Operations&quot;) – referenceMap(&quot;sub-doChtsVucb4PgzoofGPjB&quot;, &quot;§{{sectionNumber}}.3 Comparison Operations&quot;)))</strong>
+            <a class="anchor" href="#01KDEW4H8SC90G7Z802PMQ961H">#</a>
+          </p>
+          <p>validate(S) → violations, trace(e) → path, impact(S, δ) → affected elements. These are the three required Kernel operations. Note: validateIncremental (referenceMap(&quot;sub-amKfbMudBf4a5EIxM14St&quot;, &quot;§{{sectionNumber}}.1 Query Operations&quot;).1) is K3, not K0.</p>
+          
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8SZ1H33G1P2W0FJQ1J">
+          <h2>Kernel Properties
+            <a class="anchor" href="#01KDEW4H8SZ1H33G1P2W0FJQ1J">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8SW9E4NTKCZX3Y3G1K">All Kernel operations share three essential properties:</div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S5JXC1JRCFM7CRV1N">
+          <p class="definition-title">
+            <strong>Definition (<strong>Pure</strong>)</strong>
+            <a class="anchor" href="#01KDEW4H8S5JXC1JRCFM7CRV1N">#</a>
+          </p>
+          <p>All Kernel functions are deterministic total functions with no side effects. No I/O, no randomness, no wall-clock time dependencies. Given the same input, always produce the same output.</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8SX39RXYSF600E3Z1P">
+          <p class="definition-title">
+            <strong>Definition (<strong>Decidable</strong>)</strong>
+            <a class="anchor" href="#01KDEW4H8SX39RXYSF600E3Z1P">#</a>
+          </p>
+          <p>All Kernel judgments terminate with definite yes/no answers. No &quot;unknown&quot; or &quot;timeout&quot; results. Well-formedness checking is O(|E| + |D| + |L|²). Constraint validation is decidable via SMT solving (NP-complete, but terminates).</p>
+          
+        </div>
+
+        <div class="vera-definition definition" id="01KDEW4H8S2GVW549CBW7T141Q">
+          <p class="definition-title">
+            <strong>Definition (<strong>Compositional</strong>)</strong>
+            <a class="anchor" href="#01KDEW4H8S2GVW549CBW7T141Q">#</a>
+          </p>
+          <p>Kernel(S₁ ⊕ S₂) = Kernel(S₁) ⊕ Kernel(S₂). Merging two specifications preserves all Kernel properties. This follows from the CRDT-based merge semantics (referenceMap(&quot;sec-FKg-HIOFmN1Oiyr_KJhnT&quot;, &quot;§{{sectionNumber}}&quot;)) but does not require understanding CRDTs for K0 conformance.</p>
+          
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8SETW22X5S8PHRJW1R">
+          <h2>What is NOT in the Kernel
+            <a class="anchor" href="#01KDEW4H8SETW22X5S8PHRJW1R">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8SF6KX2T54GWVJ2B1S">The following features are EXTENSIONS, not Kernel requirements:</div>
+<div class="vera-para" id="01KDEW4H8SE5Q987VBTYG3PJ1T"><ul><li><strong>Concurrency (referenceMap(&quot;sec-FKg-HIOFmN1Oiyr_KJhnT&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-aAgCXhEN9t0xxoeTpf0Qc&quot;, &quot;§{{sectionNumber}}&quot;))</strong>: CRDTs, vector clocks, conflict resolution. Optional for single-user tools.</li><li><strong>Certification (referenceMap(&quot;sec-5jP_ZWlaA8SfDbhVxrG99&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-YFHOeAjN2dYDjDiTocSSI&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-z3nlCPJ5B1h7TUhEf25LL&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-S3Z17-kDEc2A9A92Y0bqi&quot;, &quot;§{{sectionNumber}}&quot;), referenceMap(&quot;sec-ZBsFkK5bvDEL4m-rsfH17&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-RBDT59WZE2xJyi9k5UFvY&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-rRDDwm1LZy_CFk7nC2L0k&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-Nei3FTlw11oOPZVBq920l&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-x6eVbGvoVfS9GNeqNkLUG&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-dM0e66FHuNRBmoEaMjfxF&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-F4EMqD3954zBnfEDnmQGj&quot;, &quot;§{{sectionNumber}}&quot;))</strong>: RTM, DO-178C/ISO 26262 mappings, STPA/FMEA. Only required for K2+ conformance.</li><li><strong>Advanced Operations (referenceMap(&quot;sec-aBNKnM08R3W5pfjELaQas&quot;, &quot;§{{sectionNumber}}&quot;), referenceMap(&quot;sec-FzfSSWJ73nYlWnpzz3-B7&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-xEbsOCjQmAy1Uj_H6qRLr&quot;, &quot;§{{sectionNumber}}&quot;))</strong>: Artifact adapters, domain profiles, extension mechanisms. Useful but not essential.</li><li><strong>Mechanized Proofs (referenceMap(&quot;sec-z3nlCPJ5B1h7TUhEf25LL&quot;, &quot;§{{sectionNumber}}&quot;), referenceMap(&quot;sec-PAskKN4i1etyZhtOY5xtv&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-ojM0_ZLauOdjNuKK99Pg0&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-dIOSpm6loMFLin3AzkYRN&quot;, &quot;§{{sectionNumber}}&quot;) – referenceMap(&quot;sec-LUj58UniUYiDJ-BI2QMU3&quot;, &quot;§{{sectionNumber}}&quot;))</strong>: TLA+, Coq, Lean templates. Helpful for verification but not required for implementation.</li><li><strong>G7 Explainability (referenceMap(&quot;sub-Q_FIkGVXUuZIl6JAWPVwl&quot;, &quot;§{{sectionNumber}}.8 Valid Specification&quot;))</strong>: Unsat core generation. This is K1 (Certified-Aware), not K0.</li></ul></div>
+
+        <section class="vera-section" id="01KDEW4H8S19SMZ9JE9X7N4G1V">
+          <h2>Kernel-Only Reading Path
+            <a class="anchor" href="#01KDEW4H8S19SMZ9JE9X7N4G1V">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8SAZ05WMD2CTX8RX1W">For K0 conformance, read in this order:</div>
+<div class="vera-para" id="01KDEW4H8SEAK9T3YN4265HS1X"><ul><li>referenceMap(&quot;sub-sec-FKg-HIOFmN1Oiyr_KJhnT-1&quot;, &quot;§{{sectionNumber}}.1 Core Contributions&quot;) – referenceMap(&quot;sub-sec-FKg-HIOFmN1Oiyr_KJhnT-2&quot;, &quot;§{{sectionNumber}}.2 Key Theorems&quot;) – referenceMap(&quot;sub-sec-FKg-HIOFmN1Oiyr_KJhnT-3&quot;, &quot;§{{sectionNumber}}.3 Certification Path&quot;): Primitive sets, notation (5 minutes)</li><li>referenceMap(&quot;sub-sec-FKg-HIOFmN1Oiyr_KJhnT-4&quot;, &quot;§{{sectionNumber}}.4 Structure Overview&quot;): This section (10 minutes)</li><li>referenceMap(&quot;sub-xYOy8xUJpcssgjNVmANNW&quot;, &quot;§{{sectionNumber}}.1 Element&quot;) – referenceMap(&quot;sub-1PQdtQJCcUP4hsmjE7iJL&quot;, &quot;§{{sectionNumber}}.2 Layer&quot;) – referenceMap(&quot;sub-przG8f9oPcQ5oNMXdlyHX&quot;, &quot;§{{sectionNumber}}.3 Dependency&quot;) – referenceMap(&quot;sub-CyAf_GsK2z3HhpvlCgKlD&quot;, &quot;§{{sectionNumber}}.4 Constraint&quot;): Element, Layer, Dependency, Constraint (30 minutes)</li><li>referenceMap(&quot;sec-pYrht_aqaJ5gENPPS98r-&quot;, &quot;§{{sectionNumber}}&quot;): Well-formedness conditions (15 minutes)</li><li>referenceMap(&quot;sub-2rVTmZOx_FfwEKLswk1-j&quot;, &quot;§{{sectionNumber}}.1 Traceability&quot;) – referenceMap(&quot;sub-K1-qOmCVrnDqLrLgOd_aa&quot;, &quot;§{{sectionNumber}}.2 Completeness&quot;) – referenceMap(&quot;sub-sbASI3HUkg21rQji8CA3y&quot;, &quot;§{{sectionNumber}}.3 Consistency&quot;) – referenceMap(&quot;sub-PNmArYZo6xNqQZsWMEHGT&quot;, &quot;§{{sectionNumber}}.4 Groundedness&quot;) – referenceMap(&quot;sub-XWHt4rvXeJPsjryeyJk-f&quot;, &quot;§{{sectionNumber}}.5 Determinism&quot;) – referenceMap(&quot;sub-BY56RlNT5fC29dbs7WShu&quot;, &quot;§{{sectionNumber}}.6 Coherence&quot;): The Six Guarantees G1-G6 (25 minutes)</li><li>referenceMap(&quot;sec-CwnDzo78GYBw57r1EI_R5&quot;, &quot;§{{sectionNumber}}&quot;): Inference rules for cascade, trace, constraints (20 minutes)</li><li>referenceMap(&quot;sub-amKfbMudBf4a5EIxM14St&quot;, &quot;§{{sectionNumber}}.1 Query Operations&quot;) – referenceMap(&quot;sub-9q6VwEYOZyqBvxep8Dw5x&quot;, &quot;§{{sectionNumber}}.2 Modification Operations&quot;) – referenceMap(&quot;sub-doChtsVucb4PgzoofGPjB&quot;, &quot;§{{sectionNumber}}.3 Comparison Operations&quot;): validate(), trace(), impact() operations (15 minutes)</li><li>referenceMap(&quot;sub-OBU4duRRllB7_9IhbL-1N&quot;, &quot;§{{sectionNumber}}.1 Soundness&quot;) – referenceMap(&quot;sub-OB_3VjaM4yzhjgIYWx1_k&quot;, &quot;§{{sectionNumber}}.2 Convergence&quot;) – referenceMap(&quot;sub-kbjoG8RVDTc33BlKjcHtq&quot;, &quot;§{{sectionNumber}}.3 Decidability&quot;): Soundness, decidability, cascade termination theorems (10 minutes)</li></ul></div>
+<div class="vera-para" id="01KDEW4H8SP6RPT2HBEJD9601Y"><strong>Total: ~2 hours</strong> to understand the complete Kernel. Compare this to 30 sections (8-10 hours for full specification).</div>
+
+        <div class="vera-admonition admonition admonition-important" id="01KDEW4H8S7HMKB8ZZXR6TF41Z">
+          <p><strong>IMPORTANT</strong></p>
+          <strong>Kernel Boundary Enforcement</strong>: Some sections are explicitly marked <strong>non-Kernel</strong>. Artifact Adapters (referenceMap(&quot;sec-xEbsOCjQmAy1Uj_H6qRLr&quot;, &quot;§{{sectionNumber}}&quot;)) introduce <code>effectful: true</code> to mark I/O-performing components that violate Kernel purity. These adapters emit Operation lists that the Kernel consumes deterministically, maintaining the pure/effectful boundary.
+        </div>
+
+        <section class="vera-section" id="01KDEW4H8SS34WVSKS5XRZ2J20">
+          <h2>Reference Implementation Checklist
+            <a class="anchor" href="#01KDEW4H8SS34WVSKS5XRZ2J20">#</a>
+          </h2>
+        </section>
+<div class="vera-para" id="01KDEW4H8SGC1T2E1WZC5S0Q21">To claim K0 conformance, your implementation must:</div>
+<div class="vera-para" id="01KDEW4H8S3Y8ER8QQ0NQA6V22"><ul><li>✓ Implement data structures: Specification, Element, Layer, Dependency, Constraint, Binding, CascadeRule</li><li>✓ Implement constraint language: QF_LIA + QF_LRA + QF_UF (via SMT solver like Z3, CVC5, or Yices)</li><li>✓ Implement all WF-rules from referenceMap(&quot;sec-pYrht_aqaJ5gENPPS98r-&quot;, &quot;§{{sectionNumber}}&quot;) (including additions: WF-SOFT-CYCLE-BOUNDED, WF-CASCADE-TERMINATION)</li><li>✓ Implement guarantee checkers for G1-G6 (referenceMap(&quot;sub-2rVTmZOx_FfwEKLswk1-j&quot;, &quot;§{{sectionNumber}}.1 Traceability&quot;) – referenceMap(&quot;sub-K1-qOmCVrnDqLrLgOd_aa&quot;, &quot;§{{sectionNumber}}.2 Completeness&quot;) – referenceMap(&quot;sub-sbASI3HUkg21rQji8CA3y&quot;, &quot;§{{sectionNumber}}.3 Consistency&quot;) – referenceMap(&quot;sub-PNmArYZo6xNqQZsWMEHGT&quot;, &quot;§{{sectionNumber}}.4 Groundedness&quot;) – referenceMap(&quot;sub-XWHt4rvXeJPsjryeyJk-f&quot;, &quot;§{{sectionNumber}}.5 Determinism&quot;) – referenceMap(&quot;sub-BY56RlNT5fC29dbs7WShu&quot;, &quot;§{{sectionNumber}}.6 Coherence&quot;))</li><li>✓ Implement cascade computation per CASCADE-1, CASCADE-N rules (referenceMap(&quot;sub-5Xu8Vv_BHhTdzfCjtqDRo&quot;, &quot;§{{sectionNumber}}.3 Cascade Computation&quot;))</li><li>✓ Implement validate(S), trace(e), impact(S, δ) operations (referenceMap(&quot;sub-amKfbMudBf4a5EIxM14St&quot;, &quot;§{{sectionNumber}}.1 Query Operations&quot;) – referenceMap(&quot;sub-9q6VwEYOZyqBvxep8Dw5x&quot;, &quot;§{{sectionNumber}}.2 Modification Operations&quot;) – referenceMap(&quot;sub-doChtsVucb4PgzoofGPjB&quot;, &quot;§{{sectionNumber}}.3 Comparison Operations&quot;))</li><li>✓ Pass Kernel test suite (if available from reference implementation)</li><li>✓ Demonstrate purity: All operations return same output for same input</li><li>✓ Demonstrate decidability: All operations terminate (no infinite loops)</li></ul></div>
+<div class="vera-para" id="01KDEW4H8S5HR3KW2KVRXHMP23"><strong>Optional but Recommended</strong>: Implement Zod schemas (referenceMap(&quot;sec-TmlplXlhpu2gAP4_iKrgd&quot;, &quot;§{{sectionNumber}}&quot;)) for runtime validation, though note the schema drift warning from v2.4.4 (Zod schemas are v1.0 and lack v2.0+ fields like cascade_boundary, priority, actor, clock).</div>
+    </main>
+  </body>
+</html>

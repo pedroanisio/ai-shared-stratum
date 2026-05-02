@@ -1,0 +1,602 @@
+{
+  "documentId": "01KDEWP0MMWBSF3FN4DQG6FM00",
+  "frontmatter": {
+    "documentId": "01KDEWP0MMWBSF3FN4DQG6FM00",
+    "title": "Well-Formedness Conditions"
+  },
+  "entities": [
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEWP0MMXEVMKBMVPYBEW801",
+      "attributes": {
+        "title": "Structural Well-Formedness",
+        "alias": "sub-u18tB1pKQdXgyWtzMKNt9"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMMTD8CKM9J1FGCM02",
+      "attributes": {
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "A specification S is structurally well-formed iff all of the following hold:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MM5F9XXDW9T0DRZE03",
+      "attributes": {
+        "defName": "WF-ID: Unique Identifiers",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MM6GYB7913Q976MT04",
+      "attributes": {
+        "refs": "01KDEWP0MM5F9XXDW9T0DRZE03"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ e₁, e₂ ∈ E. e₁.id = e₂.id → e₁ = e₂\n∀ l₁, l₂ ∈ L. l₁.id = l₂.id → l₁ = l₂\n∀ d₁, d₂ ∈ D. d₁.id = d₂.id → d₁ = d₂\n∀ c₁, c₂ ∈ C. c₁.id = c₂.id → c₁ = c₂\n∀ b₁, b₂ ∈ B. b₁.id = b₂.id → b₁ = b₂"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMPBNCF4277R7ZHA05",
+      "attributes": {
+        "defName": "WF-LAYER: Layer Membership",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMDCJZZ4EC5B80NW06",
+      "attributes": {
+        "refs": "01KDEWP0MMPBNCF4277R7ZHA05"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ e ∈ E. ∃ l ∈ L. e.l = l.id"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMXS2SMW3B3XQM6G07",
+      "attributes": {
+        "refs": "01KDEWP0MMPBNCF4277R7ZHA05"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Every element belongs to a layer that exists"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMVMWZD4SQ1B52B508",
+      "attributes": {
+        "defName": "WF-TYPE: Type Vocabulary",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMZSPYK2ZPWWS4SC09",
+      "attributes": {
+        "refs": "01KDEWP0MMVMWZD4SQ1B52B508"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ e ∈ E. let l = layer(e) in e.τ ∈ l.T"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMPE0GQG2WM6EDC80A",
+      "attributes": {
+        "refs": "01KDEWP0MMVMWZD4SQ1B52B508"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Every element's type is in its layer's vocabulary"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MM9M746BZYAGJGD50B",
+      "attributes": {
+        "defName": "WF-DEP-ENDPOINTS: Dependency Endpoints",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMQQ6RQWFZ5VM9FM0C",
+      "attributes": {
+        "refs": "01KDEWP0MM9M746BZYAGJGD50B"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ d ∈ D. ∃ e₁, e₂ ∈ E. d.src.elem = e₁.id ∧ d.tgt.elem = e₂.id"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MME52VNA459EN8H60D",
+      "attributes": {
+        "refs": "01KDEWP0MM9M746BZYAGJGD50B"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Dependency endpoints reference existing elements"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMBD164V45VZ0QCF0E",
+      "attributes": {
+        "defName": "WF-BINDING-SOURCE: Binding Sources",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMRK00DB60R0N7Y80F",
+      "attributes": {
+        "refs": "01KDEWP0MMBD164V45VZ0QCF0E"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ b ∈ B. ∃ e ∈ E. b.abstract.elem = e.id"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MM9D9AFDWMNK9F2B0G",
+      "attributes": {
+        "refs": "01KDEWP0MMBD164V45VZ0QCF0E"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Binding sources reference existing elements"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMH5RT4SDKZ0A5GC0H",
+      "attributes": {
+        "defName": "WF-LAYER-DEPS: Layer Dependencies",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMBXDVCG8JWQ22A10J",
+      "attributes": {
+        "refs": "01KDEWP0MMH5RT4SDKZ0A5GC0H"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ l ∈ L. ∀ dep ∈ l.deps. ∃ l' ∈ L. l'.id = dep"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMJF3V34RZCG8D670K",
+      "attributes": {
+        "refs": "01KDEWP0MMH5RT4SDKZ0A5GC0H"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Layer dependencies reference existing layers"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMSPMF2SZW29FDCC0M",
+      "attributes": {
+        "defName": "WF-TIER-ORDER: Tier Ordering",
+        "refs": "01KDEWP0MMXEVMKBMVPYBEW801"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MM9PX10WN68WZ1P70N",
+      "attributes": {
+        "refs": "01KDEWP0MMSPMF2SZW29FDCC0M"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ l ∈ L. ∀ dep ∈ l.deps. let l' = getLayer(dep) in pos(l') ≤ pos(l)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MM23E8RXCR2VK8DF0P",
+      "attributes": {
+        "refs": "01KDEWP0MMSPMF2SZW29FDCC0M"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Layers only depend on layers at same or higher abstraction"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEWP0MMKDGJM4K82C6Q7E0Q",
+      "attributes": {
+        "title": "Tier Completeness",
+        "alias": "sub-ZjGSTSjqSxpTW7FUneFbV"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMWR6T7XNMV30N620R",
+      "attributes": {
+        "defName": "WF-TIER-COMPLETE: All Tiers Present",
+        "refs": "01KDEWP0MMKDGJM4K82C6Q7E0Q"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMMBSDDJXMXTF7570S",
+      "attributes": {
+        "refs": "01KDEWP0MMWR6T7XNMV30N620R"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ t ∈ TIER. ∃ l ∈ L. l.tier = t"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMQVQV7270JEZ83M0T",
+      "attributes": {
+        "refs": "01KDEWP0MMWR6T7XNMV30N620R"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Every tier has at least one layer"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMSQB0QV9AJEAMQ00V",
+      "attributes": {
+        "refs": "01KDEWP0MMKDGJM4K82C6Q7E0Q"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "This ensures the specification addresses all four fundamental questions:"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MM1GFERG04X75GKM0W",
+      "attributes": {
+        "refs": "01KDEWP0MMKDGJM4K82C6Q7E0Q"
+      },
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "children": [
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "motivation: WHY does this exist?"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "logical: WHAT is the structure?"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "realization: HOW does it work?"
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "grounding: WHERE does it exist?"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "section_block",
+      "localId": "01KDEWP0MM4006BQ5XZV809F0X",
+      "attributes": {
+        "title": "Acyclicity",
+        "alias": "sub-N4IBDNbvYLcD_8c4BC2NX"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMEDAGSSXJQD06JR0Y",
+      "attributes": {
+        "defName": "WF-ACYCLIC-LAYERS: No Layer Cycles",
+        "refs": "01KDEWP0MM4006BQ5XZV809F0X"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMHX1KJQ8S9C5H2M0Z",
+      "attributes": {
+        "refs": "01KDEWP0MMEDAGSSXJQD06JR0Y"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Let G_L = (L, {(l, l') | l' ∈ l.deps})\nG_L is acyclic"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMCEB4MXKP1EY2V210",
+      "attributes": {
+        "defName": "WF-ACYCLIC-HARD: No Hard Dependency Cycles",
+        "refs": "01KDEWP0MM4006BQ5XZV809F0X"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MM2EJ4AHFMV1T8FH11",
+      "attributes": {
+        "refs": "01KDEWP0MMCEB4MXKP1EY2V210"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Let G_D = (E, {(e₁, e₂) | ∃d ∈ D. d.src.elem = e₁.id ∧ d.tgt.elem = e₂.id ∧ d.σ = hard})\nG_D is acyclic"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMWY7KT42GRGWJ8Z12",
+      "attributes": {
+        "refs": "01KDEWP0MMCEB4MXKP1EY2V210"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Hard dependencies must be acyclic"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMYSWRC1SZ7W1BSG13",
+      "attributes": {
+        "refs": "01KDEWP0MM4006BQ5XZV809F0X"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Note: Soft dependencies MAY form cycles (for mutual references, etc.)"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MMRR779CZ3CG2QCM14",
+      "attributes": {
+        "defName": "WF-SOFT-CYCLE-BOUNDED: Soft Cycle Boundaries",
+        "refs": "01KDEWP0MM4006BQ5XZV809F0X"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMQN252AMHZ3YPX215",
+      "attributes": {
+        "refs": "01KDEWP0MMRR779CZ3CG2QCM14"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ cycle C in G_D^soft. ∃ d ∈ C. d.cascade_boundary = ⊤\nwhere G_D^soft = (E, {(e₁, e₂) | ∃d ∈ D. d.src.elem = e₁.id ∧ d.tgt.elem = e₂.id ∧ d.σ = soft})"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MMNR6EAQB0R0X3XH16",
+      "attributes": {
+        "refs": "01KDEWP0MMRR779CZ3CG2QCM14"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Every soft dependency cycle must have at least one cascade boundary to prevent infinite propagation"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "rule_def",
+      "localId": "01KDEWP0MM7Y555SN4FJ3XXS17",
+      "attributes": {
+        "defName": "WF-CASCADE-TERMINATION: Cascade Depth Bounded",
+        "refs": "01KDEWP0MM4006BQ5XZV809F0X"
+      },
+      "children": [],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "formula_block",
+      "localId": "01KDEWP0MMVDDWZT97E7QQ2R18",
+      "attributes": {
+        "refs": "01KDEWP0MM7Y555SN4FJ3XXS17"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "∀ r ∈ R. ∃ n ∈ ℕ. r.max_depth = n\n∀ cascade path P in impact(S, e, r). |P| ≤ r.max_depth"
+        }
+      ],
+      "data": {}
+    },
+    {
+      "type": "containerDirective",
+      "name": "para",
+      "localId": "01KDEWP0MNDQAMF6JXGKJMAZ00",
+      "attributes": {
+        "refs": "01KDEWP0MM7Y555SN4FJ3XXS17"
+      },
+      "children": [
+        {
+          "type": "text",
+          "value": "Cascade rules must specify maximum propagation depth, and all cascade paths must respect this bound"
+        }
+      ],
+      "data": {}
+    }
+  ]
+}
